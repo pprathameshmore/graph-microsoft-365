@@ -1,74 +1,59 @@
 # Integration with JupiterOne
 
+JupiterOne provides a managed integration for Microsoft 365. The integration
+connects directly to Microsoft Graph APIs to obtain metadata about the target
+organization and analyze resource relationships.
+
+Customers authorize access by creating an App Registration for their
+organization only and providing the credentials to allow JupiterOne to run as
+that application.
+
 ## Setup
 
-In this section, please provide details about how to set up the integration with
-JupiterOne. This may require provisioning some resources on the provider's side
-(perhaps a role, app, or api key) and passing information over to JupiterOne.
+To create the App Registration:
+
+1. Go to your Azure portal
+1. Navigate to **App registrations**
+1. Create a new App registration, using the **Name** "JupiterOne", selecting
+   **Accounts in this organizational directory only**, with **no** "Redirect
+   URI"
+1. Navigate to the **Overview** page of the new app
+1. Copy the **Application (client) ID**
+1. Copy the **Directory (tenant) ID**
+1. Navigate to the **Certificates & secrets** section
+1. Create a new client secret
+1. Copy the generated secret (you only get one chance!)
+
+Grant permission to read Microsoft Graph information:
+
+1. Navigate to **API permissions**, choose **Microsoft Graph**, then
+   **Application Permissions**
+1. Grant `Directory.Read.All` permissions to allow reading users, groups, and
+   members of groups, including organization contacts and Microsoft Intune
+   devices
+1. Grant admin consent for this directory for the permissions above
 
 ## Data Model
 
-Provide an overview here of the resources collected from the integration. Please
-provide a mapping of how the resources collected map to the JupiterOne Data
-Model. The tables below were taken from the Azure integration to provide an
-example of how to display that information.
-
-When you start developing an integration, please clear out the tables below. As
-you add support for new entities and relationships, please update the tables and
-document the addition in the [CHANGELOG.md](../CHANGELOG.md) file at the root of
-the project.
-
 ### Entities
 
-Provide a table that maps concepts from the provider to the `_type` and `_class`
-generated.
+The following entity resources are ingested when the integration runs.
 
-| Resources         | \_type of the Entity          | \_class of the Entity           |
-| ----------------- | ----------------------------- | ------------------------------- |
-| Compute           | `azure_vm`                    | `Host`                          |
-|                   | `azure_image`                 | `Image`                         |
-|                   | `azure_managed_disk`          | `DataStore`, `Disk`             |
-| Load Balancer     | `azure_lb`                    | `Gateway`                       |
-| Virtual Network   | `azure_vnet`                  | `Network`                       |
-| Subnet            | `azure_subnet`                | `Network`                       |
-| Security Group    | `azure_security_group`        | `Firewall`                      |
-| Network Interface | `azure_nic`                   | `NetworkInterface`              |
-| Public IP Address | `azure_public_ip`             | `IpAddress`                     |
-| Blob (Storage)    | `azure_storage_container`     | `DataStore`                     |
-| Databases         | `azure_mariadb_database`      | `Database`, `DataStore`         |
-|                   | `azure_mariadb_server`        | `Database`, `DataStore`, `Host` |
-|                   | `azure_mysql_database`        | `Database`, `DataStore`         |
-|                   | `azure_mysql_server`          | `Database`, `DataStore`, `Host` |
-|                   | `azure_postgresql_database`   | `Database`, `DataStore`         |
-|                   | `azure_postgresql_server`     | `Database`, `DataStore`, `Host` |
-|                   | `azure_sql_database`          | `Database`, `DataStore`         |
-|                   | `azure_sql_server`            | `Database`, `DataStore`, `Host` |
-| Cosmos DB         | `azure_cosmosdb_account`      | `Account`                       |
-|                   | `azure_cosmosdb_sql_database` | `Database`, `DataStore`         |
+| Microsoft 365 Resources | \_type of the Entity            | \_class of the Entity |
+| ----------------------- | ------------------------------- | --------------------- |
+| Account                 | `active_directory_account`      | `Account`             |
+| Group                   | `active_directory_user_group`   | `UserGroup`           |
+| Group Member            | `active_directory_group_member` | `User`                |
+| User                    | `active_directory_user`         | `User`                |
 
 ### Relationships
 
 The following relationships are created/mapped:
 
-| From                         | Edge         | To                            |
-| ---------------------------- | ------------ | ----------------------------- |
-| `azure_account`              | **HAS**      | `azure_user`                  |
-| `azure_account`              | **HAS**      | `azure_user_group`            |
-| `azure_account`              | **HAS**      | `azure_storage_blob_service`  |
-| `azure_user_group`           | **HAS**      | `azure_user`                  |
-| `azure_user_group`           | **HAS**      | `azure_user_group`            |
-| `azure_user_group`           | **HAS**      | `azure_group_member`          |
-| `azure_vnet`                 | **CONTAINS** | `azure_subnet`                |
-| `azure_subnet`               | **HAS**      | `azure_vm`                    |
-| `azure_security_group`       | **PROTECTS** | `azure_subnet`                |
-| `azure_security_group`       | **PROTECTS** | `azure_nic`                   |
-| `azure_vm`                   | **USES**     | `azure_nic`                   |
-| `azure_vm`                   | **USES**     | `azure_managed_disk`          |
-| `azure_vm`                   | **USES**     | `azure_public_ip`             |
-| `azure_lb`                   | **CONNECTS** | `azure_nic`                   |
-| `azure_storage_blob_service` | **HAS**      | `azure_storage_container`     |
-| `azure_mariadb_server`       | **HAS**      | `azure_mariadb_database`      |
-| `azure_mysql_server`         | **HAS**      | `azure_mysql_database`        |
-| `azure_postgresql_server`    | **HAS**      | `azure_postgresql_database`   |
-| `azure_sql_server`           | **HAS**      | `azure_sql_database`          |
-| `azure_cosmosdb_account`     | **HAS**      | `azure_cosmosdb_sql_database` |
+| From                          | Edge    | To                              |
+| ----------------------------- | ------- | ------------------------------- |
+| `active_directory_account`    | **HAS** | `active_directory_user`         |
+| `active_directory_account`    | **HAS** | `active_directory_user_group`   |
+| `active_directory_user_group` | **HAS** | `active_directory_user`         |
+| `active_directory_user_group` | **HAS** | `active_directory_user_group`   |
+| `active_directory_user_group` | **HAS** | `active_directory_group_member` |
