@@ -1,4 +1,5 @@
 module.exports = {
+  setupFiles: ['dotenv/config'],
   clearMocks: true,
   preset: 'ts-jest',
   testMatch: ['**/__tests__/**/*test.(js|ts)'],
