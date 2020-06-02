@@ -4,34 +4,15 @@ JupiterOne provides a managed integration for Microsoft 365. The integration
 connects directly to Microsoft Graph APIs to obtain metadata about the target
 organization and analyze resource relationships.
 
-Customers authorize access by creating an App Registration for their
-organization only and providing the credentials to allow JupiterOne to run as
-that application.
-
 ## Setup
 
-To create the App Registration:
+Authorize access to JupiterOne:
 
-1. Go to your Azure portal
-1. Navigate to **App registrations**
-1. Create a new App registration, using the **Name** "JupiterOne", selecting
-   **Accounts in this organizational directory only**, with **no** "Redirect
-   URI"
-1. Navigate to the **Overview** page of the new app
-1. Copy the **Application (client) ID**
-1. Copy the **Directory (tenant) ID**
-1. Navigate to the **Certificates & secrets** section
-1. Create a new client secret
-1. Copy the generated secret (you only get one chance!)
-
-Grant permission to read Microsoft Graph information:
-
-1. Navigate to **API permissions**, choose **Microsoft Graph**, then
-   **Application Permissions**
-1. Grant `Directory.Read.All` permissions to allow reading users, groups, and
-   members of groups, including organization contacts and Microsoft Intune
-   devices
-1. Grant admin consent for this directory for the permissions above
+1. Log in to JupiterOne as a user with permission to set up an integration
+1. Add a Microsoft 365 integration instance
+1. You will be directed to Microsoft's identity platform, where you must login
+   in as an administrator in the organization you intend to integrate
+1. Review requested permissions and grant consent
 
 ## Data Model
 
