@@ -1,4 +1,7 @@
-import { IntegrationInstanceConfig } from '@jupiterone/integration-sdk';
+import {
+  IntegrationInstanceConfig,
+  IntegrationStepExecutionContext,
+} from '@jupiterone/integration-sdk-core';
 
 /**
  * Properties provided by the `IntegrationInstance.config`. This reflects the
@@ -6,12 +9,28 @@ import { IntegrationInstanceConfig } from '@jupiterone/integration-sdk';
  */
 export interface IntegrationConfig extends IntegrationInstanceConfig {
   /**
-   * The provider API client ID used to authenticate requests.
+   * The Azure application client ID used to identify the program as the
+   * registered app. This will be the same for all tenants since this is a
+   * multi-tenant application.
    */
   clientId: string;
 
   /**
-   * The provider API client secret used to authenticate requests.
+   * The Azuser application client secret used to authenticate requests.
    */
   clientSecret: string;
+
+  /**
+   * The target directory/tenant ID, identified during the admin consent OAuth
+   * flow.
+   */
+  directoryId: string;
 }
+
+/**
+ * An `IntegrationStepExecutionContext` typed for this integration's
+ * `IntegrationInstanceConfig`.
+ */
+export type IntegrationStepContext = IntegrationStepExecutionContext<
+  IntegrationConfig
+>;

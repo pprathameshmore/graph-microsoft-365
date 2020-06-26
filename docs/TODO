@@ -1,0 +1,4 @@
+- Verify 403 handled in fetchOrganization
+- Finish up resource iterators
+- Work out offsite flow with localhost server running
+- Work out types for MS365 entities (and what happens when installed alongside Azure integration)

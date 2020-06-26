@@ -1,5 +1,8 @@
 import { AccessToken, ClientSecretCredential } from '@azure/identity';
-import { IntegrationLogger } from '@jupiterone/integration-sdk';
+import {
+  IntegrationLogger,
+  IntegrationProviderAPIError,
+} from '@jupiterone/integration-sdk-core';
 import {
   AuthenticationProvider,
   AuthenticationProviderOptions,
@@ -36,6 +39,48 @@ export class GraphClient {
     const response = await this.client.api('/organization').get();
     return response.value[0];
   }
+
+  // Not using PageIterator because it doesn't allow async callback
+  protected async iterateResources<T>({
+    resourceUrl,
+    query,
+    callback,
+  }: {
+    resourceUrl: string;
+    query?: QueryParams;
+    callback: (item: T) => void | Promise<void>;
+  }): Promise<void> {
+    try {
+      let nextLink: string | undefined;
+      do {
+        let api = this.client.api(nextLink || resourceUrl);
+        if (query) {
+          api = api.query(query);
+        }
+
+        const response = await api.get();
+        if (response) {
+          nextLink = response['@odata.nextLink'];
+          for (const value of response.value) {
+            await callback(value);
+          }
+        } else {
+          nextLink = undefined;
+        }
+      } while (nextLink);
+    } catch (err) {
+      if (err.statusCode === 403) {
+        this.logger.info({ resourceUrl }, 'Forbidden');
+      } else if (err.statusCode !== 404) {
+        throw new IntegrationProviderAPIError({
+          cause: err,
+          endpoint: resourceUrl,
+          status: err.statusCode,
+          statusText: err.statusText || err.message,
+        });
+      }
+    }
+  }
 }
 
 class GraphAuthenticationProvider implements AuthenticationProvider {
@@ -60,7 +105,6 @@ class GraphAuthenticationProvider implements AuthenticationProvider {
         this.config.clientSecret,
       );
       const scopes = options?.scopes || 'https://graph.microsoft.com/.default';
-      console.log(scopes);
       this.accessToken = await credentials.getToken(scopes);
     }
     if (!this.accessToken) {

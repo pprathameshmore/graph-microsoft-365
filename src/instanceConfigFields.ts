@@ -1,4 +1,4 @@
-import { IntegrationInstanceConfigFieldMap } from '@jupiterone/integration-sdk';
+import { IntegrationInstanceConfigFieldMap } from '@jupiterone/integration-sdk-core';
 
 const instanceConfigFields: IntegrationInstanceConfigFieldMap = {
   clientId: {
@@ -7,6 +7,9 @@ const instanceConfigFields: IntegrationInstanceConfigFieldMap = {
   clientSecret: {
     type: 'string',
     mask: true,
+  },
+  directoryId: {
+    type: 'string',
   },
 };
 

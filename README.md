@@ -69,7 +69,7 @@ which provides a bit more structure.
 
 ### Development
 
-Please reference the `@jupiterone/integration-sdk`
+Please reference the `@jupiterone/sdk`
 [development documentation](https://github.com/JupiterOne/sdk/blob/master/docs/development.md)
 for more information on how to use the SDK.
 

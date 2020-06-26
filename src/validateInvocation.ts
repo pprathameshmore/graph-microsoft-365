@@ -2,7 +2,7 @@ import {
   IntegrationExecutionContext,
   IntegrationProviderAuthenticationError,
   IntegrationValidationError,
-} from '@jupiterone/integration-sdk';
+} from '@jupiterone/integration-sdk-core';
 
 import { IntegrationConfig } from './types';
 
