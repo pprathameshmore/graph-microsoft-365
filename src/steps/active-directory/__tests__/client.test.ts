@@ -9,7 +9,11 @@ import {
   User,
 } from '@microsoft/microsoft-graph-types';
 
-import config from '../../../../test/config';
+import {
+  config,
+  insufficientPermissionsDirectoryConfig,
+  inaccessibleDirectoryConfig,
+} from '../../../../test/config';
 import { setupAzureRecording } from '../../../../test/recording';
 import { DirectoryGraphClient, GroupMember } from '../client';
 
@@ -23,50 +27,79 @@ afterEach(async () => {
   }
 });
 
-test('iterateGroups', async () => {
-  recording = setupAzureRecording({
-    directory: __dirname,
-    name: 'iterateGroups',
-  });
-
-  const client = new DirectoryGraphClient(logger, config);
-
-  const resources: Group[] = [];
-  await client.iterateGroups((e) => {
-    resources.push(e);
-  });
-
-  expect(resources.length).toBeGreaterThan(0);
-  resources.forEach((r) => {
-    expect(r).toMatchObject({
-      displayName: expect.any(String),
-    });
-  });
-});
-
-test('iterateGroups forbidden (not granted permissions)', async () => {
-  recording = setupAzureRecording({
-    directory: __dirname,
-    name: 'iterateGroups403',
-  });
-
-  recording.server
-    .get('https://graph.microsoft.com/v1.0/groups')
-    .intercept((req, res) => {
-      res.sendStatus(403);
+describe('iterateGroups', () => {
+  test('accessible', async () => {
+    recording = setupAzureRecording({
+      directory: __dirname,
+      name: 'iterateGroups',
     });
 
-  const client = new DirectoryGraphClient(logger, config);
-  const infoSpy = jest.spyOn(logger, 'info');
+    const client = new DirectoryGraphClient(logger, config);
 
-  const resources: Group[] = [];
-  await client.iterateGroups((e) => {
-    resources.push(e);
+    const resources: Group[] = [];
+    await client.iterateGroups((e) => {
+      resources.push(e);
+    });
+
+    expect(resources.length).toBeGreaterThan(0);
+    resources.forEach((r) => {
+      expect(r).toMatchObject({
+        displayName: expect.any(String),
+      });
+    });
   });
 
-  expect(resources.length).toEqual(0);
-  expect(infoSpy).toHaveBeenCalledTimes(1);
-  expect(infoSpy).toHaveBeenCalledWith({ resourceUrl: '/groups' }, 'Forbidden');
+  test('inaccessible', async () => {
+    recording = setupAzureRecording({
+      directory: __dirname,
+      name: 'iterateGroupsInaccessible',
+      options: { recordFailedRequests: true },
+    });
+
+    const client = new DirectoryGraphClient(
+      logger,
+      inaccessibleDirectoryConfig,
+    );
+    const infoSpy = jest.spyOn(logger, 'info');
+
+    const resources: Group[] = [];
+    await client.iterateGroups((e) => {
+      resources.push(e);
+    });
+
+    expect(resources.length).toEqual(0);
+    expect(infoSpy).toHaveBeenCalledTimes(1);
+    expect(infoSpy).toHaveBeenCalledWith(
+      { resourceUrl: '/groups' },
+      'Unauthorized',
+    );
+  });
+
+  test('insufficient permissions', async () => {
+    recording = setupAzureRecording({
+      directory: __dirname,
+      name: 'iterateGroupsInsufficientPermissions',
+      options: { recordFailedRequests: true },
+    });
+
+    const client = new DirectoryGraphClient(
+      logger,
+      insufficientPermissionsDirectoryConfig,
+    );
+    const infoSpy = jest.spyOn(logger, 'info');
+
+    const resources: Group[] = [];
+    await client.iterateGroups((e) => {
+      resources.push(e);
+    });
+
+    expect(resources.length).toEqual(0);
+    expect(infoSpy).toHaveBeenCalledTimes(1);
+    expect(infoSpy).toHaveBeenCalledWith(
+      { resourceUrl: '/groups' },
+      'Forbidden',
+    );
+  });
 });
 
 describe('iterateGroupMembers', () => {
@@ -198,24 +231,46 @@ describe('iterateUsers', () => {
   });
 });
 
-test('iterateDirectoryRoles', async () => {
-  recording = setupAzureRecording({
-    directory: __dirname,
-    name: 'iterateDirectoryRoles',
-  });
-
-  const client = new DirectoryGraphClient(logger, config);
-
-  const resources: DirectoryRole[] = [];
-  await client.iterateDirectoryRoles((e) => {
-    resources.push(e);
-  });
-
-  expect(resources.length).toBeGreaterThan(0);
-  resources.forEach((r) => {
-    expect(r).toMatchObject({
-      roleTemplateId: expect.any(String),
+describe('iterateDirectoryRoles', () => {
+  test('accessible', async () => {
+    recording = setupAzureRecording({
+      directory: __dirname,
+      name: 'iterateDirectoryRoles',
     });
+
+    const client = new DirectoryGraphClient(logger, config);
+
+    const resources: DirectoryRole[] = [];
+    await client.iterateDirectoryRoles((e) => {
+      resources.push(e);
+    });
+
+    expect(resources.length).toBeGreaterThan(0);
+    resources.forEach((r) => {
+      expect(r).toMatchObject({
+        roleTemplateId: expect.any(String),
+      });
+    });
+  });
+
+  test('insufficient permissions', async () => {
+    recording = setupAzureRecording({
+      directory: __dirname,
+      name: 'iterateDirectoryRolesInsufficientPermissions',
+      options: { recordFailedRequests: true },
+    });
+
+    const client = new DirectoryGraphClient(
+      logger,
+      insufficientPermissionsDirectoryConfig,
+    );
+
+    const resources: DirectoryRole[] = [];
+    await client.iterateDirectoryRoles((e) => {
+      resources.push(e);
+    });
+
+    expect(resources.length).toEqual(0);
   });
 });
 

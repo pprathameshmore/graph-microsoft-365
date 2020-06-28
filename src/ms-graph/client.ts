@@ -2,6 +2,8 @@ import { AccessToken, ClientSecretCredential } from '@azure/identity';
 import {
   IntegrationLogger,
   IntegrationProviderAPIError,
+  IntegrationProviderAuthenticationError,
+  IntegrationProviderAuthorizationError,
 } from '@jupiterone/integration-sdk-core';
 import {
   AuthenticationProvider,
@@ -31,16 +33,52 @@ export class GraphClient {
     });
   }
 
+  public async verifyAuthentication(): Promise<void> {
+    try {
+      await this.client.api('/organization').get();
+    } catch (err) {
+      throw new IntegrationProviderAuthenticationError({
+        cause: err,
+        endpoint: '/organization',
+        status: err.statusCode,
+        statusText: err.code,
+      });
+    }
+  }
+
   public async fetchMetadata(): Promise<object> {
     return this.client.api('/').get();
   }
 
+  /**
+   * Fetch organization details. Throws an error when this cannot be
+   * accomplished.
+   */
   public async fetchOrganization(): Promise<Organization> {
-    const response = await this.client.api('/organization').get();
-    return response.value[0];
+    try {
+      const response = await this.client.api('/organization').get();
+      return response.value[0];
+    } catch (err) {
+      const errorOptions = {
+        cause: err,
+        endpoint: '/organization',
+        status: err.statusCode,
+        statusText: err.code,
+      };
+      if (err.statusCode === 401) {
+        throw new IntegrationProviderAuthorizationError(errorOptions);
+      } else {
+        throw new IntegrationProviderAPIError(errorOptions);
+      }
+    }
   }
 
   // Not using PageIterator because it doesn't allow async callback
+  /**
+   * Iterate resources. 401 Unauthorized, 403 Forbidden, and 404 Not Found
+   * responses are considered empty collections. Other API errors will be
+   * thrown.
+   */
   protected async iterateResources<T>({
     resourceUrl,
     query,
@@ -69,14 +107,16 @@ export class GraphClient {
         }
       } while (nextLink);
     } catch (err) {
-      if (err.statusCode === 403) {
+      if (err.statusCode === 401) {
+        this.logger.info({ resourceUrl }, 'Unauthorized');
+      } else if (err.statusCode === 403) {
         this.logger.info({ resourceUrl }, 'Forbidden');
       } else if (err.statusCode !== 404) {
         throw new IntegrationProviderAPIError({
           cause: err,
           endpoint: resourceUrl,
           status: err.statusCode,
-          statusText: err.statusText || err.message,
+          statusText: err.statusText || err.code || err.message,
         });
       }
     }

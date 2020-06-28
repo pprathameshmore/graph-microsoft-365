@@ -5,6 +5,7 @@ import {
 } from '@jupiterone/integration-sdk-core';
 
 import { IntegrationConfig } from './types';
+import { GraphClient } from './ms-graph/client';
 
 export default async function validateInvocation(
   context: IntegrationExecutionContext<IntegrationConfig>,
@@ -17,7 +18,7 @@ export default async function validateInvocation(
     );
   }
 
-  const apiClient = createAPIClient(config);
+  const apiClient = new GraphClient(context.logger, config);
   try {
     await apiClient.verifyAuthentication();
   } catch (err) {

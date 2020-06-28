@@ -3,7 +3,7 @@ import {
   Recording,
 } from '@jupiterone/integration-sdk-testing';
 
-import config from '../../../test/config';
+import { config, inaccessibleDirectoryConfig } from '../../../test/config';
 import { setupAzureRecording } from '../../../test/recording';
 import { GraphClient } from '../client';
 
@@ -17,16 +17,62 @@ afterEach(async () => {
   }
 });
 
-describe('authentication', () => {
-  test('token fetch', async () => {
-    recording = setupAzureRecording({ directory: __dirname, name: 'getToken' });
+describe('verifyAuthentication', () => {
+  test('invalid directoryId', async () => {
+    recording = setupAzureRecording({
+      directory: __dirname,
+      name: 'verifyAuthenticationInvalidDirectory',
+      options: { recordFailedRequests: true },
+    });
+
+    const client = new GraphClient(logger, {
+      ...config,
+      directoryId: 'abc123testing',
+    });
+
+    await expect(client.verifyAuthentication()).rejects.toThrow(
+      'Provider authentication failed at /organization: -1 AuthenticationError',
+    );
+  });
+
+  test('inaccesible', async () => {
+    recording = setupAzureRecording({
+      directory: __dirname,
+      name: 'verifyAuthenticationInaccesibleDirectory',
+      options: { recordFailedRequests: true },
+    });
+
+    const client = new GraphClient(logger, inaccessibleDirectoryConfig);
+
+    await expect(client.verifyAuthentication()).rejects.toThrow(
+      'Provider authentication failed at /organization: 401 Authorization_IdentityNotFound',
+    );
+  });
+
+  test('accesible', async () => {
+    recording = setupAzureRecording({
+      directory: __dirname,
+      name: 'verifyAuthentication',
+      options: { recordFailedRequests: true },
+    });
 
     const client = new GraphClient(logger, config);
 
-    const metadata = await client.fetchMetadata();
-    expect(metadata).toMatchObject({
-      '@odata.context': 'https://graph.microsoft.com/v1.0/$metadata',
-    });
+    await expect(client.verifyAuthentication()).resolves.not.toThrowError();
+  });
+});
+
+test('fetchMetadata', async () => {
+  recording = setupAzureRecording({
+    directory: __dirname,
+    name: 'fetchMetadata',
+  });
+
+  const client = new GraphClient(logger, config);
+
+  const metadata = await client.fetchMetadata();
+  expect(metadata).toMatchObject({
+    '@odata.context': 'https://graph.microsoft.com/v1.0/$metadata',
   });
 });
 
@@ -46,26 +92,19 @@ describe('fetchOrganization', () => {
     });
   });
 
-  test('forbidden', async () => {
+  test('inaccessible', async () => {
     recording = setupAzureRecording({
       directory: __dirname,
-      name: 'fetchOrganization403',
+      name: 'fetchOrganizationInaccessible',
       options: {
         recordFailedRequests: true,
       },
     });
 
-    // recording.server
-    //   .get('https://graph.microsoft.com/v1.0/organization')
-    //   .intercept((req, res) => {
-    //     res.sendStatus(403);
-    //   });
-    const client = new GraphClient(logger, config);
+    const client = new GraphClient(logger, inaccessibleDirectoryConfig);
 
-    const organization = await client.fetchOrganization();
-
-    expect(organization).toMatchObject({
-      displayName: expect.any(String),
-    });
+    await expect(client.fetchOrganization()).rejects.toThrow(
+      'Provider authorization failed at /organization: 401 Authorization_IdentityNotFound',
+    );
   });
 });
