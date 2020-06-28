@@ -14,25 +14,49 @@ for getting started.
 
 ## Provider account setup
 
-A JupiterOne staff developer may obtain credentials for existing development
-accounts.
+The Microsoft Graph API code is tested against three Active Directories:
 
-For those looking to build out their own development accounts:
+1. The multi-tenant app is installed, all permissions are granted
+1. The multi-tenant app is installed, most permissions are insufficient
+1. The multi-tenant app is not installed
 
-1. Obtain a free Azure account, with a hotmail.com email address (one will be
-   assigned to you when you create the Azure account, which provisions an Azure
-   AD directory).
-1. Obtain a Microsoft 365 account, which you'll need to work on ingesting Users,
-   Groups, and other organizational resources found in Microsoft Graph. You may
-   also make some progress by targeting your Azure AD default directory.
+This allows for ensuring the API code handles some common target configuration
+scenarios.
+
+A JupiterOne staff developer can provide credentials for an existing development
+Azure account that tests are written against. This is the easiest way to begin
+making changes to the integration. Otherwise, you would need your own
+development Azure account, and the tests will likely need to be improved to
+avoid specific account information.
+
+You may obtain a free Azure account with a hotmail.com email address (one will
+be assigned to you when you create the Azure account, which provisions an Azure
+AD directory), to avoid any confusion about the purpose of the account.
 
 In the Azure portal:
 
-1. Create an App Registration, multi-tenant
+1. Create an App Registration, multi-tenant, with `Organization.Read.All` API
+   Permissions configured (only this for now)
 1. Add a 1-year secret (store securely in 1Password)
 1. Add a couple of Redirect URIs:
    1. https://apps.dev.jupiterone.io/microsoft-365/install (optional, obviously)
    1. https://localhost/microsoft-365/install
+
+Then, create two additional Active Directory Tenants (you'll have a Default
+Directory already), a user account with Global Administrator Role assignment in
+each one for yourself, and then [grant Admin Consent](#authentication) to the
+multi-tenant Enterprise Application as follows:
+
+1. Default directory, grant permission now and always grant new permissions as
+   development of converters advances
+1. "J1 Insufficient Permissions" directory, grant permissions now
+   (`Organization.Real.All` is all at this point in setup), but never grant any
+   additional permisssions, to allow for testing cases where the app cannot
+   fetch resources
+1. "J1 Inaccessible" directory, do not install the app at all here, to allow for
+   testing cases where we have not be installed in a valid directory
+
+Update `test/config.ts` with directory IDs as appropriate.
 
 ## Authentication
 
@@ -48,17 +72,20 @@ Admin consent is granted to JupiterOne by:
 1. Log in to JupiterOne as a user with permission to set up an integration
 1. Add a Microsoft 365 integration instance
 1. You will be directed to Microsoft's identity platform, where you must login
-   in as an administrator in the organization you intend to ingest
+   in as a Global Administrator of the Active Directory Tenant you intend to
+   target/ingest
 1. Review requested permissions and grant consent
 
 To exercise the grant flow:
 
+1. Log in as a Global Administrator to the Active Directory Tenant you intend to
+   target/ingest
 1. Visit the [admin consent URL for jupiterone-dev][admin-consent-j1dev]
 1. After being redirected to something like
    `https://localhost/microsoft-365/install?admin_consent=True&tenant=tenant-id&state=12345`,
    capture the `tenant` query param
 
-Use this `tenant` ID and information from the App Registration to create a
+Use this `tenant` ID and information from the App Registration to create an
 `.env` file for local execution of the daemon/server application (this
 repository):
 
