@@ -11,6 +11,7 @@ import {
   Client,
 } from '@microsoft/microsoft-graph-client';
 import { Organization } from '@microsoft/microsoft-graph-types';
+import 'isomorphic-unfetch';
 
 import { ClientConfig } from './types';
 

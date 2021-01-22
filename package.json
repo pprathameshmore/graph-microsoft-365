@@ -24,7 +24,7 @@
   "dependencies": {
     "@azure/identity": "^1.2.2",
     "@microsoft/microsoft-graph-client": "^2.2.1",
-    "cross-fetch": "^3.0.6"
+    "isomorphic-unfetch": "^3.1.0"
   },
   "peerDependencies": {
     "@jupiterone/integration-sdk-core": "^5.6.1"
