@@ -22,18 +22,18 @@
     "prepublishOnly": "yarn build"
   },
   "dependencies": {
-    "@azure/identity": "^1.0.3",
-    "@microsoft/microsoft-graph-client": "^2.0.0"
+    "@azure/identity": "^1.2.2",
+    "@microsoft/microsoft-graph-client": "^2.2.1"
   },
   "peerDependencies": {
-    "@jupiterone/integration-sdk-core": "^5.5.0"
+    "@jupiterone/integration-sdk-core": "^5.6.1"
   },
   "devDependencies": {
-    "@jupiterone/integration-sdk-cli": "^5.5.0",
-    "@jupiterone/integration-sdk-core": "^5.5.0",
-    "@jupiterone/integration-sdk-dev-tools": "^5.5.0",
-    "@jupiterone/integration-sdk-testing": "^5.5.0",
-    "@microsoft/microsoft-graph-types": "^1.12.0",
+    "@jupiterone/integration-sdk-cli": "^5.6.1",
+    "@jupiterone/integration-sdk-core": "^5.6.1",
+    "@jupiterone/integration-sdk-dev-tools": "^5.6.1",
+    "@jupiterone/integration-sdk-testing": "^5.6.1",
+    "@microsoft/microsoft-graph-types": "^1.28.0",
     "@types/jest": "^25.2.1",
     "@types/node": "^13.11.1",
     "@typescript-eslint/eslint-plugin": "^2.28.0",
