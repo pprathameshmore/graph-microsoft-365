@@ -3,7 +3,6 @@ import {
   IntegrationStepExecutionContext,
   RelationshipClass,
   Step,
-  StepExecutionContext,
 } from '@jupiterone/integration-sdk-core';
 
 import { IntegrationConfig, IntegrationStepContext } from '../../types';

@@ -49,7 +49,7 @@ export function createAccountEntityWithOrganization(
   let defaultDomain: string | undefined;
   const verifiedDomains = organization.verifiedDomains?.map((e) => {
     if (e.isDefault) {
-      defaultDomain = e.name;
+      defaultDomain = e.name as string | undefined;
     }
     return e.name as string;
   });
@@ -79,7 +79,7 @@ export function createGroupEntity(data: Group): Entity {
         _class: GROUP_ENTITY_CLASS,
         _type: GROUP_ENTITY_TYPE,
         name: data.displayName,
-        displayName: data.displayName,
+        displayName: data.displayName as string | undefined,
         id: data.id,
         deletedOn: getTime(data.deletedDateTime),
         classification: data.classification,
@@ -105,7 +105,7 @@ export function createUserEntity(data: User): Entity {
         _type: USER_ENTITY_TYPE,
         name: data.displayName,
         username: data.userPrincipalName,
-        displayName: data.displayName,
+        displayName: data.displayName as string | undefined,
         givenName: data.givenName,
         firstName: data.givenName,
         jobTitle: data.jobTitle,
