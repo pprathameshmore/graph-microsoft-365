@@ -1,7 +1,13 @@
-import { Entity } from '@jupiterone/integration-sdk-core';
+import {
+  Entity,
+  IntegrationStepExecutionContext,
+  RelationshipClass,
+  Step,
+  StepExecutionContext,
+} from '@jupiterone/integration-sdk-core';
 
-import { IntegrationStepContext } from '../../types';
-import { DirectoryGraphClient } from './client';
+import { IntegrationConfig, IntegrationStepContext } from '../../types';
+import { DirectoryGraphClient } from './clients/directoryClient';
 import {
   ACCOUNT_ENTITY_TYPE,
   ACCOUNT_GROUP_RELATIONSHIP_TYPE,
@@ -14,6 +20,8 @@ import {
   STEP_GROUPS,
   STEP_USERS,
   USER_ENTITY_TYPE,
+  ACCOUNT_ENTITY_CLASS,
+  GROUP_MEMBER_ENTITY_CLASS,
 } from './constants';
 import {
   createAccountEntity,
@@ -99,31 +107,94 @@ export async function fetchGroupMembers(
   );
 }
 
-export const activeDirectorySteps = [
+export const activeDirectorySteps: Step<
+  IntegrationStepExecutionContext<IntegrationConfig>
+>[] = [
   {
     id: STEP_ACCOUNT,
     name: 'Active Directory Info',
-    types: [ACCOUNT_ENTITY_TYPE],
+    entities: [
+      {
+        resourceName: '[AD] Account',
+        _type: ACCOUNT_ENTITY_TYPE,
+        _class: ACCOUNT_ENTITY_CLASS,
+      },
+    ],
+    relationships: [],
     executionHandler: fetchAccount,
   },
   {
     id: STEP_USERS,
     name: 'Active Directory Users',
-    types: [USER_ENTITY_TYPE, ACCOUNT_USER_RELATIONSHIP_TYPE],
+    entities: [
+      {
+        resourceName: '[AD] User',
+        _type: USER_ENTITY_TYPE,
+        _class: 'User',
+      },
+    ],
+    relationships: [
+      {
+        _type: ACCOUNT_USER_RELATIONSHIP_TYPE,
+        sourceType: ACCOUNT_ENTITY_TYPE,
+        _class: RelationshipClass.HAS,
+        targetType: USER_ENTITY_TYPE,
+      },
+    ],
     dependsOn: [STEP_ACCOUNT],
     executionHandler: fetchUsers,
   },
   {
     id: STEP_GROUPS,
     name: 'Active Directory Groups',
-    types: [GROUP_ENTITY_TYPE, ACCOUNT_GROUP_RELATIONSHIP_TYPE],
+    entities: [
+      {
+        resourceName: '[AD] Group',
+        _type: GROUP_ENTITY_TYPE,
+        _class: GROUP_ENTITY_TYPE,
+      },
+    ],
+    relationships: [
+      {
+        _type: ACCOUNT_GROUP_RELATIONSHIP_TYPE,
+        sourceType: ACCOUNT_ENTITY_TYPE,
+        _class: RelationshipClass.HAS,
+        targetType: GROUP_ENTITY_TYPE,
+      },
+    ],
     dependsOn: [STEP_ACCOUNT],
     executionHandler: fetchGroups,
   },
   {
     id: STEP_GROUP_MEMBERS,
     name: 'Active Directory Group Members',
-    types: [GROUP_MEMBER_ENTITY_TYPE, GROUP_MEMBER_RELATIONSHIP_TYPE],
+    entities: [
+      {
+        resourceName: '[AD] Group Member',
+        _type: GROUP_MEMBER_ENTITY_TYPE,
+        _class: GROUP_MEMBER_ENTITY_CLASS,
+      },
+    ],
+    relationships: [
+      {
+        _type: 'azure_group_has_user',
+        sourceType: GROUP_ENTITY_TYPE,
+        _class: RelationshipClass.HAS,
+        targetType: USER_ENTITY_TYPE,
+      },
+      {
+        _type: 'azure_group_has_group',
+        sourceType: GROUP_ENTITY_TYPE,
+        _class: RelationshipClass.HAS,
+        targetType: GROUP_ENTITY_TYPE,
+      },
+      {
+        _type: GROUP_MEMBER_RELATIONSHIP_TYPE,
+        sourceType: GROUP_ENTITY_TYPE,
+        _class: RelationshipClass.HAS,
+        targetType: GROUP_MEMBER_ENTITY_TYPE,
+      },
+    ],
     dependsOn: [STEP_GROUPS],
     executionHandler: fetchGroupMembers,
   },

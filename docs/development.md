@@ -3,14 +3,19 @@
 The [Microsoft Graph API][msgraph-api] provides access to resources in Microsoft
 365 services. This project uses a number of JavaScript libraries provided by
 Microsoft. Please review the source code for details. None of them are relevant
-for getting started.
+for getting started. Interactive documentation available in the [Microsoft Graph
+Explorer][msgraph-explorer]
 
 ## Prerequisites
 
 - An Azure account with a registered app that will provide credentials for the
-  program to connect to Microsoft Graph APIs.
+  program to connect to Microsoft Graph APIs. //TODO: Figure out a way to handle
+  having ∂Azure ingesting the active directory even though Microsoft 365 needs
+  it as well.d
 - An Active Directory to target for ingestion. This would ideally be a Microsoft
   365 account, though it is possible to target an Azure AD for some resources.
+  //TODO: Update the above as I do not think it is cocrrect anymore. I believe
+  the only way you can access a microsoft-365 account is through Azure.
 
 ## Provider account setup
 
@@ -31,7 +36,8 @@ avoid specific account information.
 
 You may obtain a free Azure account with a hotmail.com email address (one will
 be assigned to you when you create the Azure account, which provisions an Azure
-AD directory), to avoid any confusion about the purpose of the account.
+AD directory), to avoid any confusion about the purpose of the account. // TODO:
+Rewrite this paragraph. It no longer makes sense to make your own Azure account.
 
 In the Azure portal:
 
@@ -80,7 +86,8 @@ To exercise the grant flow:
 
 1. Log in as a Global Administrator to the Active Directory Tenant you intend to
    target/ingest
-1. Visit the [admin consent URL for jupiterone-dev][admin-consent-j1dev]
+1. Visit the [admin consent URL for jupiterone-dev][admin-consent-j1dev] //
+   TODO: fix this link
 1. After being redirected to something like
    `https://localhost/microsoft-365/install?admin_consent=True&tenant=tenant-id&state=12345`,
    capture the `tenant` query param
@@ -98,7 +105,33 @@ DIRECTORY_ID='<tenant id>'
 This will be used to auto-populate the
 [authentication configuration](../src/instanceConfigFields.json).
 
+## Useful Links
+
+Sample Client Credentials Flow Project
+
+- https://github.com/AzureAD/azure-activedirectory-library-for-nodejs/blob/master/sample/client-credentials-sample.js
+
+SDK Links
+
+- https://docs.microsoft.com/en-us/azure/developer/javascript/azure-sdk-library-package-index
+- https://docs.microsoft.com/en-us/javascript/api/overview/azure/activedirectory?view=azure-node-latest
+-
+
+Client Credentials oAuth flow Overview
+
+- https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-client-creds-grant-flow#application-permissions
+
+How to set up permissions in the Azure console
+
+- https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-configure-app-expose-web-apis
+- https://docs.microsoft.com/en-us/azure/active-directory/develop/scenario-daemon-overview
+
+How to add a client secret in the Azure console
+
+- https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app#add-a-client-secret
+
 [msgraph-api]: https://docs.microsoft.com/en-us/graph/overview
+[msgraph-explorer]: https://developer.microsoft.com/en-us/graph/graph-explorer
 [daemon-app]:
   https://docs.microsoft.com/en-us/azure/active-directory/develop/scenario-daemon-overview
 [oauth2-client-cred-flow]:

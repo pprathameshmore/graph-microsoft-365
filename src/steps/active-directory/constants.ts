@@ -14,6 +14,9 @@ export const GROUP_ENTITY_CLASS = 'UserGroup';
 export const USER_ENTITY_TYPE = 'microsoft_365_user';
 export const USER_ENTITY_CLASS = 'User';
 
+export const ORGANIZATION_ENTITY_TYPE = 'microsoft_365_organization';
+export const ORGANIZATION_ENTITY_CLASS = 'Organization';
+
 /**
  * The entity type used for members of groups which are not one of the ingested
  * directory objects.

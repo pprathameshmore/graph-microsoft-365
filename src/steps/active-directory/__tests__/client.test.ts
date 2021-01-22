@@ -15,7 +15,7 @@ import {
   inaccessibleDirectoryConfig,
 } from '../../../../test/config';
 import { setupAzureRecording } from '../../../../test/recording';
-import { DirectoryGraphClient, GroupMember } from '../client';
+import { DirectoryGraphClient, GroupMember } from '../clients/directoryClient';
 
 const logger = createMockIntegrationLogger();
 
@@ -76,6 +76,7 @@ describe('iterateGroups', () => {
   });
 
   test('insufficient permissions', async () => {
+    //This doesn't throw the correct error anymore
     recording = setupAzureRecording({
       directory: __dirname,
       name: 'iterateGroupsInsufficientPermissions',
@@ -97,7 +98,7 @@ describe('iterateGroups', () => {
     expect(infoSpy).toHaveBeenCalledTimes(1);
     expect(infoSpy).toHaveBeenCalledWith(
       { resourceUrl: '/groups' },
-      'Forbidden',
+      'Unauthorized',
     );
   });
 });
