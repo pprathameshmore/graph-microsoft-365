@@ -24,6 +24,12 @@ Therefore, at this time, you will not find references to or use of `MSAL.js`.
 Please see this project's [API wrapper client](../src/ms-graph/client.ts) for
 the little code required to authenticate with stored secrets.
 
+## Useful Links
+
+Release Notes changes affecting MSAL for 2.0.0
+
+- https://github.com/microsoftgraph/msgraph-sdk-javascript/releases/tag/2.0.0
+
 [msal]:
   https://docs.microsoft.com/en-us/azure/active-directory/develop/msal-client-applications
 [client-apps]:
