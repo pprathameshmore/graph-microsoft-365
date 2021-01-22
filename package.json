@@ -1,7 +1,7 @@
 {
-  "name": "jupiterone-integration-template",
-  "version": "1.0.0",
-  "description": "A JupiterOne Integration",
+  "name": "@jupiterone/graph-microsoft-365",
+  "version": "0.0.0",
+  "description": "A JupiterOne Integration for Microsoft 365",
   "license": "MPL-2.0",
   "files": [
     "dist"
