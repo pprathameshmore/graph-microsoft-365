@@ -103,8 +103,6 @@ describe('createUserEntity', () => {
       firstName: 'Andrew',
       id: 'abf00eda-02d6-4053-a077-eef036e1a4c8',
       jobTitle: 'test title',
-      mail: 'no@email',
-      email: 'no@email',
       mobilePhone: '+1 2223334444',
       officeLocation: 'DBP',
       preferredLanguage: undefined,

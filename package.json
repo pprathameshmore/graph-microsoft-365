@@ -3,6 +3,8 @@
   "version": "0.0.0",
   "description": "A JupiterOne Integration for Microsoft 365",
   "license": "MPL-2.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
@@ -15,11 +17,12 @@
     "lint": "eslint . --cache --fix --ext .ts,.tsx",
     "format": "prettier --write '**/*.{ts,js,json,css,md,yml}'",
     "type-check": "tsc",
-    "test": "jest --passWithNoTests",
+    "test": "jest",
     "test:ci": "yarn lint && yarn type-check && yarn test",
     "prebuild": "yarn test:ci",
     "build": "tsc -p tsconfig.dist.json --declaration",
-    "prepublishOnly": "yarn build"
+    "prepush": "yarn lint && yarn type-check && jest --changedSince master",	
+    "prepack": "yarn build"
   },
   "dependencies": {
     "@azure/identity": "^1.2.2",
