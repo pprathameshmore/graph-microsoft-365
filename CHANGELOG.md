@@ -8,6 +8,6 @@ and this project adheres to
 
 ## [Unreleased]
 
-## 0.1.0 - 20XX-XX-XX
+## 0.0.0 - 2020-01-25
 
 Initial release.

@@ -3,21 +3,16 @@
 The [Microsoft Graph API][msgraph-api] provides access to resources in Microsoft
 365 services. This project uses a number of JavaScript libraries provided by
 Microsoft. Please review the source code for details. None of them are relevant
-for getting started. Interactive documentation available in the [Microsoft Graph
-Explorer][msgraph-explorer]
+for getting started. Interactive documentation is available in the [Microsoft
+Graph Explorer][msgraph-explorer]
 
 ## Prerequisites
 
 - An Azure account with a registered app that will provide credentials for the
-  program to connect to Microsoft Graph APIs. //TODO: Figure out a way to handle
-  having ∂Azure ingesting the active directory even though Microsoft 365 needs
-  it as well.d
-- An Active Directory to target for ingestion. This would ideally be a Microsoft
-  365 account, though it is possible to target an Azure AD for some resources.
-  //TODO: Update the above as I do not think it is cocrrect anymore. I believe
-  the only way you can access a microsoft-365 account is through Azure.
+  program to connect to Microsoft Graph APIs.
+- A Microsoft 365 account to target for ingestion.
 
-## Provider account setup
+## Azure provider account setup
 
 The Microsoft Graph API code is tested against three Active Directories:
 
@@ -36,8 +31,7 @@ avoid specific account information.
 
 You may obtain a free Azure account with a hotmail.com email address (one will
 be assigned to you when you create the Azure account, which provisions an Azure
-AD directory), to avoid any confusion about the purpose of the account. // TODO:
-Rewrite this paragraph. It no longer makes sense to make your own Azure account.
+AD directory), to avoid any confusion about the purpose of the account.
 
 In the Azure portal:
 
@@ -86,10 +80,11 @@ To exercise the grant flow:
 
 1. Log in as a Global Administrator to the Active Directory Tenant you intend to
    target/ingest
-1. Visit the [admin consent URL for jupiterone-dev][admin-consent-j1dev] //
-   TODO: fix this link
+1. Visit the adminconsent url for the Azure app you created in the
+   `Azure provider account setup` above
+   https://login.microsoftonline.com/common/adminconsent?client_id={{YOUR_AZURE_APP_CLIENT_ID}}&redirect_uri=https://localhost/microsoft-365
 1. After being redirected to something like
-   `https://localhost/microsoft-365/install?admin_consent=True&tenant=tenant-id&state=12345`,
+   `https://localhost/microsoft-365?admin_consent=True&tenant=tenant-id&state=12345`,
    capture the `tenant` query param
 
 Use this `tenant` ID and information from the App Registration to create an
@@ -105,7 +100,7 @@ DIRECTORY_ID='<tenant id>'
 This will be used to auto-populate the
 [authentication configuration](../src/instanceConfigFields.json).
 
-## Useful Links
+## References
 
 Sample Client Credentials Flow Project
 
@@ -115,7 +110,6 @@ SDK Links
 
 - https://docs.microsoft.com/en-us/azure/developer/javascript/azure-sdk-library-package-index
 - https://docs.microsoft.com/en-us/javascript/api/overview/azure/activedirectory?view=azure-node-latest
--
 
 Client Credentials oAuth flow Overview
 
