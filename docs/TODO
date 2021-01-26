@@ -1,0 +1,3 @@
+- Ingest roles and assignments
+- Work out types for MS365 entities (and what happens when installed alongside Azure integration)
+- Work out offsite flow with localhost server running
