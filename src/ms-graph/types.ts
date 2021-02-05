@@ -18,5 +18,5 @@ export type ClientConfig = {
   /**
    * The Active Directory ID (Tenant) to target in requests to Microsoft Graph.
    */
-  directoryId: string;
+  tenant: string;
 };
