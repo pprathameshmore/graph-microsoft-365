@@ -8,6 +8,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 1.0.0 - 2020-02-05
+
+Initial beta release.
+
 ## 0.0.0 - 2020-01-25
 
-Initial release.
+Initial commit.
