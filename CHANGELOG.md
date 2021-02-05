@@ -14,4 +14,4 @@ Initial beta release.
 
 ## 0.0.0 - 2020-01-25
 
-Initial commit.ds
+Initial commit.
