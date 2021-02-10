@@ -9,7 +9,7 @@ Graph Explorer][msgraph-explorer]
 ## Prerequisites
 
 - An Azure account with a registered app that will provide credentials for the
-  program to connect to Microsoft Graph APIs.
+  program to connect to Microsoft Graph APIs (steps to configure below).
 - A Microsoft 365 account to target for ingestion.
 
 ## Azure provider account setup
@@ -35,12 +35,12 @@ AD directory), to avoid any confusion about the purpose of the account.
 
 In the Azure portal:
 
-1. Create an App Registration, multi-tenant, with `Organization.Read.All` API
-   Permissions configured (only this for now)
+1. Create an App Registration, multi-tenant, with `Directory.Read.All` API
+   Permissions configured
 1. Add a 1-year secret (store securely in 1Password)
-1. Add a couple of Redirect URIs:
-   1. https://apps.dev.jupiterone.io/microsoft-365/install (optional, obviously)
-   1. https://localhost/microsoft-365/install
+1. Add a couple of optional Redirect URIs:
+   1. https://apps.dev.jupiterone.io/oauth-microsoft-365/v1/authorize
+   1. https://localhost/microsoft-365/oauth-microsoft-365/v1/authorize
 
 Then, create two additional Active Directory Tenants (you'll have a Default
 Directory already), a user account with Global Administrator Role assignment in
@@ -50,7 +50,7 @@ multi-tenant Enterprise Application as follows:
 1. Default directory, grant permission now and always grant new permissions as
    development of converters advances
 1. "J1 Insufficient Permissions" directory, grant permissions now
-   (`Organization.Real.All` is all at this point in setup), but never grant any
+   (`Directory.Read.All` is all at this point in setup), but never grant any
    additional permisssions, to allow for testing cases where the app cannot
    fetch resources
 1. "J1 Inaccessible" directory, do not install the app at all here, to allow for
@@ -80,12 +80,13 @@ To exercise the grant flow:
 
 1. Log in as a Global Administrator to the Active Directory Tenant you intend to
    target/ingest
-1. Visit the adminconsent url for the Azure app you created in the
-   `Azure provider account setup` above
-   https://login.microsoftonline.com/common/adminconsent?client_id={{YOUR_AZURE_APP_CLIENT_ID}}&redirect_uri=https://localhost/microsoft-365
+1. Follow the url returned from the J1
+   `integration-microsoft-365/v1/generate-auth-url` endpoint.
 1. After being redirected to something like
-   `https://localhost/microsoft-365?admin_consent=True&tenant=tenant-id&state=12345`,
-   capture the `tenant` query param
+   `https://localhost/microsoft-365/oauth-microsoft-365/v1/authorize?admin_consent=True&tenant=tenant-id&state=12345`,
+   capture the `tenant` query param. (Note, you may need to check your network
+   history for this query param as you will likelybe redirected back to your
+   instance configuration page faster than you can pull the the tenant param.)
 
 Use this `tenant` ID and information from the App Registration to create an
 `.env` file for local execution of the daemon/server application (this

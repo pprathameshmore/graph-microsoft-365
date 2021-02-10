@@ -34,8 +34,17 @@ If you need help with this integration, please contact
 ### In JupiterOne
 
 1. From the configuration **Gear Icon**, select **Integrations**.
-2. Scroll to the **{{provider}}** integration tile and click it.
+
+   <img src="./images/LandingPage.png" alt="drawing" width="200"/>
+
+2. Scroll to the **Microsoft-365** integration tile and click it.
+
+   <img src="./images/DefinitionsPage.png" alt="drawing" width="200"/>
+
 3. Click the **Add Configuration** button.
+
+   <img src="./images/InstancesPage.png" alt="drawing" width="200"/>
+
 4. Enter the **Account Name** by which you'd like to identify this Microsoft 365
    account in JupiterOne. Ingested entities will have this value stored in
    `tag.AccountName` when **Tag with Account Name** is checked.
@@ -46,9 +55,28 @@ If you need help with this integration, please contact
 7. Select which **Scopes** you would like JupiterOne to be able to pull data
    for.
 8. Click **Create Configuration** once all values are provided.
-9. You will be directed to Microsoft's identity platform, where you must login
-   in as an administrator in the organization you intend to integrate with.
-10. Review requested permissions and grant consent.
+
+   <img src="./images/CompleteConfiguration.png" alt="drawing" width="200"/>
+   <img src="./images/IntegrationCreatedDialog.png" alt="drawing" width="200"/>
+
+9. When prompted, click "Complete Offsite" in the dialog.
+
+   <img src="./images/OffsiteDialog.png" alt="drawing" width="200"/>
+
+10. You will be directed to Microsoft's identity platform, where you must login
+    in as an administrator in the Microsoft organization you intend to integrate
+    with.
+
+       <img src="./images/PickAnAccount.png" alt="drawing" width="200"/>
+
+    NOTE: You must select a business account which are indicated by badge icons.
+    If you select a personal account, you will recieve the below error messaage.
+
+       <img src="./images/PersonalAccountError.png" alt="drawing" width="200"/>
+
+11. Review requested permissions and grant consent.
+
+      <img src="./images/PickAnAccount.png" alt="drawing" width="200"/>
 
 # How to Uninstall
 
