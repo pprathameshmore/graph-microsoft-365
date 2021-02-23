@@ -1,28 +1,26 @@
 # Integration with JupiterOne
 
-JupiterOne provides a managed integration for Microsoft 365. The integration
-connects directly to Microsoft Graph APIs to obtain metadata about the target
-organization and analyze resource relationships.
-
 ## Microsoft 365 + JupiterOne Integration Benefits
 
-- Visualize Microsoft 365 services, groups, and users in the JupiterOne graph.
+- Visualize Microsoft 365 Active Directory users, groups, and members in the JupiterOne graph.
 - Map Microsoft 365 users to employees in your JupiterOne account.
-- Monitor changes to Microsoft 365 users using JupiterOne alerts.
+- Monitor changes to Microsoft 365 users and groups using JupiterOne alerts.
 
 ## How it Works
 
-- JupiterOne uses your configured credentials to periodically fetch acocunt
+- JupiterOne requests credentials to periodically fetch acocunt
   information, users, groups, and group members from Microsoft 365 to update the
   graph.
-- You write JupiterOne queries to review and monitor updates to the graph.
-- You configure alerts to take action when JupiterOne graph changes.
+- Write JupiterOne queries to review and monitor updates to the graph.
+- Configure alerts to take action when JupiterOne graph changes occur.
 
 ## Requirements
 
-- An Azure account with a registered app that will provide credentials for the
-  program to connect to Microsoft Graph APIs.
-- A Microsoft 365 account to target for ingestion.
+- A Microsoft 365 user with the ability to grant admin consent to the JupiterOne
+  App (global administrator). Users may configure the allowed scopes in the
+  JupiterOne UI before being directed to the Microsoft Idenity Platform to grant
+  consent.
+- You must have permission in JupiterOne to install new integrations.
 
 ## Support
 
