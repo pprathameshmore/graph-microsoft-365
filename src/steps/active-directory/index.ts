@@ -1,27 +1,12 @@
 import {
   Entity,
   IntegrationStepExecutionContext,
-  RelationshipClass,
   Step,
 } from '@jupiterone/integration-sdk-core';
 
 import { IntegrationConfig, IntegrationStepContext } from '../../types';
 import { DirectoryGraphClient } from './clients/directoryClient';
-import {
-  ACCOUNT_ENTITY_TYPE,
-  ACCOUNT_GROUP_RELATIONSHIP_TYPE,
-  ACCOUNT_USER_RELATIONSHIP_TYPE,
-  GROUP_ENTITY_TYPE,
-  GROUP_MEMBER_ENTITY_TYPE,
-  GROUP_MEMBER_RELATIONSHIP_TYPE,
-  STEP_ACCOUNT,
-  STEP_GROUP_MEMBERS,
-  STEP_GROUPS,
-  STEP_USERS,
-  USER_ENTITY_TYPE,
-  ACCOUNT_ENTITY_CLASS,
-  GROUP_MEMBER_ENTITY_CLASS,
-} from './constants';
+import { DATA_ACCOUT_TYPE, entities, relationships, steps } from './constants';
 import {
   createAccountEntity,
   createAccountEntityWithOrganization,
@@ -50,7 +35,7 @@ export async function fetchAccount(
   }
 
   await jobState.addEntity(accountEntity);
-  await jobState.setData(ACCOUNT_ENTITY_TYPE, accountEntity);
+  await jobState.setData(DATA_ACCOUT_TYPE, accountEntity);
 }
 
 export async function fetchUsers(
@@ -59,7 +44,7 @@ export async function fetchUsers(
   const { logger, instance, jobState } = executionContext;
   const graphClient = new DirectoryGraphClient(logger, instance.config);
 
-  const accountEntity = await jobState.getData<Entity>(ACCOUNT_ENTITY_TYPE);
+  const accountEntity = await jobState.getData<Entity>(DATA_ACCOUT_TYPE);
   await graphClient.iterateUsers(async (user) => {
     const userEntity = createUserEntity(user);
     await jobState.addEntity(userEntity);
@@ -75,7 +60,7 @@ export async function fetchGroups(
   const { logger, instance, jobState } = executionContext;
   const graphClient = new DirectoryGraphClient(logger, instance.config);
 
-  const accountEntity = await jobState.getData<Entity>(ACCOUNT_ENTITY_TYPE);
+  const accountEntity = await jobState.getData<Entity>(DATA_ACCOUT_TYPE);
   await graphClient.iterateGroups(async (group) => {
     const groupEntity = createGroupEntity(group);
     await jobState.addEntity(groupEntity);
@@ -92,7 +77,7 @@ export async function fetchGroupMembers(
   const graphClient = new DirectoryGraphClient(logger, instance.config);
 
   await jobState.iterateEntities(
-    { _type: GROUP_ENTITY_TYPE },
+    { _type: entities.GROUP._type },
     async (groupEntity) => {
       await graphClient.iterateGroupMembers(
         { groupId: groupEntity.id as string },
@@ -110,91 +95,38 @@ export const activeDirectorySteps: Step<
   IntegrationStepExecutionContext<IntegrationConfig>
 >[] = [
   {
-    id: STEP_ACCOUNT,
+    id: steps.FETCH_ACCOUNT,
     name: 'Active Directory Info',
-    entities: [
-      {
-        resourceName: '[AD] Account',
-        _type: ACCOUNT_ENTITY_TYPE,
-        _class: ACCOUNT_ENTITY_CLASS,
-      },
-    ],
+    entities: [entities.ACCOUNT],
     relationships: [],
     executionHandler: fetchAccount,
   },
   {
-    id: STEP_USERS,
+    id: steps.FETCH_USERS,
     name: 'Active Directory Users',
-    entities: [
-      {
-        resourceName: '[AD] User',
-        _type: USER_ENTITY_TYPE,
-        _class: 'User',
-      },
-    ],
-    relationships: [
-      {
-        _type: ACCOUNT_USER_RELATIONSHIP_TYPE,
-        sourceType: ACCOUNT_ENTITY_TYPE,
-        _class: RelationshipClass.HAS,
-        targetType: USER_ENTITY_TYPE,
-      },
-    ],
-    dependsOn: [STEP_ACCOUNT],
+    entities: [entities.USER],
+    relationships: [relationships.ACCOUNT_HAS_USER],
+    dependsOn: [steps.FETCH_ACCOUNT],
     executionHandler: fetchUsers,
   },
   {
-    id: STEP_GROUPS,
+    id: steps.FETCH_GROUPS,
     name: 'Active Directory Groups',
-    entities: [
-      {
-        resourceName: '[AD] Group',
-        _type: GROUP_ENTITY_TYPE,
-        _class: GROUP_ENTITY_TYPE,
-      },
-    ],
-    relationships: [
-      {
-        _type: ACCOUNT_GROUP_RELATIONSHIP_TYPE,
-        sourceType: ACCOUNT_ENTITY_TYPE,
-        _class: RelationshipClass.HAS,
-        targetType: GROUP_ENTITY_TYPE,
-      },
-    ],
-    dependsOn: [STEP_ACCOUNT],
+    entities: [entities.GROUP],
+    relationships: [relationships.ACCOUNT_HAS_GROUP],
+    dependsOn: [steps.FETCH_ACCOUNT],
     executionHandler: fetchGroups,
   },
   {
-    id: STEP_GROUP_MEMBERS,
+    id: steps.FETCH_GROUP_MEMBERS,
     name: 'Active Directory Group Members',
-    entities: [
-      {
-        resourceName: '[AD] Group Member',
-        _type: GROUP_MEMBER_ENTITY_TYPE,
-        _class: GROUP_MEMBER_ENTITY_CLASS,
-      },
-    ],
+    entities: [entities.GROUP_MEMEBER],
     relationships: [
-      {
-        _type: 'azure_group_has_user',
-        sourceType: GROUP_ENTITY_TYPE,
-        _class: RelationshipClass.HAS,
-        targetType: USER_ENTITY_TYPE,
-      },
-      {
-        _type: 'azure_group_has_group',
-        sourceType: GROUP_ENTITY_TYPE,
-        _class: RelationshipClass.HAS,
-        targetType: GROUP_ENTITY_TYPE,
-      },
-      {
-        _type: GROUP_MEMBER_RELATIONSHIP_TYPE,
-        sourceType: GROUP_ENTITY_TYPE,
-        _class: RelationshipClass.HAS,
-        targetType: GROUP_MEMBER_ENTITY_TYPE,
-      },
+      relationships.GROUP_HAS_USER,
+      relationships.GROUP_HAS_GROUP,
+      relationships.GROUP_HAS_MEMBER,
     ],
-    dependsOn: [STEP_GROUPS],
+    dependsOn: [steps.FETCH_GROUPS],
     executionHandler: fetchGroupMembers,
   },
 ];
