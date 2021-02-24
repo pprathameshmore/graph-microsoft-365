@@ -89,37 +89,66 @@ export class GraphClient {
     query?: QueryParams;
     callback: (item: T) => void | Promise<void>;
   }): Promise<void> {
-    try {
-      let nextLink: string | undefined;
-      do {
-        let api = this.client.api(nextLink || resourceUrl);
-        if (query) {
-          api = api.query(query);
-        }
-
-        const response = await api.get();
-        if (response) {
-          nextLink = response['@odata.nextLink'];
-          for (const value of response.value) {
-            await callback(value);
-          }
+    let nextLink: string | undefined = resourceUrl;
+    let retries = 0;
+    do {
+      try {
+        nextLink = await this.callApi<T>({
+          link: nextLink,
+          query,
+          callback,
+        });
+      } catch (err) {
+        if (err.message?.endsWith('80049217') && nextLink && retries < 5) {
+          // Retry once to handle weird timing issue with this sdk - https://github.com/OneDrive/onedrive-api-docs/issues/785
+          retries++;
+          continue;
         } else {
           nextLink = undefined;
+
+          if (err.statusCode === 401) {
+            if (err.message?.endsWith('80049217') && nextLink) {
+              // Retry once to handle weird timing issue with this sdk - https://github.com/OneDrive/onedrive-api-docs/issues/785
+            } else {
+              this.logger.info({ resourceUrl }, 'Unauthorized');
+              nextLink = undefined;
+            }
+          } else if (err.statusCode === 403) {
+            this.logger.info({ resourceUrl }, 'Forbidden');
+            nextLink = undefined;
+          } else if (err.statusCode !== 404) {
+            throw new IntegrationProviderAPIError({
+              cause: err,
+              endpoint: resourceUrl,
+              status: err.statusCode,
+              statusText: err.statusText || err.code || err.message,
+            });
+          }
         }
-      } while (nextLink);
-    } catch (err) {
-      if (err.statusCode === 401) {
-        this.logger.info({ resourceUrl }, 'Unauthorized');
-      } else if (err.statusCode === 403) {
-        this.logger.info({ resourceUrl }, 'Forbidden');
-      } else if (err.statusCode !== 404) {
-        throw new IntegrationProviderAPIError({
-          cause: err,
-          endpoint: resourceUrl,
-          status: err.statusCode,
-          statusText: err.statusText || err.code || err.message,
-        });
       }
+    } while (nextLink);
+  }
+
+  protected async callApi<T>({
+    link,
+    query,
+    callback,
+  }: {
+    link: string;
+    query?: QueryParams;
+    callback: (item: T) => void | Promise<void>;
+  }): Promise<string | undefined> {
+    let api = this.client.api(link);
+    if (query) {
+      api = api.query(query);
+    }
+
+    const response = await api.get();
+    if (response) {
+      for (const value of response.value) {
+        await callback(value);
+      }
+      return response['@odata.nextLink'];
     }
   }
 }

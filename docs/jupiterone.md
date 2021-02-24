@@ -114,13 +114,13 @@ https://github.com/JupiterOne/sdk/blob/master/docs/integrations/development.md
 
 The following entities are created:
 
-| Resources         | Entity `_type`               | Entity `_class`  |
-| ----------------- | ---------------------------- | ---------------- |
-| Managed Device    | `intune_managed_device`      | `Host`, `Device` |
-| [AD] Account      | `microsoft_365_account`      | `Account`        |
-| [AD] Group        | `microsoft_365_user_group`   | `UserGroup`      |
-| [AD] Group Member | `microsoft_365_group_member` | `User`           |
-| [AD] User         | `microsoft_365_user`         | `User`           |
+| Resources         | Entity `_type`               | Entity `_class` |
+| ----------------- | ---------------------------- | --------------- |
+| Managed Device    | `intune_managed_device`      | `Device`        |
+| [AD] Account      | `microsoft_365_account`      | `Account`       |
+| [AD] Group        | `microsoft_365_user_group`   | `UserGroup`     |
+| [AD] Group Member | `microsoft_365_group_member` | `User`          |
+| [AD] User         | `microsoft_365_user`         | `User`          |
 
 ### Relationships
 
