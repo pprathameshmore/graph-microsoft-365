@@ -1,5 +1,3 @@
-// import { RelationshipDirection } from '@jupiterone/integration-sdk-core';
-
 import {
   createManagedDeviceEntity,
   createUserDeviceDirectRelationship,

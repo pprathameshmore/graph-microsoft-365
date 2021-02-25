@@ -100,32 +100,18 @@ export class GraphClient {
         });
       } catch (err) {
         if (err.message?.endsWith('80049217') && nextLink && retries < 5) {
-          // Retry once to handle weird timing issue with this sdk - https://github.com/OneDrive/onedrive-api-docs/issues/785
+          // Retry once to handle sporatic timing issue with this sdk - https://github.com/OneDrive/onedrive-api-docs/issues/785
           retries++;
           continue;
         } else {
           nextLink = undefined;
-
-          if (err.statusCode === 401) {
-            this.logger.info({ resourceUrl }, 'Unauthorized');
-            nextLink = undefined;
-          } else if (err.statusCode === 403) {
-            this.logger.info({ resourceUrl }, 'Forbidden');
-            nextLink = undefined;
-          } else if (err.statusCode !== 404) {
-            throw new IntegrationProviderAPIError({
-              cause: err,
-              endpoint: resourceUrl,
-              status: err.statusCode,
-              statusText: err.statusText || err.code || err.message,
-            });
-          }
+          this.handleApiError(err, resourceUrl);
         }
       }
     } while (nextLink);
   }
 
-  protected async callApi<T>({
+  private async callApi<T>({
     link,
     query,
     callback,
@@ -145,6 +131,23 @@ export class GraphClient {
         await callback(value);
       }
       return response['@odata.nextLink'];
+    }
+  }
+
+  private handleApiError(err: any, resourceUrl: string) {
+    {
+      if (err.statusCode === 401) {
+        this.logger.info({ resourceUrl }, 'Unauthorized');
+      } else if (err.statusCode === 403) {
+        this.logger.info({ resourceUrl }, 'Forbidden');
+      } else if (err.statusCode !== 404) {
+        throw new IntegrationProviderAPIError({
+          cause: err,
+          endpoint: resourceUrl,
+          status: err.statusCode,
+          statusText: err.statusText || err.code || err.message,
+        });
+      }
     }
   }
 }
