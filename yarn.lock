@@ -864,6 +864,10 @@
     msal "^1.4.4"
     tslib "^1.9.3"
 
+"@microsoft/microsoft-graph-types-beta@microsoftgraph/msgraph-typescript-typings#beta":
+  version "1.4.0"
+  resolved "https://codeload.github.com/microsoftgraph/msgraph-typescript-typings/tar.gz/f900885fb0af0ac92df02a4ea770c6c22d49d7a2"
+
 "@microsoft/microsoft-graph-types@^1.28.0":
   version "1.28.0"
   resolved "https://registry.yarnpkg.com/@microsoft/microsoft-graph-types/-/microsoft-graph-types-1.28.0.tgz#55962130751e0381a56a0468251048cb47906fe2"

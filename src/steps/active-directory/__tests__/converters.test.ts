@@ -1,10 +1,5 @@
 import { RelationshipDirection } from '@jupiterone/integration-sdk-core';
-import {
-  GROUP_ENTITY_CLASS,
-  GROUP_ENTITY_TYPE,
-  USER_ENTITY_CLASS,
-  USER_ENTITY_TYPE,
-} from '../constants';
+import { entities } from '../constants';
 import {
   createAccountEntityWithOrganization,
   createAccountGroupRelationship,
@@ -141,8 +136,8 @@ describe('createAccountGroupRelationship', () => {
     expect(
       createAccountGroupRelationship(exampleAccountEntity, {
         _key: '89fac263-2430-48fd-9278-dacfdfc89792',
-        _class: GROUP_ENTITY_CLASS,
-        _type: GROUP_ENTITY_TYPE,
+        _class: entities.GROUP._class,
+        _type: entities.GROUP._type,
         id: '89fac263-2430-48fd-9278-dacfdfc89792',
         deletedDateTime: undefined,
         classification: undefined,
@@ -178,8 +173,8 @@ describe('createAccountUserRelationship', () => {
     expect(
       createAccountUserRelationship(exampleAccountEntity, {
         _key: 'abf00eda-02d6-4053-a077-eef036e1a4c8',
-        _class: USER_ENTITY_CLASS,
-        _type: USER_ENTITY_TYPE,
+        _class: entities.USER._class,
+        _type: entities.USER._type,
         businessPhones: ['+1 2223334444'],
         displayName: 'Andrew Kulakov',
         givenName: 'Andrew',

@@ -89,25 +89,58 @@ export class GraphClient {
     query?: QueryParams;
     callback: (item: T) => void | Promise<void>;
   }): Promise<void> {
-    try {
-      let nextLink: string | undefined;
-      do {
-        let api = this.client.api(nextLink || resourceUrl);
-        if (query) {
-          api = api.query(query);
-        }
-
-        const response = await api.get();
-        if (response) {
-          nextLink = response['@odata.nextLink'];
-          for (const value of response.value) {
-            await callback(value);
-          }
+    let nextLink: string | undefined = resourceUrl;
+    let retries = 0;
+    do {
+      try {
+        nextLink = await this.callApi<T>({
+          link: nextLink,
+          query,
+          callback,
+        });
+      } catch (err) {
+        if (
+          err.message ===
+            'CompactToken parsing failed with error code: 80049217' &&
+          nextLink &&
+          retries < 5
+        ) {
+          // Retry a few times to handle sporatic timing issue with this sdk - https://github.com/OneDrive/onedrive-api-docs/issues/785
+          retries++;
+          continue;
         } else {
           nextLink = undefined;
+          this.handleApiError(err, resourceUrl);
         }
-      } while (nextLink);
-    } catch (err) {
+      }
+    } while (nextLink);
+  }
+
+  private async callApi<T>({
+    link,
+    query,
+    callback,
+  }: {
+    link: string;
+    query?: QueryParams;
+    callback: (item: T) => void | Promise<void>;
+  }): Promise<string | undefined> {
+    let api = this.client.api(link);
+    if (query) {
+      api = api.query(query);
+    }
+
+    const response = await api.get();
+    if (response) {
+      for (const value of response.value) {
+        await callback(value);
+      }
+      return response['@odata.nextLink'];
+    }
+  }
+
+  private handleApiError(err: any, resourceUrl: string) {
+    {
       if (err.statusCode === 401) {
         this.logger.info({ resourceUrl }, 'Unauthorized');
       } else if (err.statusCode === 403) {
