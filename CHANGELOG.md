@@ -8,6 +8,21 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 2.0. - 2020-02-10
+
+### Added
+
+- Ingetsion of `Managed Device` entities
+- Ingestion of `UserHasDevice` relationships
+
+### Updated
+
+- Updated jupiterone.md documentation.
+
+### Fixed
+
+- Sporatic authentication bug with Microsoft Graph sdk.
+
 ## 1.0.1 - 2020-02-10
 
 ### Updated
