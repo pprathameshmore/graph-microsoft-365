@@ -99,8 +99,13 @@ export class GraphClient {
           callback,
         });
       } catch (err) {
-        if (err.message?.endsWith('80049217') && nextLink && retries < 5) {
-          // Retry once to handle sporatic timing issue with this sdk - https://github.com/OneDrive/onedrive-api-docs/issues/785
+        if (
+          err.message ===
+            'CompactToken parsing failed with error code: 80049217' &&
+          nextLink &&
+          retries < 5
+        ) {
+          // Retry a few times to handle sporatic timing issue with this sdk - https://github.com/OneDrive/onedrive-api-docs/issues/785
           retries++;
           continue;
         } else {

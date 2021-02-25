@@ -10,7 +10,7 @@ import { ManagedDevice } from '@microsoft/microsoft-graph-types-beta';
 import { entities as activeDirectoryEntities } from '../../../active-directory';
 import { entities, relationships } from './constants';
 
-type ManagedDeviceEntity = any;
+type ManagedDeviceEntity = Entity;
 
 // https://docs.microsoft.com/en-us/graph/api/resources/intune-devices-manageddevice?view=graph-rest-1.0&viewFallbackFrom=graph-rest-beta
 export function createManagedDeviceEntity(managedDevice: ManagedDevice) {
@@ -31,6 +31,9 @@ export function createManagedDeviceEntity(managedDevice: ManagedDevice) {
         serial: managedDevice.serialNumber,
         serialNumber: managedDevice.serialNumber,
         hardwareVendor:
+          managedDevice.hardwareInformation?.manufacturer ??
+          managedDevice.manufacturer,
+        hardwareManufacturer:
           managedDevice.hardwareInformation?.manufacturer ??
           managedDevice.manufacturer,
         hardwareModel:
@@ -54,7 +57,7 @@ export function createManagedDeviceEntity(managedDevice: ManagedDevice) {
         osVersion: managedDevice.osVersion,
         userEmails: managedDevice.emailAddress
           ? [managedDevice.emailAddress]
-          : [],
+          : undefined,
         BYOD: managedDevice.managedDeviceOwnerType === 'personal',
         ownerType: managedDevice.managedDeviceOwnerType, // 'personal', 'company' or 'unknown'
         encrypted: managedDevice.isEncrypted,
@@ -69,8 +72,8 @@ export function createManagedDeviceEntity(managedDevice: ManagedDevice) {
           managedDevice.managementState !== 'discovered',
         supervised: managedDevice.isSupervised,
         jailBroken: managedDevice.jailBroken !== 'False',
-        username: managedDevice.userPrincipalName, // Possible values are: notRegistered, registered, revoked, keyConflict, approvalPending, certificateReset, notRegisteredPendingEnrollment, unknown.
-        registrationState: managedDevice.deviceRegistrationState,
+        username: managedDevice.userPrincipalName,
+        registrationState: managedDevice.deviceRegistrationState, // Possible values are: notRegistered, registered, revoked, keyConflict, approvalPending, certificateReset, notRegisteredPendingEnrollment, unknown.
         physical: managedDevice.model && managedDevice !== 'Virtual Machine', // https://docs.microsoft.com/en-us/mem/intune/fundamentals/windows-10-virtual-machines#reporting
         // POTENTIAL: managedDevice.usersLoggedOn - link out to other users perhaps?
       },

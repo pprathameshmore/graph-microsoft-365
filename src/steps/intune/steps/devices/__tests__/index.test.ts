@@ -11,20 +11,16 @@ import { fetchAccount, fetchUsers } from '../../../../active-directory';
 let recording: Recording;
 
 afterEach(async () => {
-  process.env.DEFAULT_SCOPES = undefined;
   if (recording) {
     await recording.stop();
   }
 });
 
-describe('iterateManagedDevices', () => {
+describe('fetchDevices', () => {
   test('Without Active Directory', async () => {
     recording = setupAzureRecording({
       directory: __dirname,
       name: 'iterateManagedDevicesNoAD',
-      options: {
-        recordFailedRequests: true,
-      },
     });
     const context = createMockStepExecutionContext({ instanceConfig: config });
 
@@ -58,9 +54,6 @@ describe('iterateManagedDevices', () => {
     recording = setupAzureRecording({
       directory: __dirname,
       name: 'iterateManagedDevicesWithAD',
-      options: {
-        recordFailedRequests: true,
-      },
     });
     const context = createMockStepExecutionContext({ instanceConfig: config });
 

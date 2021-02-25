@@ -70,6 +70,7 @@ Object {
   "displayName": "Dude’s iPhone",
   "easDeviceId": false,
   "encrypted": true,
+  "hardwareManufacturer": "Apple",
   "hardwareModel": "iPhone 11 Pro",
   "hardwareSerial": "1234567890",
   "hardwareVendor": "Apple",
