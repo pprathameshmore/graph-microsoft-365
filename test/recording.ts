@@ -52,6 +52,28 @@ function mutateRecordingEntry(entry: RecordingEntry): void {
 
   const responseJson = JSON.parse(responseText);
 
+  const keysToRedact = [
+    'serialNumber',
+    'deviceName',
+    'emailAddress',
+    'userPrincipalName',
+    'imei',
+    'phoneNumber',
+    'wiFiMacAddress',
+    'meid',
+    'managedDeviceName',
+  ];
+  if (responseJson?.value) {
+    responseJson.value.forEach((v, index) => {
+      keysToRedact.forEach((keyToRedact) => {
+        if (v[keyToRedact]) {
+          responseJson.value[index][keyToRedact] = '[REDACTED]';
+        }
+      });
+    });
+    entry.response.content.text = JSON.stringify(responseJson);
+  }
+
   if (/login/.exec(entry.request.url) && entry.request.postData) {
     // Redact request body with secrets for authentication
     entry.request.postData.text = '[REDACTED]';

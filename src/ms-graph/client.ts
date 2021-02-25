@@ -107,12 +107,8 @@ export class GraphClient {
           nextLink = undefined;
 
           if (err.statusCode === 401) {
-            if (err.message?.endsWith('80049217') && nextLink) {
-              // Retry once to handle weird timing issue with this sdk - https://github.com/OneDrive/onedrive-api-docs/issues/785
-            } else {
-              this.logger.info({ resourceUrl }, 'Unauthorized');
-              nextLink = undefined;
-            }
+            this.logger.info({ resourceUrl }, 'Unauthorized');
+            nextLink = undefined;
           } else if (err.statusCode === 403) {
             this.logger.info({ resourceUrl }, 'Forbidden');
             nextLink = undefined;
