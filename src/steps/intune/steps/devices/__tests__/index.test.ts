@@ -5,7 +5,7 @@ import {
 import { setupAzureRecording } from '../../../../../../test/recording';
 import { config } from '../../../../../../test/config';
 import { fetchDevices } from '..';
-import { entities } from '../constants';
+import { entities } from '../../../constants';
 import { fetchAccount, fetchUsers } from '../../../../active-directory';
 
 let recording: Recording;

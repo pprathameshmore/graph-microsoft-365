@@ -5,7 +5,7 @@ import {
 import { IntegrationConfig, IntegrationStepContext } from '../../../../types';
 import { steps as activeDirectorySteps } from '../../../active-directory';
 import { DeviceManagementIntuneClient } from '../../clients/deviceManagementIntuneClient';
-import { relationships, entities, steps } from './constants';
+import { relationships, entities, steps } from '../../constants';
 import {
   createManagedDeviceEntity,
   createUserDeviceDirectRelationship,

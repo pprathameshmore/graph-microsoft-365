@@ -8,12 +8,13 @@ import {
 } from '@jupiterone/integration-sdk-core';
 import { ManagedDevice } from '@microsoft/microsoft-graph-types-beta';
 import { entities as activeDirectoryEntities } from '../../../active-directory';
-import { entities, relationships } from './constants';
-
-type ManagedDeviceEntity = Entity;
+import { entities, relationships } from '../../constants';
+import { ManagedDeviceEntity } from '../../types';
 
 // https://docs.microsoft.com/en-us/graph/api/resources/intune-devices-manageddevice?view=graph-rest-1.0&viewFallbackFrom=graph-rest-beta
-export function createManagedDeviceEntity(managedDevice: ManagedDevice) {
+export function createManagedDeviceEntity(
+  managedDevice: ManagedDevice,
+): ManagedDeviceEntity {
   return createIntegrationEntity({
     entityData: {
       source: managedDevice,
