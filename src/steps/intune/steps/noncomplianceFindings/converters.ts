@@ -1,13 +1,11 @@
 import {
-  createDirectRelationship,
   createIntegrationEntity,
   Entity,
   IntegrationLogger,
   parseTimePropertyValue,
-  Relationship,
 } from '@jupiterone/integration-sdk-core';
 import { DeviceConfigurationDeviceStatus } from '@microsoft/microsoft-graph-types-beta';
-import { entities, relationships } from '../../constants';
+import { entities } from '../../constants';
 import {
   calculateSeverity,
   calculateNumericSeverity,

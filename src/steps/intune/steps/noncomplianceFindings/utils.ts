@@ -44,7 +44,7 @@ export function findingIsOpen(
 export function calculateNumericSeverity(
   deviceStatus: DeviceConfigurationDeviceStatus['status'],
   logger: IntegrationLogger,
-) {
+): number {
   if (!findingIsOpen(deviceStatus, logger)) {
     return 1;
   }
@@ -67,17 +67,17 @@ export function calculateSeverity(
   logger: IntegrationLogger,
 ) {
   const numericSeverity = calculateNumericSeverity(deviceStatus, logger);
-  if (numericSeverity <= 2) {
+  if (numericSeverity === 0) {
     return 'informational';
-  } else if (numericSeverity <= 4) {
+  } else if (numericSeverity < 4) {
     return 'low';
-  } else if (numericSeverity <= 6) {
+  } else if (numericSeverity < 6) {
     return 'medium';
-  } else if (numericSeverity <= 8) {
+  } else if (numericSeverity < 8) {
     return 'high';
   } else if (numericSeverity <= 10) {
     return 'critical';
   } else {
-    return 'none';
+    return 'unknown';
   }
 }

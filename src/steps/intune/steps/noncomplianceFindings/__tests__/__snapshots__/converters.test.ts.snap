@@ -35,7 +35,7 @@ Object {
   "name": "Latest finding from Test iOS Wifi policy",
   "numericSeverity": 6,
   "open": true,
-  "severity": "medium",
+  "severity": "high",
   "status": "error",
 }
 `;

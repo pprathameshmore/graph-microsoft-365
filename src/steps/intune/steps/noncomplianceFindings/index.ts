@@ -64,7 +64,7 @@ export async function fetchNonComplianceFindings(
                 }),
               );
             } else {
-              logger.error(
+              logger.warn(
                 { deviceStatus, deviceConfigurationEntity },
                 'Error creating Device -> DeviceConfiguration relationship: deviceEntity does note exist',
               );
