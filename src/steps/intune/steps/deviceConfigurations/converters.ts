@@ -31,7 +31,7 @@ export function createDeviceConfigurationEntity(
         displayName: deviceConfiguration.displayName,
         version: deviceConfiguration.version,
         /**
-         * Possable values (There are many of them): https://docs.microsoft.com/en-us/graph/api/resources/intune-device-cfg-conceptual?view=graph-rest-beta
+         * Possible values (There are many of them): https://docs.microsoft.com/en-us/graph/api/resources/intune-device-cfg-conceptual?view=graph-rest-beta
          * examples: iosCustomConfiguration, windows10GeneralConfiguration, iosWiFiConfiguration
          */
         configurationType: last(deviceConfiguration['@odata.type']?.split('.')),
