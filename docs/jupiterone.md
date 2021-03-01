@@ -117,6 +117,7 @@ The following entities are created:
 | Resources             | Entity `_type`                 | Entity `_class` |
 | --------------------- | ------------------------------ | --------------- |
 | Device Configuration  | `intune_device_configuration`  | `Configuration` |
+| Managed Application   | `intune_managed_application`   | `Application`   |
 | Managed Device        | `intune_managed_device`        | `Device`        |
 | Noncompliance Finding | `intune_noncompliance_finding` | `Finding`       |
 | [AD] Account          | `microsoft_365_account`        | `Account`       |
@@ -135,6 +136,7 @@ The following relationships are created/mapped:
 | `azure_user_group`            | **HAS**               | `azure_user`                   |
 | `azure_user`                  | **HAS**               | `intune_managed_device`        |
 | `intune_device_configuration` | **IDENTIFIED**        | `intune_noncompliance_finding` |
+| `intune_managed_device`       | **ASSIGNED**          | `intune_managed_application`   |
 | `intune_managed_device`       | **HAS**               | `intune_noncompliance_finding` |
 | `intune_managed_device`       | **USES**              | `intune_device_configuration`  |
 | `microsoft_365_account`       | **HAS**               | `azure_user_group`             |

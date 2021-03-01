@@ -9,7 +9,6 @@ export const CLOSED_DEVICE_STATUSES: DeviceConfigurationDeviceStatus['status'][]
   'compliant',
   'remediated',
   'notAssigned',
-  'unknown',
 ];
 
 /**
@@ -19,13 +18,13 @@ export const OPEN_DEVICE_STATUSES: DeviceConfigurationDeviceStatus['status'][] =
   'nonCompliant',
   'error',
   'conflict',
+  'unknown',
 ];
 
 /**
  * Device statuses that indicate that there is not a relationship between a device and config
  */
 export const UNRELATED_DEVICE_STATUSES: DeviceConfigurationDeviceStatus['status'][] = [
-  'unknown',
   'notAssigned',
   'notApplicable',
 ];
@@ -71,6 +70,8 @@ export function calculateNumericSeverity(
     case 'error':
     case 'conflict':
       return 6;
+    case 'unknown':
+      return 4;
     default:
       logger.warn(
         { deviceStatus },

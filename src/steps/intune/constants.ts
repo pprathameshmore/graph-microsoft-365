@@ -9,6 +9,7 @@ export const steps: { [k: string]: string } = {
   FETCH_DEVICES: 'managed-devices',
   FETCH_DEVICE_CONFIGURATIONS_AND_FINDINGS:
     'device-configurations-and-findings',
+  FETCH_MANAGED_APPLICATIONS: 'managed-appplications',
 };
 
 export const entities: { [k: string]: StepEntityMetadata } = {
@@ -26,6 +27,11 @@ export const entities: { [k: string]: StepEntityMetadata } = {
     resourceName: 'Noncompliance Finding',
     _type: 'intune_noncompliance_finding',
     _class: 'Finding',
+  },
+  MANAGED_APPLICATION: {
+    resourceName: 'Managed Application',
+    _type: 'intune_managed_application',
+    _class: 'Application',
   },
 };
 
@@ -53,5 +59,11 @@ export const relationships: { [k: string]: StepRelationshipMetadata } = {
     sourceType: entities.DEVICE._type,
     _class: RelationshipClass.HAS,
     targetType: entities.NONCOMPLIANCE_FINDING._type,
+  },
+  DEVICE_ASSIGNED_MANAGED_APPLICATION: {
+    _type: 'intune_managed_device_assigned_application',
+    sourceType: entities.DEVICE._type,
+    _class: RelationshipClass.ASSIGNED,
+    targetType: entities.MANAGED_APPLICATION._type,
   },
 };

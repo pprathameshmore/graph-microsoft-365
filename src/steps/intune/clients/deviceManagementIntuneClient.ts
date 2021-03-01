@@ -3,7 +3,9 @@ import {
   DeviceConfiguration,
   DeviceConfigurationDeviceOverview,
   DeviceConfigurationDeviceStatus,
+  ManagedApp,
   ManagedDevice,
+  MobileAppInstallStatus,
 } from '@microsoft/microsoft-graph-types-beta';
 
 export class DeviceManagementIntuneClient extends GraphClient {
@@ -86,4 +88,38 @@ export class DeviceManagementIntuneClient extends GraphClient {
   //********** OFFICE SETTINGS **********/
   // https://config.office.com/api/OfficeSettings/policies
   // Intune has special policies specifically for Office 365 that you need to query for in a different way. Not currently using.
+
+  //*********** MANAGED APPS **************/
+  // https://docs.microsoft.com/en-us/graph/api/resources/intune-shared-mobileapp?view=graph-rest-beta
+  // DeviceManagementApps.Read.All
+
+  // https://docs.microsoft.com/en-us/graph/api/intune-shared-mobileapp-list?view=graph-rest-beta
+  public async iterateManagedApps(
+    callback: (
+      managedApp: ManagedApp & { '@odata.type': string },
+    ) => void | Promise<void>,
+  ): Promise<void> {
+    return this.iterateResources({
+      resourceUrl: `https://graph.microsoft.com/beta/deviceAppManagement/mobileApps`,
+      query: {
+        $filter: `(isAssigned eq true or microsoft.graph.managedApp/appAvailability eq 'lineOfBusiness' or microsoft.graph.managedApp/appAvailability eq null)`,
+      },
+      callback,
+    });
+  }
+
+  // NOTE: This becomes a relationship from mobileapp to device
+  // https://docs.microsoft.com/en-us/graph/api/intune-apps-mobileappinstallstatus-list?view=graph-rest-beta
+  public async iterateManagedAppDeviceStatuses(
+    mobileAppId: string,
+    callback: (deviceStatus: MobileAppInstallStatus) => void | Promise<void>,
+  ): Promise<void> {
+    return this.iterateResources({
+      resourceUrl: `https://graph.microsoft.com/beta/deviceAppManagement/mobileApps/${mobileAppId}/deviceStatuses`,
+      query: {
+        $filter: `(mobileAppInstallStatusValue ne 'notApplicable')`, // We shouldn't be making relationships on applications that are not applicable to a device
+      },
+      callback,
+    });
+  }
 }
