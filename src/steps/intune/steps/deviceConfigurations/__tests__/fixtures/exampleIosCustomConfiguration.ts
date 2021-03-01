@@ -2,7 +2,7 @@ import { IosCustomConfiguration } from '@microsoft/microsoft-graph-types-beta';
 
 // IosCustomConfiguration extends DeviceConfiguration
 // https://docs.microsoft.com/en-us/graph/api/resources/intune-deviceconfig-ioscustomconfiguration?view=graph-rest-beta
-const exampleIosCustomConfiguration: IosCustomConfiguration & {
+export const exampleIosCustomConfiguration: IosCustomConfiguration & {
   '@odata.type': string;
 } = {
   '@odata.type': '#microsoft.graph.iosCustomConfiguration',
@@ -21,5 +21,3 @@ const exampleIosCustomConfiguration: IosCustomConfiguration & {
   payloadFileName: 'lastSuccessfulBuildId.txt',
   payload: ('MTk3' as unknown) as number, // Looks like Microsoft's types are incorrect.
 };
-
-export default exampleIosCustomConfiguration;

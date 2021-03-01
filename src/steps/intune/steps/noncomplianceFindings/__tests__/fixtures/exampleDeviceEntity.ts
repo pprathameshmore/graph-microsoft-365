@@ -1,6 +1,6 @@
 import { ManagedDeviceEntity } from '../../../../types';
 
-const exampleDeviceEntity: ManagedDeviceEntity = ({
+export const exampleDeviceEntity: ManagedDeviceEntity = ({
   BYOD: true,
   _class: ['Device'],
   _key: '11111111-1111-1111-1111-111111111111',
@@ -101,5 +101,3 @@ const exampleDeviceEntity: ManagedDeviceEntity = ({
   version: 'iPhone 11 Pro',
   wifiMacAddress: '84ad8db5b351',
 } as unknown) as ManagedDeviceEntity;
-
-export default exampleDeviceEntity;

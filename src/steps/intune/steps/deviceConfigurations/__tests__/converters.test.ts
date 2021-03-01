@@ -1,7 +1,7 @@
 import { createDeviceConfigurationEntity } from '../converters';
-import exampleIosWiFiConfiguration from './fixtures/exampleIosWiFiConfiguration';
-import exampleIosCustomConfiguration from './fixtures/exampleIosWiFiConfiguration';
-import exampleWindows10GeneralConfiguration from './fixtures/exampleWindows10GeneralConfiguration';
+import { exampleIosWiFiConfiguration } from './fixtures/exampleIosWiFiConfiguration';
+import { exampleIosCustomConfiguration } from './fixtures/exampleIosCustomConfiguration';
+import { exampleWindows10GeneralConfiguration } from './fixtures/exampleWindows10GeneralConfiguration';
 
 describe('createManagedDeviceEntity', () => {
   test('iosCustomConfiguration', () => {

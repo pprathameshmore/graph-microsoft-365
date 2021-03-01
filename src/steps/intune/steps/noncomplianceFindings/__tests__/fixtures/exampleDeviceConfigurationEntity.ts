@@ -1,6 +1,6 @@
 import { DeviceConfigurationEntity } from '../../../../types';
 
-const exampleDeviceConfigurationEntity: DeviceConfigurationEntity = ({
+export const exampleDeviceConfigurationEntity: DeviceConfigurationEntity = ({
   _class: ['Configuration'],
   _key: '5b748b7c-8b6a-41fd-bd97-f509fdf5caf5',
   _rawData: [
@@ -42,5 +42,3 @@ const exampleDeviceConfigurationEntity: DeviceConfigurationEntity = ({
   name: 'Test iOS Wifi policy',
   version: 1,
 } as unknown) as DeviceConfigurationEntity;
-
-export default exampleDeviceConfigurationEntity;

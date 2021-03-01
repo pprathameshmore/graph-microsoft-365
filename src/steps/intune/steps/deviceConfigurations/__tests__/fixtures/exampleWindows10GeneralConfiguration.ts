@@ -2,7 +2,7 @@ import { Windows10GeneralConfiguration } from '@microsoft/microsoft-graph-types-
 
 // windows10GeneralConfiguration extends DeviceConfiguration
 // https://docs.microsoft.com/en-us/graph/api/resources/intune-deviceconfig-windows10generalconfiguration?view=graph-rest-beta
-const exampleWindows10GeneralConfiguration: Windows10GeneralConfiguration & {
+export const exampleWindows10GeneralConfiguration: Windows10GeneralConfiguration & {
   '@odata.type': string;
 } = {
   '@odata.type': '#microsoft.graph.windows10GeneralConfiguration',
@@ -304,5 +304,3 @@ const exampleWindows10GeneralConfiguration: Windows10GeneralConfiguration & {
     ruleType: 'include',
   },
 };
-
-export default exampleWindows10GeneralConfiguration;

@@ -3,8 +3,8 @@ import {
   createUserDeviceDirectRelationship,
   createUserDeviceMappedRelationship,
 } from '../converters';
-import exampleManagedDevice from './fixtures/exampleManagedDevice';
-import exampleManagedDeviceEntity from './fixtures/exampleManagedDeviceEntity';
+import { exampleManagedDevice } from './fixtures/exampleManagedDevice';
+import { exampleManagedDeviceEntity } from './fixtures/exampleManagedDeviceEntity';
 
 describe('createManagedDeviceEntity', () => {
   test('properties transferred', () => {

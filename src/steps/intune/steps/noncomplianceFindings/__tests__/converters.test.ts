@@ -5,10 +5,10 @@ import {
   createNoncomplianceFindingEntity,
   findingIsOpen,
 } from '../converters';
-import exampleDeviceConfigurationEntity from './fixtures/exampleDeviceConfigurationEntity';
-import exampleDeviceEntity from './fixtures/exampleDeviceEntity';
-import exampleDeviceStatus from './fixtures/exampleDeviceStatus';
-import exampleNoncomplianceFindingEntity from './fixtures/exampleNoncomplianceFindingEntity';
+import { exampleDeviceConfigurationEntity } from './fixtures/exampleDeviceConfigurationEntity';
+import { exampleDeviceEntity } from './fixtures/exampleDeviceEntity';
+import { exampleDeviceStatus } from './fixtures/exampleDeviceStatus';
+import { exampleNoncomplianceFindingEntity } from './fixtures/exampleNoncomplianceFindingEntity';
 
 describe('createDeviceConfigurationEntity', () => {
   test('transfers properties correctly', () => {

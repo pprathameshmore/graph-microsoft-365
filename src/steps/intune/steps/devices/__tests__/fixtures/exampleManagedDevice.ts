@@ -1,6 +1,6 @@
 import { ManagedDevice } from '@microsoft/microsoft-graph-types-beta';
 
-const exampleManagedDevice: ManagedDevice = {
+export const exampleManagedDevice: ManagedDevice = {
   id: '11111111-1111-1111-1111-111111111111',
   userId: 'userId',
   deviceName: 'Dude’s iPhone',
@@ -49,5 +49,3 @@ const exampleManagedDevice: ManagedDevice = {
   partnerReportedThreatState: 'unknown',
   deviceActionResults: [],
 };
-
-export default exampleManagedDevice;

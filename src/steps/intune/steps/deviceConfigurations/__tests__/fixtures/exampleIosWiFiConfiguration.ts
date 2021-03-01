@@ -2,7 +2,7 @@ import { IosWiFiConfiguration } from '@microsoft/microsoft-graph-types-beta';
 
 // IosWiFiConfiguration extends DeviceConfiguration
 // https://docs.microsoft.com/en-us/graph/api/resources/intune-deviceconfig-ioswificonfiguration?view=graph-rest-beta
-const exampleIosWiFiConfiguration: IosWiFiConfiguration & {
+export const exampleIosWiFiConfiguration: IosWiFiConfiguration & {
   '@odata.type': string;
 } = {
   '@odata.type': '#microsoft.graph.iosWiFiConfiguration',
@@ -29,5 +29,3 @@ const exampleIosWiFiConfiguration: IosWiFiConfiguration & {
   disableMacAddressRandomization: null,
   preSharedKey: null,
 };
-
-export default exampleIosWiFiConfiguration;

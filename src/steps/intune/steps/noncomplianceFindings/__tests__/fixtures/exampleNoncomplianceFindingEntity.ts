@@ -1,6 +1,6 @@
 import { NoncomplianceFindingEntity } from '../../../../types';
 
-const exampleNoncomplianceFindingEntity: NoncomplianceFindingEntity = ({
+export const exampleNoncomplianceFindingEntity: NoncomplianceFindingEntity = ({
   _class: ['Finding'],
   _key:
     '7b521133-f056-40a9-b639-b76afd67e4bb_6aa605f0-744e-4ae1-8031-c6564624c89b_683dbff1-c8ff-4996-91ae-85484de46cfc',
@@ -38,5 +38,3 @@ const exampleNoncomplianceFindingEntity: NoncomplianceFindingEntity = ({
   severity: 'informational',
   status: 'error',
 } as unknown) as NoncomplianceFindingEntity;
-
-export default exampleNoncomplianceFindingEntity;
