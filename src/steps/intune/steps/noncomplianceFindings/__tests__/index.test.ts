@@ -4,11 +4,11 @@ import {
 } from '@jupiterone/integration-sdk-testing';
 import { setupAzureRecording } from '../../../../../../test/recording';
 import { config } from '../../../../../../test/config';
-import { fetchNonComplianceFindings } from '..';
+import { fetchNonComplianceFindings, noncomplianceFindingSteps } from '..';
 import { fetchDevices } from '../../devices';
 import { fetchDeviceConfigurations } from '../../deviceConfigurations';
-import { entities } from '../../../constants';
-import { CLOSED_DEVICE_STATUSES } from '../utils';
+import { entities, relationships } from '../../../constants';
+import { Entity } from '@jupiterone/integration-sdk-core';
 
 let recording: Recording;
 
@@ -30,52 +30,71 @@ describe('fetchNonComplianceFindings', () => {
     await fetchDeviceConfigurations(context);
     await fetchNonComplianceFindings(context);
 
-    const deviceConfiguration = context.jobState.collectedEntities.filter(
+    const noncomplianceFindingEntities = context.jobState.collectedEntities.filter(
       (e) => {
         return e._class.includes('Finding');
       },
     );
     const noncomplianceFindingDeviceRelationships = context.jobState.collectedRelationships.filter(
       (r) => {
-        return r._type.includes(entities.NONCOMPLIANCE_FINDING._type);
+        return r._type.includes(
+          relationships.DEVICE_USES_DEVICE_CONFIGURATION._type,
+        );
       },
     );
     const noncomplianceFindingDeviceConfigurationRelationships = context.jobState.collectedRelationships.filter(
       (r) => {
-        return r._type.includes(entities.NONCOMPLIANCE_FINDING._type);
+        return r._type.includes(
+          relationships.DEVICE_USES_DEVICE_CONFIGURATION._type,
+        );
       },
     );
     const deviceDeviceConfigurationRelationships = context.jobState.collectedRelationships.filter(
       (r) => {
-        return (
-          r._type.includes(entities.DEVICE._type) &&
-          r._type.includes(entities.DEVICE_CONFIGURATION._type)
+        return r._type.includes(
+          relationships.DEVICE_USES_DEVICE_CONFIGURATION._type,
         );
       },
     );
 
     // Check that we have Noncompliance Findings
-    expect(deviceConfiguration.length).toBeGreaterThan(0);
-    expect(deviceConfiguration).toMatchGraphObjectSchema({
-      _class: ['Finding'],
+    expect(noncomplianceFindingEntities.length).toBeGreaterThan(0);
+    expect(noncomplianceFindingEntities).toMatchGraphObjectSchema({
+      _class: entities.NONCOMPLIANCE_FINDING._class,
+    });
+    expect(noncomplianceFindingEntities).toMatchSnapshot();
+    // Check that only open findings are created
+    noncomplianceFindingEntities.forEach((entity: Entity) => {
+      expect(entity.open).toBe(true);
     });
 
     // Check that we have DEVICE_USES_DEVICE_CONFIGURATION relationships
-    expect(deviceConfiguration.length).toBeGreaterThan(0);
+    expect(noncomplianceFindingDeviceRelationships.length).toBeGreaterThan(0);
     expect(
       noncomplianceFindingDeviceRelationships,
     ).toMatchDirectRelationshipSchema({});
+    expect(noncomplianceFindingDeviceRelationships).toMatchSnapshot(
+      'noncomplianceFindingDeviceRelationships',
+    );
 
     // Check that we have DEVICE_CONFIGURATION_IDENTIFIED_NONCOMPLIANCE_FINDING relationships
-    expect(deviceConfiguration.length).toBeGreaterThan(0);
+    expect(
+      noncomplianceFindingDeviceConfigurationRelationships.length,
+    ).toBeGreaterThan(0);
     expect(
       noncomplianceFindingDeviceConfigurationRelationships,
     ).toMatchDirectRelationshipSchema({});
+    expect(
+      noncomplianceFindingDeviceConfigurationRelationships,
+    ).toMatchSnapshot('noncomplianceFindingDeviceConfigurationRelationships');
 
     // Check that we have DEVICE_HAS_NONCOMPLIANCE_FINDING relationships
-    expect(deviceConfiguration.length).toBeGreaterThan(0);
+    expect(deviceDeviceConfigurationRelationships.length).toBeGreaterThan(0);
     expect(
       deviceDeviceConfigurationRelationships,
     ).toMatchDirectRelationshipSchema({});
+    expect(deviceDeviceConfigurationRelationships).toMatchSnapshot(
+      'deviceDeviceConfigurationRelationships',
+    );
   });
 });

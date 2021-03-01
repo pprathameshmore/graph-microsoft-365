@@ -62,6 +62,8 @@ function mutateRecordingEntry(entry: RecordingEntry): void {
     'wiFiMacAddress',
     'meid',
     'managedDeviceName',
+    'userName',
+    'deviceDisplayName',
   ];
   if (responseJson?.value) {
     responseJson.value.forEach((v, index) => {

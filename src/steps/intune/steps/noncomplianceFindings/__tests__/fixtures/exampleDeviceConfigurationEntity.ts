@@ -1,6 +1,6 @@
-import { DeviceConfigurationEntity } from '../../../../types';
+import { Entity } from '@jupiterone/integration-sdk-core';
 
-export const exampleDeviceConfigurationEntity: DeviceConfigurationEntity = ({
+export const exampleDeviceConfigurationEntity: Entity = {
   _class: ['Configuration'],
   _key: '5b748b7c-8b6a-41fd-bd97-f509fdf5caf5',
   _rawData: [
@@ -41,4 +41,4 @@ export const exampleDeviceConfigurationEntity: DeviceConfigurationEntity = ({
   id: '5b748b7c-8b6a-41fd-bd97-f509fdf5caf5',
   name: 'Test iOS Wifi policy',
   version: 1,
-} as unknown) as DeviceConfigurationEntity;
+};

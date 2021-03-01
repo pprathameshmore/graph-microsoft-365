@@ -1,13 +1,7 @@
 import { createMockIntegrationLogger } from '@jupiterone/integration-sdk-testing';
-import {
-  createDeviceConfigurationNonComplianceFindingRelationship,
-  createDeviceDeviceConfigurationRelationship,
-  createNoncomplianceFindingEntity,
-} from '../converters';
+import { createNoncomplianceFindingEntity } from '../converters';
 import { exampleDeviceConfigurationEntity } from './fixtures/exampleDeviceConfigurationEntity';
-import { exampleDeviceEntity } from './fixtures/exampleDeviceEntity';
 import { exampleDeviceStatus } from './fixtures/exampleDeviceStatus';
-import { exampleNoncomplianceFindingEntity } from './fixtures/exampleNoncomplianceFindingEntity';
 
 const logger = createMockIntegrationLogger();
 
@@ -20,29 +14,5 @@ describe('createDeviceConfigurationEntity', () => {
         logger,
       ),
     ).toMatchSnapshot('createNoncomplianceFindingEntity');
-  });
-});
-
-describe('createDeviceDeviceConfigurationRelationship', () => {
-  test('transfers properties correctly', () => {
-    expect(
-      createDeviceDeviceConfigurationRelationship(
-        exampleDeviceConfigurationEntity,
-        exampleDeviceEntity,
-      ),
-    ).toMatchSnapshot('createDeviceDeviceConfigurationRelationship');
-  });
-});
-
-describe('createDeviceConfigurationNonComplianceFindingRelationship', () => {
-  test('transfers properties correctly', () => {
-    expect(
-      createDeviceConfigurationNonComplianceFindingRelationship(
-        exampleDeviceConfigurationEntity,
-        exampleNoncomplianceFindingEntity,
-      ),
-    ).toMatchSnapshot(
-      'createDeviceConfigurationNonComplianceFindingRelationship',
-    );
   });
 });

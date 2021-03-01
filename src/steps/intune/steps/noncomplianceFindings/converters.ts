@@ -1,17 +1,13 @@
 import {
   createDirectRelationship,
   createIntegrationEntity,
+  Entity,
   IntegrationLogger,
   parseTimePropertyValue,
   Relationship,
 } from '@jupiterone/integration-sdk-core';
 import { DeviceConfigurationDeviceStatus } from '@microsoft/microsoft-graph-types-beta';
 import { entities, relationships } from '../../constants';
-import {
-  DeviceConfigurationEntity,
-  ManagedDeviceEntity,
-  NoncomplianceFindingEntity,
-} from '../../types';
 import {
   calculateSeverity,
   calculateNumericSeverity,
@@ -21,9 +17,9 @@ import {
 // https://docs.microsoft.com/en-us/graph/api/resources/intune-deviceconfig-deviceconfigurationdevicestatus?view=graph-rest-beta
 export function createNoncomplianceFindingEntity(
   deviceStatus: DeviceConfigurationDeviceStatus,
-  deviceConfigurationEntity: DeviceConfigurationEntity,
+  deviceConfigurationEntity: Entity,
   logger: IntegrationLogger,
-): NoncomplianceFindingEntity {
+): Entity {
   return createIntegrationEntity({
     entityData: {
       source: deviceStatus,
@@ -47,40 +43,5 @@ export function createNoncomplianceFindingEntity(
         ),
       },
     },
-  }) as NoncomplianceFindingEntity;
-}
-
-export function createDeviceDeviceConfigurationRelationship(
-  deviceConfigurationEntity: DeviceConfigurationEntity,
-  managedDeviceEntity: ManagedDeviceEntity,
-): Relationship {
-  return createDirectRelationship({
-    _class: relationships.DEVICE_USES_DEVICE_CONFIGURATION._class,
-    from: managedDeviceEntity,
-    to: deviceConfigurationEntity,
-  });
-}
-
-export function createNoncomplianceFindingRelationship(
-  noncomplianceFindingEntity: NoncomplianceFindingEntity,
-  managedDeviceEntity: ManagedDeviceEntity,
-): Relationship {
-  return createDirectRelationship({
-    _class: relationships.DEVICE_HAS_NONCOMPLIANCE_FINDING._class,
-    from: managedDeviceEntity,
-    to: noncomplianceFindingEntity,
-  });
-}
-
-export function createDeviceConfigurationNonComplianceFindingRelationship(
-  deviceConfigurationEityty: DeviceConfigurationEntity,
-  noncomplianceFindingEntity: NoncomplianceFindingEntity,
-): Relationship {
-  return createDirectRelationship({
-    _class:
-      relationships.DEVICE_CONFIGURATION_IDENTIFIED_NONCOMPLIANCE_FINDING
-        ._class,
-    from: deviceConfigurationEityty,
-    to: noncomplianceFindingEntity,
   });
 }

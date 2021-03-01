@@ -1,17 +1,13 @@
 import {
   Step,
   IntegrationStepExecutionContext,
+  createDirectRelationship,
+  Entity,
 } from '@jupiterone/integration-sdk-core';
 import { IntegrationConfig, IntegrationStepContext } from '../../../../types';
 import { DeviceManagementIntuneClient } from '../../clients/deviceManagementIntuneClient';
 import { entities, relationships, steps } from '../../constants';
-import { DeviceConfigurationEntity, ManagedDeviceEntity } from '../../types';
-import {
-  createNoncomplianceFindingEntity,
-  createDeviceConfigurationNonComplianceFindingRelationship,
-  createDeviceDeviceConfigurationRelationship,
-  createNoncomplianceFindingRelationship,
-} from './converters';
+import { createNoncomplianceFindingEntity } from './converters';
 import { last } from 'lodash';
 import { findingIsOpen } from './utils';
 
@@ -25,7 +21,7 @@ export async function fetchNonComplianceFindings(
   );
   await jobState.iterateEntities(
     { _type: entities.DEVICE_CONFIGURATION._type },
-    async (deviceConfigurationEntity: DeviceConfigurationEntity) => {
+    async (deviceConfigurationEntity: Entity) => {
       await intuneClient.iterateDeviceConfigurationDeviceStatuses(
         deviceConfigurationEntity.id as string,
         async (deviceStatus) => {
@@ -37,29 +33,35 @@ export async function fetchNonComplianceFindings(
             );
             await jobState.addEntity(noncomplianceFindingEntity);
             await jobState.addRelationship(
-              createDeviceConfigurationNonComplianceFindingRelationship(
-                deviceConfigurationEntity,
-                noncomplianceFindingEntity,
-              ),
+              createDirectRelationship({
+                _class:
+                  relationships
+                    .DEVICE_CONFIGURATION_IDENTIFIED_NONCOMPLIANCE_FINDING
+                    ._class,
+                from: deviceConfigurationEntity,
+                to: noncomplianceFindingEntity,
+              }),
             );
 
             const deviceId = last(deviceStatus.id?.split('_')); // I have no idea why Microsoft hid the device id this way, but they did :|
             const deviceEntity = (await jobState.findEntity(deviceId)) as
-              | ManagedDeviceEntity
+              | Entity
               | undefined;
 
             if (deviceEntity) {
               await jobState.addRelationship(
-                createDeviceDeviceConfigurationRelationship(
-                  deviceConfigurationEntity,
-                  deviceEntity,
-                ),
+                createDirectRelationship({
+                  _class: relationships.DEVICE_USES_DEVICE_CONFIGURATION._class,
+                  from: deviceEntity,
+                  to: deviceConfigurationEntity,
+                }),
               );
               await jobState.addRelationship(
-                createNoncomplianceFindingRelationship(
-                  noncomplianceFindingEntity,
-                  deviceEntity,
-                ),
+                createDirectRelationship({
+                  _class: relationships.DEVICE_HAS_NONCOMPLIANCE_FINDING._class,
+                  from: deviceEntity,
+                  to: noncomplianceFindingEntity,
+                }),
               );
             } else {
               logger.error(
