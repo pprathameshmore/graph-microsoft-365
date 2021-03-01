@@ -1,6 +1,7 @@
 import {
   createDirectRelationship,
   createIntegrationEntity,
+  IntegrationLogger,
   parseTimePropertyValue,
   Relationship,
 } from '@jupiterone/integration-sdk-core';
@@ -11,11 +12,17 @@ import {
   ManagedDeviceEntity,
   NoncomplianceFindingEntity,
 } from '../../types';
+import {
+  calculateSeverity,
+  calculateNumericSeverity,
+  findingIsOpen,
+} from './utils';
 
 // https://docs.microsoft.com/en-us/graph/api/resources/intune-deviceconfig-deviceconfigurationdevicestatus?view=graph-rest-beta
 export function createNoncomplianceFindingEntity(
   deviceStatus: DeviceConfigurationDeviceStatus,
   deviceConfigurationEntity: DeviceConfigurationEntity,
+  logger: IntegrationLogger,
 ): NoncomplianceFindingEntity {
   return createIntegrationEntity({
     entityData: {
@@ -28,9 +35,9 @@ export function createNoncomplianceFindingEntity(
         category: 'endpoint',
         assessment: deviceConfigurationEntity.displayName,
         status: deviceStatus.status, // Possible values are: unknown, notApplicable, compliant, remediated, nonCompliant, error, conflict, notAssigned.
-        severity: calculateSeverity(deviceStatus.status),
-        numericSeverity: calculateNumericSeverity(deviceStatus.status),
-        open: findingIsOpen(deviceStatus.status),
+        severity: calculateSeverity(deviceStatus.status, logger),
+        numericSeverity: calculateNumericSeverity(deviceStatus.status, logger),
+        open: findingIsOpen(deviceStatus.status, logger),
         lastProcessedOn: parseTimePropertyValue(
           deviceStatus.lastReportedDateTime,
         ),
@@ -41,54 +48,6 @@ export function createNoncomplianceFindingEntity(
       },
     },
   }) as NoncomplianceFindingEntity;
-}
-
-export function findingIsOpen(
-  deviceStatus: DeviceConfigurationDeviceStatus['status'],
-) {
-  return ![
-    'notApplicable',
-    'compliant',
-    'remediated',
-    'notAssigned',
-    'unknown',
-    undefined,
-  ].includes(deviceStatus);
-}
-
-function calculateNumericSeverity(
-  deviceStatus: DeviceConfigurationDeviceStatus['status'],
-) {
-  if (!findingIsOpen(deviceStatus)) {
-    return 1;
-  }
-  switch (deviceStatus) {
-    case 'nonCompliant':
-    case 'error':
-    case 'conflict':
-      return 6;
-    default:
-      return 1; // This should not happen as we should not create findings without the above statuses
-  }
-}
-
-function calculateSeverity(
-  deviceStatus: DeviceConfigurationDeviceStatus['status'],
-) {
-  const numericSeverity = calculateNumericSeverity(deviceStatus);
-  if (numericSeverity <= 2) {
-    return 'informational';
-  } else if (numericSeverity <= 4) {
-    return 'low';
-  } else if (numericSeverity <= 6) {
-    return 'medium';
-  } else if (numericSeverity <= 8) {
-    return 'high';
-  } else if (numericSeverity <= 10) {
-    return 'critical';
-  } else {
-    return 'none';
-  }
 }
 
 export function createDeviceDeviceConfigurationRelationship(

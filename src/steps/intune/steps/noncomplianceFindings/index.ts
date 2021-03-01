@@ -7,13 +7,13 @@ import { DeviceManagementIntuneClient } from '../../clients/deviceManagementIntu
 import { entities, relationships, steps } from '../../constants';
 import { DeviceConfigurationEntity, ManagedDeviceEntity } from '../../types';
 import {
-  findingIsOpen,
   createNoncomplianceFindingEntity,
   createDeviceConfigurationNonComplianceFindingRelationship,
   createDeviceDeviceConfigurationRelationship,
   createNoncomplianceFindingRelationship,
 } from './converters';
 import { last } from 'lodash';
+import { findingIsOpen } from './utils';
 
 export async function fetchNonComplianceFindings(
   executionContext: IntegrationStepContext,
@@ -29,10 +29,11 @@ export async function fetchNonComplianceFindings(
       await intuneClient.iterateDeviceConfigurationDeviceStatuses(
         deviceConfigurationEntity.id as string,
         async (deviceStatus) => {
-          if (findingIsOpen(deviceStatus.status)) {
+          if (findingIsOpen(deviceStatus.status, logger) !== false) {
             const noncomplianceFindingEntity = createNoncomplianceFindingEntity(
               deviceStatus,
               deviceConfigurationEntity,
+              logger,
             );
             await jobState.addEntity(noncomplianceFindingEntity);
             await jobState.addRelationship(

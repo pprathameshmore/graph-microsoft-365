@@ -8,6 +8,7 @@ import { fetchNonComplianceFindings } from '..';
 import { fetchDevices } from '../../devices';
 import { fetchDeviceConfigurations } from '../../deviceConfigurations';
 import { entities } from '../../../constants';
+import { CLOSED_DEVICE_STATUSES } from '../utils';
 
 let recording: Recording;
 
