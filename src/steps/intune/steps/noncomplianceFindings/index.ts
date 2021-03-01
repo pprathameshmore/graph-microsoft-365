@@ -45,7 +45,7 @@ export async function fetchNonComplianceFindings(
             const deviceId = last(deviceStatus.id?.split('_')); // I have no idea why Microsoft hid the device id this way, but they did :|
             const deviceEntity = (await jobState.findEntity(
               deviceId,
-            )) as ManagedDeviceEntity;
+            )) as ManagedDeviceEntity | undefined;
             if (deviceEntity) {
               await jobState.addRelationship(
                 createDeviceDeviceConfigurationRelationship(
