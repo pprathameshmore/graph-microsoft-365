@@ -2,6 +2,7 @@ import {
   IntegrationStepExecutionContext,
   Step,
 } from '@jupiterone/integration-sdk-core';
+import { DeviceConfigurationDeviceOverview } from '@microsoft/microsoft-graph-types-beta';
 import { IntegrationConfig, IntegrationStepContext } from '../../../../types';
 import { DeviceManagementIntuneClient } from '../../clients/deviceManagementIntuneClient';
 import { entities, steps } from '../../constants';
@@ -17,12 +18,28 @@ export async function fetchDeviceConfigurations(
   );
   await intuneClient.iterateDeviceConfigurations(
     async (deviceConfiguration) => {
-      const deviceConfigurationEntity = createDeviceConfigurationEntity(
-        deviceConfiguration,
-      );
-      await jobState.addEntity(deviceConfigurationEntity);
+      if (!isOrphanedConfig(deviceConfiguration.deviceStatusOverview)) {
+        const deviceConfigurationEntity = createDeviceConfigurationEntity(
+          deviceConfiguration,
+        );
+        await jobState.addEntity(deviceConfigurationEntity);
+      }
     },
   );
+}
+
+export function isOrphanedConfig(
+  deviceStatusOverview: DeviceConfigurationDeviceOverview,
+) {
+  return ![
+    'pendingCount',
+    'notApplicableCount',
+    'notApplicablePlatformCount',
+    'successCount',
+    'errorCount',
+    'failedCount',
+    'conflictCount',
+  ].find((countKey) => deviceStatusOverview[countKey]);
 }
 
 export const deviceConfigurationSteps: Step<

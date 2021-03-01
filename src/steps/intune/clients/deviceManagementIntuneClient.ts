@@ -1,6 +1,7 @@
 import { GraphClient } from '../../../ms-graph/client';
 import {
   DeviceConfiguration,
+  DeviceConfigurationDeviceOverview,
   DeviceConfigurationDeviceStatus,
   ManagedDevice,
 } from '@microsoft/microsoft-graph-types-beta';
@@ -36,11 +37,14 @@ export class DeviceManagementIntuneClient extends GraphClient {
   // https://docs.microsoft.com/en-us/graph/api/intune-shared-deviceconfiguration-list?view=graph-rest-beta
   public async iterateDeviceConfigurations(
     callback: (
-      deviceConfiguration: DeviceConfiguration,
+      deviceConfiguration: DeviceConfiguration & {
+        deviceStatusOverview: DeviceConfigurationDeviceOverview;
+      },
     ) => void | Promise<void>,
   ): Promise<void> {
     return this.iterateResources({
       resourceUrl: `/deviceManagement/deviceConfigurations`,
+      query: { $expand: 'deviceStatusOverview' },
       callback,
     });
   }

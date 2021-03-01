@@ -21,7 +21,10 @@ and this project adheres to
 ### Updated
 
 - Updated jupiterone.md documentation.
-- Updated Azure Active Directory entities and relationships to have a type of
+
+### Changed
+
+- Changed Azure Active Directory entities and relationships to have a type of
   `azure_` to match
   [the Azure graph project](https://github.com/JupiterOne/graph-azure)
 

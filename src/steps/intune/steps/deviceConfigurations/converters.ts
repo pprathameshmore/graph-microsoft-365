@@ -2,7 +2,10 @@ import {
   createIntegrationEntity,
   Entity,
 } from '@jupiterone/integration-sdk-core';
-import { DeviceConfiguration } from '@microsoft/microsoft-graph-types-beta';
+import {
+  DeviceConfiguration,
+  DeviceConfigurationDeviceOverview,
+} from '@microsoft/microsoft-graph-types-beta';
 import { entities } from '../../constants';
 import { last } from 'lodash';
 
@@ -15,7 +18,9 @@ import { last } from 'lodash';
  * https://docs.microsoft.com/en-us/graph/api/resources/intune-shared-deviceconfiguration?view=graph-rest-beta
  */
 export function createDeviceConfigurationEntity(
-  deviceConfiguration: DeviceConfiguration,
+  deviceConfiguration: DeviceConfiguration & {
+    deviceStatusOverview: DeviceConfigurationDeviceOverview;
+  },
 ): Entity {
   return createIntegrationEntity({
     entityData: {
