@@ -12,12 +12,18 @@ and this project adheres to
 
 ### Added
 
-- Ingetsion of `Managed Device` entities
-- Ingestion of `UserHasDevice` relationships
+- Ingetsion of `Managed Device`, `Device Configuration`, and
+  `Noncompliance Finding` entities
+- Ingestion of `UserHasDevice`, `DeviceUsesDeviceConfiguration`,
+  `DeviceConfigurationIdentifiesNoncomplianceFinding` and
+  `DeviceHasNoncompliancceFinding` relationships
 
 ### Updated
 
 - Updated jupiterone.md documentation.
+- Updated Azure Active Directory entities and relationships to have a type of
+  `azure_` to match
+  [the Azure graph project](https://github.com/JupiterOne/graph-azure)
 
 ### Fixed
 
