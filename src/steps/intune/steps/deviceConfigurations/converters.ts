@@ -1,8 +1,10 @@
-import { createIntegrationEntity } from '@jupiterone/integration-sdk-core';
+import {
+  createIntegrationEntity,
+  Entity,
+} from '@jupiterone/integration-sdk-core';
 import { DeviceConfiguration } from '@microsoft/microsoft-graph-types-beta';
 import { entities } from '../../constants';
 import { last } from 'lodash';
-import { DeviceConfigurationEntity } from '../../types';
 
 /**
  * There are several different types of device configurations based on your OS and what you are configuring.
@@ -14,7 +16,7 @@ import { DeviceConfigurationEntity } from '../../types';
  */
 export function createDeviceConfigurationEntity(
   deviceConfiguration: DeviceConfiguration,
-): DeviceConfigurationEntity {
+): Entity {
   return createIntegrationEntity({
     entityData: {
       source: deviceConfiguration,
@@ -37,5 +39,5 @@ export function createDeviceConfigurationEntity(
         configurationType: last(deviceConfiguration['@odata.type']?.split('.')),
       },
     },
-  }) as DeviceConfigurationEntity;
+  });
 }

@@ -24,19 +24,23 @@ describe('fetchDeviceConfigurations', () => {
     const context = createMockStepExecutionContext({ instanceConfig: config });
     await fetchDeviceConfigurations(context);
 
-    const deviceConfiguration = context.jobState.collectedEntities;
+    const deviceConfigurationEntities = context.jobState.collectedEntities;
 
     // Check that we have configurations
-    expect(deviceConfiguration.length).toBeGreaterThan(0);
+    expect(deviceConfigurationEntities.length).toBeGreaterThan(0);
 
     // Check that we have only ingested Device Configurations
-    deviceConfiguration.forEach((configuration) => {
+    deviceConfigurationEntities.forEach((configuration) => {
       expect(configuration._type).toBe(entities.DEVICE_CONFIGURATION._type);
     });
 
     // Check that the schema is correct
-    expect(deviceConfiguration).toMatchGraphObjectSchema({
+    expect(deviceConfigurationEntities).toMatchGraphObjectSchema({
       _class: entities.DEVICE_CONFIGURATION._class,
     });
+
+    expect(deviceConfigurationEntities).toMatchSnapshot(
+      'deviceConfigurationEntities',
+    );
   });
 });
