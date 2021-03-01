@@ -79,7 +79,7 @@ export function createManagedDeviceEntity(
         // POTENTIAL: managedDevice.usersLoggedOn - link out to other users perhaps?
       },
     },
-  });
+  }) as ManagedDeviceEntity;
 }
 
 /**

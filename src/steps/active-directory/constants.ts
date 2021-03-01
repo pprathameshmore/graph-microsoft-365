@@ -59,19 +59,19 @@ export const relationships: Record<string, StepRelationshipMetadata> = {
     targetType: entities.GROUP._type,
   },
   GROUP_HAS_MEMBER: {
-    _type: 'azure_group_has_azure_group_member',
+    _type: 'azure_group_has_member',
     sourceType: entities.GROUP._type,
     _class: RelationshipClass.HAS,
     targetType: entities.GROUP_MEMEBER._type,
   },
   GROUP_HAS_USER: {
-    _type: 'azure_group_has_azure_user',
+    _type: 'azure_group_has_user',
     sourceType: entities.GROUP._type,
     _class: RelationshipClass.HAS,
     targetType: entities.USER._type,
   },
   GROUP_HAS_GROUP: {
-    _type: 'azure_group_has_azure_group',
+    _type: 'azure_group_has_group',
     sourceType: entities.GROUP._type,
     _class: RelationshipClass.HAS,
     targetType: entities.GROUP._type,

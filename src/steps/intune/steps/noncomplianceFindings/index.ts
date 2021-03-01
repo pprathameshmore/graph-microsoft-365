@@ -5,7 +5,7 @@ import {
 import { IntegrationConfig, IntegrationStepContext } from '../../../../types';
 import { DeviceManagementIntuneClient } from '../../clients/deviceManagementIntuneClient';
 import { entities, relationships, steps } from '../../constants';
-import { DeviceConfigurationEntity } from '../../types';
+import { DeviceConfigurationEntity, ManagedDeviceEntity } from '../../types';
 import {
   findingIsOpen,
   createNoncomplianceFindingEntity,
@@ -43,7 +43,9 @@ export async function fetchNonComplianceFindings(
             );
 
             const deviceId = last(deviceStatus.id?.split('_')); // I have no idea why Microsoft hid the device id this way, but they did :|
-            const deviceEntity = await jobState.findEntity(deviceId);
+            const deviceEntity = (await jobState.findEntity(
+              deviceId,
+            )) as ManagedDeviceEntity;
             if (deviceEntity) {
               await jobState.addRelationship(
                 createDeviceDeviceConfigurationRelationship(

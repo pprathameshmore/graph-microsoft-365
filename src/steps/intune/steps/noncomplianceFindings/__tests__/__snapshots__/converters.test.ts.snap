@@ -1,0 +1,63 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`createDeviceConfigurationEntity transfers properties correctly: createNoncomplianceFindingEntity 1`] = `
+Object {
+  "_class": Array [
+    "Finding",
+  ],
+  "_key": "7b521133-f056-40a9-b639-b76afd67e4bb_6aa605f0-744e-4ae1-8031-c6564624c89b_683dbff1-c8ff-4996-91ae-85484de46cfc",
+  "_rawData": Array [
+    Object {
+      "name": "default",
+      "rawData": Object {
+        "complianceGracePeriodExpirationDateTime": "2021-02-17T19:13:41.8113Z",
+        "deviceDisplayName": "Person’s iPhone",
+        "deviceModel": null,
+        "id": "7b521133-f056-40a9-b639-b76afd67e4bb_6aa605f0-744e-4ae1-8031-c6564624c89b_683dbff1-c8ff-4996-91ae-85484de46cfc",
+        "lastReportedDateTime": "2021-03-01T12:20:19.1406851Z",
+        "platform": 0,
+        "status": "error",
+        "userName": "dude.person@email.onmicrosoft.com",
+        "userPrincipalName": "dude.person@email.onmicrosoft.com",
+      },
+    },
+  ],
+  "_type": "intune_noncompliance_finding",
+  "active": undefined,
+  "assessment": "Test iOS Wifi policy",
+  "category": "endpoint",
+  "createdOn": undefined,
+  "displayName": "Latest finding from Test iOS Wifi policy",
+  "id": "7b521133-f056-40a9-b639-b76afd67e4bb_6aa605f0-744e-4ae1-8031-c6564624c89b_683dbff1-c8ff-4996-91ae-85484de46cfc",
+  "lastProcessedOn": 1614601219140,
+  "lastTestedOn": 1614601219140,
+  "lastUpdatedOn": 1614601219140,
+  "name": "Latest finding from Test iOS Wifi policy",
+  "numericSeverity": 6,
+  "open": true,
+  "severity": "medium",
+  "status": "error",
+}
+`;
+
+exports[`createDeviceConfigurationNonComplianceFindingRelationship transfers properties correctly: createDeviceConfigurationNonComplianceFindingRelationship 1`] = `
+Object {
+  "_class": "IDENTIFIED",
+  "_fromEntityKey": "5b748b7c-8b6a-41fd-bd97-f509fdf5caf5",
+  "_key": "5b748b7c-8b6a-41fd-bd97-f509fdf5caf5|identified|7b521133-f056-40a9-b639-b76afd67e4bb_6aa605f0-744e-4ae1-8031-c6564624c89b_683dbff1-c8ff-4996-91ae-85484de46cfc",
+  "_toEntityKey": "7b521133-f056-40a9-b639-b76afd67e4bb_6aa605f0-744e-4ae1-8031-c6564624c89b_683dbff1-c8ff-4996-91ae-85484de46cfc",
+  "_type": "intune_device_configuration_identified_noncompliance_finding",
+  "displayName": "IDENTIFIED",
+}
+`;
+
+exports[`createDeviceDeviceConfigurationRelationship transfers properties correctly: createDeviceDeviceConfigurationRelationship 1`] = `
+Object {
+  "_class": "USES",
+  "_fromEntityKey": "11111111-1111-1111-1111-111111111111",
+  "_key": "11111111-1111-1111-1111-111111111111|uses|5b748b7c-8b6a-41fd-bd97-f509fdf5caf5",
+  "_toEntityKey": "5b748b7c-8b6a-41fd-bd97-f509fdf5caf5",
+  "_type": "intune_managed_device_uses_device_configuration",
+  "displayName": "USES",
+}
+`;

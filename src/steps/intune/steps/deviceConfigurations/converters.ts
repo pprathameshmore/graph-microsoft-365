@@ -5,8 +5,8 @@ import { last } from 'lodash';
 import { DeviceConfigurationEntity } from '../../types';
 
 /**
- * There are several different types of device configuration based on your OS and what you are configuring.
- * So many that it does not make sense to ingest each individually until that granularity is desired,
+ * There are several different types of device configurations based on your OS and what you are configuring.
+ * So many that it does not make sense to ingest each individually until that granularity is desired
  * or necessary. Because of that, this method ingests all device configurations the same way, and if
  * more granularity is desired, individual configuration settings can be viewed in the raw data.
  *
@@ -25,10 +25,17 @@ export function createDeviceConfigurationEntity(
         name: deviceConfiguration.displayName,
         description:
           deviceConfiguration.description || deviceConfiguration.displayName,
+        createdOn:
+          deviceConfiguration.createdDateTime &&
+          +new Date(deviceConfiguration.createdDateTime),
         displayName: deviceConfiguration.displayName,
         version: deviceConfiguration.version,
-        configurationType: last(deviceConfiguration['@odata.type']?.split('.')), // Possable values are many, but some examples are iosCustomConfiguration, windows10GeneralConfiguration, iosWiFiConfiguration
+        /**
+         * Possable values (There are many of them): https://docs.microsoft.com/en-us/graph/api/resources/intune-device-cfg-conceptual?view=graph-rest-beta
+         * examples: iosCustomConfiguration, windows10GeneralConfiguration, iosWiFiConfiguration
+         */
+        configurationType: last(deviceConfiguration['@odata.type']?.split('.')),
       },
     },
-  });
+  }) as DeviceConfigurationEntity;
 }

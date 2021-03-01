@@ -1,7 +1,6 @@
 import {
   createDirectRelationship,
   createIntegrationEntity,
-  Entity,
   parseTimePropertyValue,
   Relationship,
 } from '@jupiterone/integration-sdk-core';
@@ -9,6 +8,7 @@ import { DeviceConfigurationDeviceStatus } from '@microsoft/microsoft-graph-type
 import { entities, relationships } from '../../constants';
 import {
   DeviceConfigurationEntity,
+  ManagedDeviceEntity,
   NoncomplianceFindingEntity,
 } from '../../types';
 
@@ -16,7 +16,7 @@ import {
 export function createNoncomplianceFindingEntity(
   deviceStatus: DeviceConfigurationDeviceStatus,
   deviceConfigurationEntity: DeviceConfigurationEntity,
-) {
+): NoncomplianceFindingEntity {
   return createIntegrationEntity({
     entityData: {
       source: deviceStatus,
@@ -40,13 +40,13 @@ export function createNoncomplianceFindingEntity(
         ),
       },
     },
-  });
+  }) as NoncomplianceFindingEntity;
 }
 
 export function findingIsOpen(
   deviceStatus: DeviceConfigurationDeviceStatus['status'],
 ) {
-  return [
+  return ![
     'notApplicable',
     'compliant',
     'remediated',
@@ -68,7 +68,7 @@ function calculateNumericSeverity(
     case 'conflict':
       return 6;
     default:
-      return 1; // This should as happen as we should not create findings without the above statuses
+      return 1; // This should not happen as we should not create findings without the above statuses
   }
 }
 
@@ -93,7 +93,7 @@ function calculateSeverity(
 
 export function createDeviceDeviceConfigurationRelationship(
   deviceConfigurationEntity: DeviceConfigurationEntity,
-  managedDeviceEntity: Entity,
+  managedDeviceEntity: ManagedDeviceEntity,
 ): Relationship {
   return createDirectRelationship({
     _class: relationships.DEVICE_USES_DEVICE_CONFIGURATION._class,
@@ -104,7 +104,7 @@ export function createDeviceDeviceConfigurationRelationship(
 
 export function createNoncomplianceFindingRelationship(
   noncomplianceFindingEntity: NoncomplianceFindingEntity,
-  managedDeviceEntity: Entity,
+  managedDeviceEntity: ManagedDeviceEntity,
 ): Relationship {
   return createDirectRelationship({
     _class: relationships.DEVICE_HAS_NONCOMPLIANCE_FINDING._class,
@@ -115,7 +115,7 @@ export function createNoncomplianceFindingRelationship(
 
 export function createDeviceConfigurationNonComplianceFindingRelationship(
   deviceConfigurationEityty: DeviceConfigurationEntity,
-  noncomplianceFindingEntity: Entity,
+  noncomplianceFindingEntity: NoncomplianceFindingEntity,
 ): Relationship {
   return createDirectRelationship({
     _class:

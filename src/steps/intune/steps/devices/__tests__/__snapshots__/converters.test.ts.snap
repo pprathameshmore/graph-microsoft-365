@@ -129,7 +129,7 @@ Object {
     "targetEntity": Object {
       "_class": "User",
       "_key": "userId",
-      "_type": "microsoft_365_user",
+      "_type": "azure_user",
       "email": "email",
       "id": "userId",
     },
@@ -144,7 +144,7 @@ Object {
       ],
     ],
   },
-  "_type": "microsoft_365_user_has_intune_managed_device",
+  "_type": "azure_user_has_intune_managed_device",
   "displayName": "HAS",
 }
 `;
@@ -159,7 +159,7 @@ Object {
     "targetEntity": Object {
       "_class": "User",
       "_key": undefined,
-      "_type": "microsoft_365_user",
+      "_type": "azure_user",
       "email": "email",
       "id": undefined,
     },
@@ -174,7 +174,7 @@ Object {
       ],
     ],
   },
-  "_type": "microsoft_365_user_has_intune_managed_device",
+  "_type": "azure_user_has_intune_managed_device",
   "displayName": "HAS",
 }
 `;
@@ -189,7 +189,7 @@ Object {
     "targetEntity": Object {
       "_class": "User",
       "_key": "userId",
-      "_type": "microsoft_365_user",
+      "_type": "azure_user",
       "email": undefined,
       "id": "userId",
     },
@@ -204,7 +204,7 @@ Object {
       ],
     ],
   },
-  "_type": "microsoft_365_user_has_intune_managed_device",
+  "_type": "azure_user_has_intune_managed_device",
   "displayName": "HAS",
 }
 `;

@@ -1,0 +1,42 @@
+import { NoncomplianceFindingEntity } from '../../../../types';
+
+const exampleNoncomplianceFindingEntity: NoncomplianceFindingEntity = ({
+  _class: ['Finding'],
+  _key:
+    '7b521133-f056-40a9-b639-b76afd67e4bb_6aa605f0-744e-4ae1-8031-c6564624c89b_683dbff1-c8ff-4996-91ae-85484de46cfc',
+  _rawData: [
+    {
+      name: 'default',
+      rawData: {
+        complianceGracePeriodExpirationDateTime: '2021-02-17T19:13:41.8113Z',
+        deviceDisplayName: 'Person’s iPhone',
+        deviceModel: null,
+        id:
+          '7b521133-f056-40a9-b639-b76afd67e4bb_6aa605f0-744e-4ae1-8031-c6564624c89b_683dbff1-c8ff-4996-91ae-85484de46cfc',
+        lastReportedDateTime: '2021-03-01T12:20:19.1406851Z',
+        platform: 0,
+        status: 'error',
+        userName: 'dude.person@email.onmicrosoft.com',
+        userPrincipalName: 'dude.person@email.onmicrosoft.com',
+      },
+    },
+  ],
+  _type: 'intune_noncompliance_finding',
+  active: undefined,
+  assessment: 'Test iOS Wifi policy',
+  category: 'endpoint',
+  createdOn: undefined,
+  displayName: 'Latest finding from Test iOS Wifi policy',
+  id:
+    '7b521133-f056-40a9-b639-b76afd67e4bb_6aa605f0-744e-4ae1-8031-c6564624c89b_683dbff1-c8ff-4996-91ae-85484de46cfc',
+  lastProcessedOn: 1614601219140,
+  lastTestedOn: 1614601219140,
+  lastUpdatedOn: 1614601219140,
+  name: 'Latest finding from Test iOS Wifi policy',
+  numericSeverity: 1,
+  open: false,
+  severity: 'informational',
+  status: 'error',
+} as unknown) as NoncomplianceFindingEntity;
+
+export default exampleNoncomplianceFindingEntity;

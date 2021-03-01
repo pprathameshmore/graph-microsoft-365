@@ -1,5 +1,12 @@
 import { Entity } from '@jupiterone/integration-sdk-core';
+type Opaque<K, T> = T & { __TYPE__: K };
 
-export type ManagedDeviceEntity = Entity;
-export type DeviceConfigurationEntity = Entity;
-export type NoncomplianceFindingEntity = Entity;
+export type ManagedDeviceEntity = Opaque<'ManagedDeviceEntity', Entity>;
+export type DeviceConfigurationEntity = Opaque<
+  'DeviceConfigurationEntity',
+  Entity
+>;
+export type NoncomplianceFindingEntity = Opaque<
+  'NoncomplianceFindingEntity',
+  Entity
+>;

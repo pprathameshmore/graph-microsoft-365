@@ -32,7 +32,7 @@ export const deviceConfigurationSteps: Step<
     id: steps.FETCH_DEVICE_CONFIGURATIONS,
     name: 'Device Configurations',
     entities: [entities.DEVICE_CONFIGURATION],
-    relationships: [], // Device => Device Configuration is created int FETCH_NONCOMPLIANCE_FINDINGS step
+    relationships: [], // (Device => Device Configuration) relationship is created in the FETCH_NONCOMPLIANCE_FINDINGS step
     dependsOn: [],
     executionHandler: fetchDeviceConfigurations,
   },

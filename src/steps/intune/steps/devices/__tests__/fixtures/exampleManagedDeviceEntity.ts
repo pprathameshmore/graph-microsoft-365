@@ -1,6 +1,6 @@
-import { Entity } from '@jupiterone/integration-sdk-core';
+import { ManagedDeviceEntity } from '../../../../types';
 
-const exampleManagedDeviceEntity: Entity = {
+const exampleManagedDeviceEntity: ManagedDeviceEntity = ({
   id: '11111111-1111-1111-1111-111111111111',
   osVersion: '14.4',
   model: 'iPhone 11 Pro',
@@ -164,6 +164,6 @@ const exampleManagedDeviceEntity: Entity = {
       },
     },
   ],
-};
+} as unknown) as ManagedDeviceEntity;
 
 export default exampleManagedDeviceEntity;
