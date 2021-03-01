@@ -46,6 +46,7 @@ export async function fetchNonComplianceFindings(
             const deviceEntity = (await jobState.findEntity(deviceId)) as
               | ManagedDeviceEntity
               | undefined;
+
             if (deviceEntity) {
               await jobState.addRelationship(
                 createDeviceDeviceConfigurationRelationship(
