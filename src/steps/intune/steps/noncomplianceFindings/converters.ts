@@ -76,15 +76,15 @@ function calculateSeverity(
   deviceStatus: DeviceConfigurationDeviceStatus['status'],
 ) {
   const numbericSeverity = calculateNumericSeverity(deviceStatus);
-  if (1 <= numbericSeverity && numbericSeverity <= 2) {
+  if (numericSeverity <= 2) {
     return 'informational';
-  } else if (3 <= numbericSeverity && numbericSeverity <= 4) {
+  } else if (numericSeverity <= 4) {
     return 'low';
-  } else if (5 <= numbericSeverity && numbericSeverity <= 6) {
+  } else if (numericSeverity <= 6) {
     return 'medium';
-  } else if (7 <= numbericSeverity && numbericSeverity <= 8) {
+  } else if (numericSeverity <= 8) {
     return 'high';
-  } else if (9 <= numbericSeverity && numbericSeverity <= 10) {
+  } else if (numericSeverity <= 10) {
     return 'critical';
   } else {
     return 'none';
