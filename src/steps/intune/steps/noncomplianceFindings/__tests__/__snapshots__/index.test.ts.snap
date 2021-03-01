@@ -44,12 +44,12 @@ Array [
 exports[`fetchNonComplianceFindings should make entities and relationships correctly: deviceDeviceConfigurationRelationships 1`] = `
 Array [
   Object {
-    "_class": "USES",
+    "_class": "HAS",
     "_fromEntityKey": "683dbff1-c8ff-4996-91ae-85484de46cfc",
-    "_key": "683dbff1-c8ff-4996-91ae-85484de46cfc|uses|6aa605f0-744e-4ae1-8031-c6564624c89b",
-    "_toEntityKey": "6aa605f0-744e-4ae1-8031-c6564624c89b",
-    "_type": "intune_managed_device_uses_device_configuration",
-    "displayName": "USES",
+    "_key": "683dbff1-c8ff-4996-91ae-85484de46cfc|has|7b521133-f056-40a9-b639-b76afd67e4bb_6aa605f0-744e-4ae1-8031-c6564624c89b_683dbff1-c8ff-4996-91ae-85484de46cfc",
+    "_toEntityKey": "7b521133-f056-40a9-b639-b76afd67e4bb_6aa605f0-744e-4ae1-8031-c6564624c89b_683dbff1-c8ff-4996-91ae-85484de46cfc",
+    "_type": "intune_managed_device_has_noncompliance_finding",
+    "displayName": "HAS",
   },
 ]
 `;
@@ -57,12 +57,12 @@ Array [
 exports[`fetchNonComplianceFindings should make entities and relationships correctly: noncomplianceFindingDeviceConfigurationRelationships 1`] = `
 Array [
   Object {
-    "_class": "USES",
-    "_fromEntityKey": "683dbff1-c8ff-4996-91ae-85484de46cfc",
-    "_key": "683dbff1-c8ff-4996-91ae-85484de46cfc|uses|6aa605f0-744e-4ae1-8031-c6564624c89b",
-    "_toEntityKey": "6aa605f0-744e-4ae1-8031-c6564624c89b",
-    "_type": "intune_managed_device_uses_device_configuration",
-    "displayName": "USES",
+    "_class": "IDENTIFIED",
+    "_fromEntityKey": "6aa605f0-744e-4ae1-8031-c6564624c89b",
+    "_key": "6aa605f0-744e-4ae1-8031-c6564624c89b|identified|7b521133-f056-40a9-b639-b76afd67e4bb_6aa605f0-744e-4ae1-8031-c6564624c89b_683dbff1-c8ff-4996-91ae-85484de46cfc",
+    "_toEntityKey": "7b521133-f056-40a9-b639-b76afd67e4bb_6aa605f0-744e-4ae1-8031-c6564624c89b_683dbff1-c8ff-4996-91ae-85484de46cfc",
+    "_type": "intune_device_configuration_identified_noncompliance_finding",
+    "displayName": "IDENTIFIED",
   },
 ]
 `;

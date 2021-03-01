@@ -64,6 +64,7 @@ function mutateRecordingEntry(entry: RecordingEntry): void {
     'managedDeviceName',
     'userName',
     'deviceDisplayName',
+    'hardwareSerial',
   ];
   if (responseJson?.value) {
     responseJson.value.forEach((v, index) => {

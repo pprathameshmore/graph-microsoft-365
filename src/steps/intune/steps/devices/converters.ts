@@ -1,5 +1,4 @@
 import {
-  createDirectRelationship,
   createIntegrationEntity,
   createMappedRelationship,
   Entity,
@@ -9,12 +8,11 @@ import {
 import { ManagedDevice } from '@microsoft/microsoft-graph-types-beta';
 import { entities as activeDirectoryEntities } from '../../../active-directory';
 import { entities, relationships } from '../../constants';
-import { ManagedDeviceEntity } from '../../types';
 
 // https://docs.microsoft.com/en-us/graph/api/resources/intune-devices-manageddevice?view=graph-rest-1.0&viewFallbackFrom=graph-rest-beta
 export function createManagedDeviceEntity(
   managedDevice: ManagedDevice,
-): ManagedDeviceEntity {
+): Entity {
   return createIntegrationEntity({
     entityData: {
       source: managedDevice,
@@ -79,7 +77,7 @@ export function createManagedDeviceEntity(
         // POTENTIAL: managedDevice.usersLoggedOn - link out to other users perhaps?
       },
     },
-  }) as ManagedDeviceEntity;
+  });
 }
 
 /**
@@ -87,7 +85,7 @@ export function createManagedDeviceEntity(
  * Should be used when the active directory is not being ingested in this integration instance.
  */
 export function createUserDeviceMappedRelationship(
-  managedDeviceEntity: ManagedDeviceEntity,
+  managedDeviceEntity: Entity,
   userId?: string,
   email?: string,
 ): Relationship | undefined {
@@ -112,15 +110,4 @@ export function createUserDeviceMappedRelationship(
         },
       })
     : undefined;
-}
-
-export function createUserDeviceDirectRelationship(
-  managedDeviceEntity: ManagedDeviceEntity,
-  userEntity: Entity,
-): Relationship {
-  return createDirectRelationship({
-    _class: relationships.USER_HAS_DEVICE._class,
-    from: userEntity,
-    to: managedDeviceEntity,
-  });
 }

@@ -4,11 +4,13 @@ import {
 } from '@jupiterone/integration-sdk-testing';
 import { setupAzureRecording } from '../../../../../../test/recording';
 import { config } from '../../../../../../test/config';
-import { fetchNonComplianceFindings, noncomplianceFindingSteps } from '..';
+import { fetchNonComplianceFindings } from '..';
 import { fetchDevices } from '../../devices';
 import { fetchDeviceConfigurations } from '../../deviceConfigurations';
 import { entities, relationships } from '../../../constants';
 import { Entity } from '@jupiterone/integration-sdk-core';
+import { isEqual } from 'lodash';
+import { ensureArray } from '../../../../../../test/ensureArray';
 
 let recording: Recording;
 
@@ -31,30 +33,24 @@ describe('fetchNonComplianceFindings', () => {
     await fetchNonComplianceFindings(context);
 
     const noncomplianceFindingEntities = context.jobState.collectedEntities.filter(
-      (e) => {
-        return e._class.includes('Finding');
-      },
+      (e) =>
+        isEqual(e._class, ensureArray(entities.NONCOMPLIANCE_FINDING._class)),
     );
     const noncomplianceFindingDeviceRelationships = context.jobState.collectedRelationships.filter(
-      (r) => {
-        return r._type.includes(
-          relationships.DEVICE_USES_DEVICE_CONFIGURATION._type,
-        );
-      },
+      (r) =>
+        isEqual(r._type, relationships.DEVICE_USES_DEVICE_CONFIGURATION._type),
     );
     const noncomplianceFindingDeviceConfigurationRelationships = context.jobState.collectedRelationships.filter(
-      (r) => {
-        return r._type.includes(
-          relationships.DEVICE_USES_DEVICE_CONFIGURATION._type,
-        );
-      },
+      (r) =>
+        isEqual(
+          r._type,
+          relationships.DEVICE_CONFIGURATION_IDENTIFIED_NONCOMPLIANCE_FINDING
+            ._type,
+        ),
     );
     const deviceDeviceConfigurationRelationships = context.jobState.collectedRelationships.filter(
-      (r) => {
-        return r._type.includes(
-          relationships.DEVICE_USES_DEVICE_CONFIGURATION._type,
-        );
-      },
+      (r) =>
+        isEqual(r._type, relationships.DEVICE_HAS_NONCOMPLIANCE_FINDING._type),
     );
 
     // Check that we have Noncompliance Findings
