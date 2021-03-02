@@ -2,6 +2,8 @@ import {
   Step,
   IntegrationStepExecutionContext,
   createDirectRelationship,
+  Entity,
+  JobState,
 } from '@jupiterone/integration-sdk-core';
 import { IntegrationConfig, IntegrationStepContext } from '../../../../types';
 import { DeviceManagementIntuneClient } from '../../clients/deviceManagementIntuneClient';
@@ -12,6 +14,7 @@ import {
 } from './converters';
 import { last } from 'lodash';
 import { deviceIsRelatedToConfig, findingIsOpen } from './utils';
+import { DeviceConfiguration } from '@microsoft/microsoft-graph-types-beta';
 
 export async function fetchDeviceConfigurationsAndFindings(
   executionContext: IntegrationStepContext,
@@ -30,23 +33,16 @@ export async function fetchDeviceConfigurationsAndFindings(
           const deviceEntity = await jobState.findEntity(deviceId);
 
           if (!deviceEntity) {
-            {
-              logger.warn(
-                { deviceId, deviceStatus },
-                'Error creating Device -> DeviceConfiguration relationship: deviceEntity does note exist',
-              );
-            }
+            logger.warn(
+              { deviceId, deviceStatus },
+              'Error creating Device -> DeviceConfiguration relationship: deviceEntity does note exist',
+            );
           } else if (deviceIsRelatedToConfig(deviceStatus.status)) {
             // Only once we know the configuration is attached to a device do we add it to the jobstate
-            let deviceConfigurationEntity = deviceConfiguration.id
-              ? await jobState.findEntity(deviceConfiguration.id)
-              : undefined;
-            if (!deviceConfigurationEntity) {
-              deviceConfigurationEntity = createDeviceConfigurationEntity(
-                deviceConfiguration,
-              );
-              await jobState.addEntity(deviceConfigurationEntity);
-            }
+            const deviceConfigurationEntity = await findOrCreateDeviceConfigurationEntity(
+              deviceConfiguration,
+              jobState,
+            );
 
             await jobState.addRelationship(
               createDirectRelationship({
@@ -87,6 +83,22 @@ export async function fetchDeviceConfigurationsAndFindings(
       );
     },
   );
+}
+
+async function findOrCreateDeviceConfigurationEntity(
+  deviceConfiguration: DeviceConfiguration,
+  jobState: JobState,
+): Promise<Entity> {
+  let deviceConfigurationEntity = deviceConfiguration.id
+    ? await jobState.findEntity(deviceConfiguration.id)
+    : undefined;
+  if (!deviceConfigurationEntity) {
+    deviceConfigurationEntity = createDeviceConfigurationEntity(
+      deviceConfiguration,
+    );
+    await jobState.addEntity(deviceConfigurationEntity);
+  }
+  return deviceConfigurationEntity;
 }
 
 export const deviceConfigurationAndFindingsSteps: Step<
