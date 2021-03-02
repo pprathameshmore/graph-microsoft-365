@@ -7,8 +7,8 @@ import { entities as activeDirectoryEntities } from '../active-directory';
 
 export const steps: { [k: string]: string } = {
   FETCH_DEVICES: 'managed-devices',
-  FETCH_DEVICE_CONFIGURATIONS: 'device-configurations',
-  FETCH_NONCOMPLIANCE_FINDINGS: 'noncompliance-findings',
+  FETCH_DEVICE_CONFIGURATIONS_AND_FINDINGS:
+    'device-configurations-and-findings',
 };
 
 export const entities: { [k: string]: StepEntityMetadata } = {

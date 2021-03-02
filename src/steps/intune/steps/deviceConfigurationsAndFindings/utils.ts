@@ -22,6 +22,24 @@ export const OPEN_DEVICE_STATUSES: DeviceConfigurationDeviceStatus['status'][] =
 ];
 
 /**
+ * Device statuses that indicate that there is not a relationship between a device and config
+ */
+export const UNRELATED_DEVICE_STATUSES: DeviceConfigurationDeviceStatus['status'][] = [
+  'unknown',
+  'notAssigned',
+  'notApplicable',
+];
+
+/**
+ * Determines if a device is related to a configuration based on the device state status on the config
+ */
+export function deviceIsRelatedToConfig(
+  status: DeviceConfigurationDeviceStatus['status'],
+) {
+  return ![...UNRELATED_DEVICE_STATUSES, undefined].includes(status);
+}
+
+/**
  * Determines if the finding is open based of the device status
  */
 export function findingIsOpen(

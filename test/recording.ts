@@ -52,25 +52,26 @@ function mutateRecordingEntry(entry: RecordingEntry): void {
 
   const responseJson = JSON.parse(responseText);
 
-  const keysToRedact = [
-    'serialNumber',
-    'deviceName',
-    'emailAddress',
-    'userPrincipalName',
-    'imei',
-    'phoneNumber',
-    'wiFiMacAddress',
-    'meid',
-    'managedDeviceName',
-    'userName',
-    'deviceDisplayName',
-    'hardwareSerial',
-  ];
+  const DEFAULT_REDACT = '[REDACTED]';
+  const keysToRedactMap = new Map();
+  keysToRedactMap.set('serialNumber', DEFAULT_REDACT);
+  keysToRedactMap.set('deviceName', DEFAULT_REDACT);
+  keysToRedactMap.set('emailAddress', 'redacted@email.com');
+  keysToRedactMap.set('userPrincipalName', DEFAULT_REDACT);
+  keysToRedactMap.set('imei', DEFAULT_REDACT);
+  keysToRedactMap.set('phoneNumber', DEFAULT_REDACT);
+  keysToRedactMap.set('wiFiMacAddress', DEFAULT_REDACT);
+  keysToRedactMap.set('meid', DEFAULT_REDACT);
+  keysToRedactMap.set('managedDeviceName', DEFAULT_REDACT);
+  keysToRedactMap.set('userName', DEFAULT_REDACT);
+  keysToRedactMap.set('deviceDisplayName', DEFAULT_REDACT);
+  keysToRedactMap.set('hardwareSerial', DEFAULT_REDACT);
+
   if (responseJson?.value) {
-    responseJson.value.forEach((v, index) => {
-      keysToRedact.forEach((keyToRedact) => {
-        if (v[keyToRedact]) {
-          responseJson.value[index][keyToRedact] = '[REDACTED]';
+    responseJson.value.forEach((responseValue, index) => {
+      keysToRedactMap.forEach((redactionValue, keyToRedact) => {
+        if (responseValue[keyToRedact]) {
+          responseJson.value[index][keyToRedact] = redactionValue;
         }
       });
     });

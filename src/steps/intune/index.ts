@@ -1,9 +1,7 @@
-import { deviceConfigurationSteps } from './steps/deviceConfigurations';
+import { deviceConfigurationAndFindingsSteps } from './steps/deviceConfigurationsAndFindings';
 import { deviceSteps } from './steps/devices';
-import { noncomplianceFindingSteps } from './steps/noncomplianceFindings';
 
 export const intuneSteps = [
   ...deviceSteps,
-  ...deviceConfigurationSteps,
-  ...noncomplianceFindingSteps,
+  ...deviceConfigurationAndFindingsSteps,
 ];

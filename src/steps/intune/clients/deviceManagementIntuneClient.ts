@@ -44,7 +44,6 @@ export class DeviceManagementIntuneClient extends GraphClient {
   ): Promise<void> {
     return this.iterateResources({
       resourceUrl: `/deviceManagement/deviceConfigurations`,
-      query: { $expand: 'deviceStatusOverview' },
       callback,
     });
   }

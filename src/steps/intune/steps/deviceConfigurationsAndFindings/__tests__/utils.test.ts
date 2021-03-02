@@ -22,11 +22,11 @@ describe('findingIsOpen', () => {
     });
   });
 
-  test('returns `undfined` if no deviceStatus is passed in', () => {
+  test('returns `unedfined` if no deviceStatus is passed in', () => {
     expect(findingIsOpen(undefined, logger)).toBeUndefined();
   });
 
-  test('returns `undfined` if an unknown deviceStatus is passed in', () => {
+  test('returns `undefined` if an unknown deviceStatus is passed in', () => {
     expect(
       findingIsOpen(
         ('fakeStatus' as unknown) as DeviceConfigurationDeviceStatus['status'],
