@@ -21,17 +21,17 @@ export const entities: Record<string, StepEntityMetadata> = {
   },
   GROUP: {
     resourceName: '[AD] Group',
-    _type: 'microsoft_365_user_group',
+    _type: 'azure_user_group',
     _class: 'UserGroup',
   },
   USER: {
     resourceName: '[AD] User',
-    _type: 'microsoft_365_user',
+    _type: 'azure_user',
     _class: 'User',
   },
   ORGANIZATION: {
     resourceName: '[AD] Organization',
-    _type: 'microsoft_365_organization',
+    _type: 'azure_organization',
     _class: 'Organization',
   },
   /**
@@ -40,38 +40,38 @@ export const entities: Record<string, StepEntityMetadata> = {
    */
   GROUP_MEMEBER: {
     resourceName: '[AD] Group Member',
-    _type: 'microsoft_365_group_member',
+    _type: 'azure_group_member',
     _class: 'User',
   },
 };
 
 export const relationships: Record<string, StepRelationshipMetadata> = {
   ACCOUNT_HAS_USER: {
-    _type: 'microsoft_365_account_has_user',
+    _type: 'microsoft_365_account_has_azure_user',
     sourceType: entities.ACCOUNT._type,
     _class: RelationshipClass.HAS,
     targetType: entities.USER._type,
   },
   ACCOUNT_HAS_GROUP: {
-    _type: 'microsoft_365_account_has_group',
+    _type: 'microsoft_365_account_has_azure_group',
     sourceType: entities.ACCOUNT._type,
     _class: RelationshipClass.HAS,
     targetType: entities.GROUP._type,
   },
   GROUP_HAS_MEMBER: {
-    _type: 'microsoft_365_group_has_member',
+    _type: 'azure_group_has_member',
     sourceType: entities.GROUP._type,
     _class: RelationshipClass.HAS,
     targetType: entities.GROUP_MEMEBER._type,
   },
   GROUP_HAS_USER: {
-    _type: 'microsoft_365_group_has_user',
+    _type: 'azure_group_has_user',
     sourceType: entities.GROUP._type,
     _class: RelationshipClass.HAS,
     targetType: entities.USER._type,
   },
   GROUP_HAS_GROUP: {
-    _type: 'microsoft_365_group_has_group',
+    _type: 'azure_group_has_group',
     sourceType: entities.GROUP._type,
     _class: RelationshipClass.HAS,
     targetType: entities.GROUP._type,

@@ -1,5 +1,10 @@
 import { GraphClient } from '../../../ms-graph/client';
-import { ManagedDevice } from '@microsoft/microsoft-graph-types-beta';
+import {
+  DeviceConfiguration,
+  DeviceConfigurationDeviceOverview,
+  DeviceConfigurationDeviceStatus,
+  ManagedDevice,
+} from '@microsoft/microsoft-graph-types-beta';
 
 export class DeviceManagementIntuneClient extends GraphClient {
   //********** MANAGED DEVICES **********/
@@ -28,6 +33,34 @@ export class DeviceManagementIntuneClient extends GraphClient {
   //********** DEVICE CONFIGURATIONS **********/
   // https://docs.microsoft.com/en-us/graph/api/resources/intune-shared-deviceconfiguration?view=graph-rest-beta
   // DeviceManagementConfiguration.Read.All
+
+  // https://docs.microsoft.com/en-us/graph/api/intune-shared-deviceconfiguration-list?view=graph-rest-beta
+  public async iterateDeviceConfigurations(
+    callback: (
+      deviceConfiguration: DeviceConfiguration & {
+        deviceStatusOverview: DeviceConfigurationDeviceOverview;
+      },
+    ) => void | Promise<void>,
+  ): Promise<void> {
+    return this.iterateResources({
+      resourceUrl: `/deviceManagement/deviceConfigurations`,
+      callback,
+    });
+  }
+
+  // NOTE: This turns into a relationship with MANAGED DEVICE
+  // https://docs.microsoft.com/en-us/graph/api/intune-deviceconfig-deviceconfigurationdevicestatus-list?view=graph-rest-beta
+  public async iterateDeviceConfigurationDeviceStatuses(
+    deviceConfigurationId: string,
+    callback: (
+      deviceConfigurationDeviceStatus: DeviceConfigurationDeviceStatus,
+    ) => void | Promise<void>,
+  ): Promise<void> {
+    return this.iterateResources({
+      resourceUrl: `/deviceManagement/deviceConfigurations/${deviceConfigurationId}/deviceStatuses`,
+      callback,
+    });
+  }
 
   //**********  DEVICE COMPLIANCE SCRIPTS **********/
   // https://docs.microsoft.com/en-us/graph/api/resources/intune-devices-devicecompliancescript?view=graph-rest-beta

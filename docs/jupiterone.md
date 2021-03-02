@@ -114,26 +114,31 @@ https://github.com/JupiterOne/sdk/blob/master/docs/integrations/development.md
 
 The following entities are created:
 
-| Resources         | Entity `_type`               | Entity `_class` |
-| ----------------- | ---------------------------- | --------------- |
-| Managed Device    | `intune_managed_device`      | `Device`        |
-| [AD] Account      | `microsoft_365_account`      | `Account`       |
-| [AD] Group        | `microsoft_365_user_group`   | `UserGroup`     |
-| [AD] Group Member | `microsoft_365_group_member` | `User`          |
-| [AD] User         | `microsoft_365_user`         | `User`          |
+| Resources             | Entity `_type`                 | Entity `_class` |
+| --------------------- | ------------------------------ | --------------- |
+| Device Configuration  | `intune_device_configuration`  | `Configuration` |
+| Managed Device        | `intune_managed_device`        | `Device`        |
+| Noncompliance Finding | `intune_noncompliance_finding` | `Finding`       |
+| [AD] Account          | `microsoft_365_account`        | `Account`       |
+| [AD] Group            | `azure_user_group`             | `UserGroup`     |
+| [AD] Group Member     | `azure_group_member`           | `User`          |
+| [AD] User             | `azure_user`                   | `User`          |
 
 ### Relationships
 
 The following relationships are created/mapped:
 
-| Source Entity `_type`      | Relationship `_class` | Target Entity `_type`        |
-| -------------------------- | --------------------- | ---------------------------- |
-| `microsoft_365_account`    | **HAS**               | `microsoft_365_user_group`   |
-| `microsoft_365_account`    | **HAS**               | `microsoft_365_user`         |
-| `microsoft_365_user_group` | **HAS**               | `microsoft_365_user_group`   |
-| `microsoft_365_user_group` | **HAS**               | `microsoft_365_group_member` |
-| `microsoft_365_user_group` | **HAS**               | `microsoft_365_user`         |
-| `microsoft_365_user`       | **HAS**               | `intune_managed_device`      |
+| Source Entity `_type`         | Relationship `_class` | Target Entity `_type`          |
+| ----------------------------- | --------------------- | ------------------------------ |
+| `azure_user_group`            | **HAS**               | `azure_user_group`             |
+| `azure_user_group`            | **HAS**               | `azure_group_member`           |
+| `azure_user_group`            | **HAS**               | `azure_user`                   |
+| `azure_user`                  | **HAS**               | `intune_managed_device`        |
+| `intune_device_configuration` | **IDENTIFIED**        | `intune_noncompliance_finding` |
+| `intune_managed_device`       | **HAS**               | `intune_noncompliance_finding` |
+| `intune_managed_device`       | **USES**              | `intune_device_configuration`  |
+| `microsoft_365_account`       | **HAS**               | `azure_user_group`             |
+| `microsoft_365_account`       | **HAS**               | `azure_user`                   |
 
 <!--
 ********************************************************************************
