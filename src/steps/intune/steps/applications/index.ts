@@ -2,11 +2,17 @@ import {
   Step,
   IntegrationStepExecutionContext,
   createDirectRelationship,
+  JobState,
+  Entity,
 } from '@jupiterone/integration-sdk-core';
 import { IntegrationConfig, IntegrationStepContext } from '../../../../types';
 import { entities, relationships, steps } from '../../constants';
-import { createManagedApplicationEntity } from './converters';
+import {
+  createDetectedApplicationEntity,
+  createManagedApplicationEntity,
+} from './converters';
 import { DeviceManagementIntuneClient } from '../../clients/deviceManagementIntuneClient';
+import { DetectedApp } from '@microsoft/microsoft-graph-types-beta';
 
 export async function fetchManagedApplications(
   executionContext: IntegrationStepContext,
@@ -52,7 +58,56 @@ export async function fetchManagedApplications(
   });
 }
 
-export const managedApplicationSteps: Step<
+export async function fetchDetectedApplications(
+  executionContext: IntegrationStepContext,
+): Promise<void> {
+  const { logger, instance, jobState } = executionContext;
+  const intuneClient = new DeviceManagementIntuneClient(
+    logger,
+    instance.config,
+  );
+  await jobState.iterateEntities(
+    { _type: entities.DEVICE._type },
+    async (deviceEntity) => {
+      await intuneClient.iterateDetectedApps(
+        deviceEntity.id as string,
+        async ({ detectedApps }) => {
+          for (const detectedApp of detectedApps ?? []) {
+            // Ingest all assigned or line of business apps reguardless if a device has installed it or not yet
+            const detectedAppEntity = await findOrCreateDetectedApplicationEntity(
+              detectedApp,
+              jobState,
+            );
+
+            await jobState.addRelationship(
+              createDirectRelationship({
+                _class: relationships.DEVICE_HAS_DETECTED_APPLICATION._class,
+                from: deviceEntity,
+                to: detectedAppEntity,
+              }),
+            );
+          }
+        },
+      );
+    },
+  );
+}
+
+async function findOrCreateDetectedApplicationEntity(
+  detectedApp: DetectedApp,
+  jobState: JobState,
+): Promise<Entity> {
+  let detectedAppEntity = detectedApp.id
+    ? await jobState.findEntity(detectedApp.id)
+    : undefined;
+  if (!detectedAppEntity) {
+    detectedAppEntity = createDetectedApplicationEntity(detectedApp);
+    await jobState.addEntity(detectedAppEntity);
+  }
+  return detectedAppEntity;
+}
+
+export const applicationSteps: Step<
   IntegrationStepExecutionContext<IntegrationConfig>
 >[] = [
   {
@@ -62,5 +117,13 @@ export const managedApplicationSteps: Step<
     relationships: [relationships.DEVICE_ASSIGNED_MANAGED_APPLICATION],
     dependsOn: [steps.FETCH_DEVICES],
     executionHandler: fetchManagedApplications,
+  },
+  {
+    id: steps.FETCH_DETECTED_APPLICATIONS,
+    name: 'Detected Applications',
+    entities: [entities.DETECTED_APPLICATION],
+    relationships: [relationships.DEVICE_HAS_DETECTED_APPLICATION],
+    dependsOn: [steps.FETCH_DEVICES],
+    executionHandler: fetchDetectedApplications,
   },
 ];

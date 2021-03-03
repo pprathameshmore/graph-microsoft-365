@@ -12,15 +12,19 @@ and this project adheres to
 
 ### Added
 
-- Ingetsion of `Managed Device`, `Device Configuration`, and
-  `Noncompliance Finding` entities
+- Ingestion of `Managed Device`, `Device Configuration`,
+  `Noncompliance Finding`, `Detected Application` and `Managed Application`
+  entities
 - Ingestion of `UserHasDevice`, `DeviceUsesDeviceConfiguration`,
-  `DeviceConfigurationIdentifiesNoncomplianceFinding` and
-  `DeviceHasNoncompliancceFinding` relationships
+  `DeviceConfigurationIdentifiesNoncomplianceFinding`,
+  `DeviceHasNoncompliancceFinding`, `DeviceHasDetectedApplication`, and
+  `DeviceAssignedManagedApplication` relationships
 
 ### Updated
 
 - Updated jupiterone.md documentation.
+- Microsoft Graph client to handle individual api calls as well as iterative
+  calls.
 
 ### Changed
 

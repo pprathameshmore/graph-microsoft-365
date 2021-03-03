@@ -9,7 +9,7 @@ import { fetchDevices } from '../../devices';
 import { entities, relationships } from '../../../constants';
 import { Entity } from '@jupiterone/integration-sdk-core';
 import { isEqual } from 'lodash';
-import { ensureArray } from '../../../../../../test/ensureArray';
+import { ensureArray } from '../../../../../utils/ensureArray';
 
 let recording: Recording;
 

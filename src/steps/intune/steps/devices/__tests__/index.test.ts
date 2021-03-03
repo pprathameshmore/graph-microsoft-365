@@ -7,7 +7,7 @@ import { config } from '../../../../../../test/config';
 import { fetchDevices } from '..';
 import { entities } from '../../../constants';
 import { fetchAccount, fetchUsers } from '../../../../active-directory';
-import { ensureArray } from '../../../../../../test/ensureArray';
+import { ensureArray } from '../../../../../utils/ensureArray';
 import { isEqual, omit } from 'lodash';
 
 let recording: Recording;

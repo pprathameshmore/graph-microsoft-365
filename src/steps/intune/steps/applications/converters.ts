@@ -10,9 +10,9 @@ import {
   AndroidLobApp,
   WindowsPhoneXAP,
   MobileLobApp,
+  DetectedApp,
 } from '@microsoft/microsoft-graph-types-beta';
 import { entities } from '../../constants';
-import { contains } from 'lodash';
 
 // https://docs.microsoft.com/en-us/graph/api/resources/intune-shared-mobileapp?view=graph-rest-beta
 export function createManagedApplicationEntity(
@@ -57,6 +57,26 @@ export function createManagedApplicationEntity(
         committedContentVersion: (managedApp as MobileLobApp)
           .committedContentVersion,
         packageId: (managedApp as AndroidLobApp).packageId,
+      },
+    },
+  });
+}
+
+// https://docs.microsoft.com/en-us/graph/api/resources/intune-devices-detectedapp?view=graph-rest-beta
+export function createDetectedApplicationEntity(
+  detectedApp: DetectedApp,
+): Entity {
+  return createIntegrationEntity({
+    entityData: {
+      source: detectedApp,
+      assign: {
+        _class: entities.DETECTED_APPLICATION._class,
+        _type: entities.DETECTED_APPLICATION._type,
+        id: detectedApp.id,
+        name: detectedApp.displayName,
+        displayName: detectedApp.displayName as string,
+        version: detectedApp.version,
+        sizeInByte: detectedApp.sizeInByte,
       },
     },
   });
