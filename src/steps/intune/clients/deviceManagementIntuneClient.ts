@@ -57,7 +57,7 @@ export class DeviceManagementIntuneClient extends GraphClient {
     ) => void | Promise<void>,
   ): Promise<void> {
     return this.iterateResources({
-      resourceUrl: `/deviceManagement/deviceConfigurations/${deviceConfigurationId}/deviceStatuses`,
+      resourceUrl: `/deviceManagement/deviceConfigurations/${deviceConfigurationId}/deviceStatuses`, // Filters are not supported in this enpoint
       callback,
     });
   }
