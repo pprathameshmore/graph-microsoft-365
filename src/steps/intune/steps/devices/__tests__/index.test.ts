@@ -7,7 +7,7 @@ import { config } from '../../../../../../test/config';
 import { fetchDevices } from '..';
 import { entities } from '../../../constants';
 import { fetchAccount, fetchUsers } from '../../../../active-directory';
-import { ensureArray } from '../../../../../../test/ensureArray';
+import { toArray } from '../../../../../utils/toArray';
 import { isEqual, omit } from 'lodash';
 
 let recording: Recording;
@@ -29,7 +29,7 @@ describe('fetchDevices', () => {
     await fetchDevices(context);
 
     const managedDevices = context.jobState.collectedEntities.filter((e) =>
-      isEqual(e._class, ensureArray(entities.DEVICE._class)),
+      isEqual(e._class, toArray(entities.DEVICE._class)),
     );
     const managedDeviceRelationships = context.jobState.collectedRelationships.filter(
       (r) => {
@@ -70,7 +70,7 @@ describe('fetchDevices', () => {
     await fetchDevices(context);
 
     const managedDevices = context.jobState.collectedEntities.filter((e) =>
-      isEqual(e._class, ensureArray(entities.DEVICE._class)),
+      isEqual(e._class, toArray(entities.DEVICE._class)),
     );
     const managedDeviceRelationships = context.jobState.collectedRelationships.filter(
       (r) => {
