@@ -97,9 +97,9 @@ async function findOrCreateDetectedApplicationEntity(
   detectedApp: DetectedApp,
   jobState: JobState,
 ): Promise<Entity> {
-  let detectedAppEntity = detectedApp.id
-    ? await jobState.findEntity(detectedApp.id)
-    : undefined;
+  let detectedAppEntity =
+    detectedApp.id && (await jobState.findEntity(detectedApp.id));
+
   if (!detectedAppEntity) {
     detectedAppEntity = createDetectedApplicationEntity(detectedApp);
     await jobState.addEntity(detectedAppEntity);

@@ -7,7 +7,7 @@ import { config } from '../../../../../../test/config';
 import { fetchDevices } from '../../devices';
 import { entities, relationships } from '../../../constants';
 import { isEqual } from 'lodash';
-import { ensureArray } from '../../../../../utils/ensureArray';
+import { toArray } from '../../../../../utils/toArray';
 import { fetchDetectedApplications, fetchManagedApplications } from '..';
 
 let recording: Recording;
@@ -30,8 +30,7 @@ describe('fetchManagedApplications', () => {
     await fetchManagedApplications(context);
 
     const managedApplicationEntities = context.jobState.collectedEntities.filter(
-      (e) =>
-        isEqual(e._class, ensureArray(entities.MANAGED_APPLICATION._class)),
+      (e) => isEqual(e._class, toArray(entities.MANAGED_APPLICATION._class)),
     );
     const deviceApplicationRelationships = context.jobState.collectedRelationships.filter(
       (r) =>
@@ -71,8 +70,7 @@ describe('fetchDetectedApplications', () => {
     await fetchDetectedApplications(context);
 
     const detectedApplicationEntities = context.jobState.collectedEntities.filter(
-      (e) =>
-        isEqual(e._class, ensureArray(entities.DETECTED_APPLICATION._class)),
+      (e) => isEqual(e._class, toArray(entities.DETECTED_APPLICATION._class)),
     );
     const deviceApplicationRelationships = context.jobState.collectedRelationships.filter(
       (r) =>

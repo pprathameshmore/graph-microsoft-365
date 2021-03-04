@@ -89,9 +89,10 @@ async function findOrCreateDeviceConfigurationEntity(
   deviceConfiguration: DeviceConfiguration,
   jobState: JobState,
 ): Promise<Entity> {
-  let deviceConfigurationEntity = deviceConfiguration.id
-    ? await jobState.findEntity(deviceConfiguration.id)
-    : undefined;
+  let deviceConfigurationEntity =
+    deviceConfiguration.id &&
+    (await jobState.findEntity(deviceConfiguration.id));
+
   if (!deviceConfigurationEntity) {
     deviceConfigurationEntity = createDeviceConfigurationEntity(
       deviceConfiguration,

@@ -9,7 +9,7 @@ import { fetchDevices } from '../../devices';
 import { entities, relationships } from '../../../constants';
 import { Entity } from '@jupiterone/integration-sdk-core';
 import { isEqual } from 'lodash';
-import { ensureArray } from '../../../../../utils/ensureArray';
+import { toArray } from '../../../../../utils/toArray';
 
 let recording: Recording;
 
@@ -31,12 +31,10 @@ describe('fetchDeviceConfigurationsAndFindings', () => {
     await fetchDeviceConfigurationsAndFindings(context);
 
     const deviceConfigEntities = context.jobState.collectedEntities.filter(
-      (e) =>
-        isEqual(e._class, ensureArray(entities.DEVICE_CONFIGURATION._class)),
+      (e) => isEqual(e._class, toArray(entities.DEVICE_CONFIGURATION._class)),
     );
     const noncomplianceFindingEntities = context.jobState.collectedEntities.filter(
-      (e) =>
-        isEqual(e._class, ensureArray(entities.NONCOMPLIANCE_FINDING._class)),
+      (e) => isEqual(e._class, toArray(entities.NONCOMPLIANCE_FINDING._class)),
     );
     const deviceDeviceConfigRelationships = context.jobState.collectedRelationships.filter(
       (r) =>

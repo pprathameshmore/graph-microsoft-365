@@ -12,7 +12,7 @@ import {
 } from '@microsoft/microsoft-graph-client';
 import { Organization } from '@microsoft/microsoft-graph-types';
 import 'isomorphic-unfetch';
-import { ensureArray } from '../utils/ensureArray';
+import { toArray } from '../utils/toArray';
 
 import { ClientConfig } from './types';
 
@@ -133,7 +133,7 @@ export class GraphClient {
 
     const response = await api.get();
     if (response) {
-      for (const value of ensureArray(response.value ?? response)) {
+      for (const value of toArray(response.value ?? response)) {
         await callback(value);
       }
       return response['@odata.nextLink'];

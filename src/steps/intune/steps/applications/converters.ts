@@ -1,6 +1,7 @@
 import {
   createIntegrationEntity,
   Entity,
+  parseTimePropertyValue,
 } from '@jupiterone/integration-sdk-core';
 import {
   AndroidManagedStoreApp,
@@ -37,12 +38,9 @@ export function createManagedApplicationEntity(
           (managedApp as AndroidManagedStoreApp).appStoreUrl,
         publisher: managedApp.publisher,
         isPublished: managedApp.publishingState === 'published', // Essentially if it is available for download
-        createdOn:
-          managedApp.createdDateTime && +new Date(managedApp.createdDateTime),
-        lastUpdatedOn:
-          managedApp.lastModifiedDateTime &&
-          +new Date(managedApp.lastModifiedDateTime),
-        isFeatured: managedApp.isFeatured, // Indicates that they are featuring this app on their Company Portal
+        createdOn: parseTimePropertyValue(managedApp.createdDateTime),
+        lastUpdatedOn: parseTimePropertyValue(managedApp.lastModifiedDateTime),
+        featured: managedApp.isFeatured, // Indicates that they are featuring this app on their Company Portal
         privacyInformationURL: managedApp.privacyInformationUrl,
         informationURL: managedApp.informationUrl,
         owner: managedApp.owner || undefined, // Ex: Microsoft, Google, Facebook...
