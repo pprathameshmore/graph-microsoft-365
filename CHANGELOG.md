@@ -12,25 +12,38 @@ and this project adheres to
 
 ### Added
 
-- Ingestion of `Managed Device`, `Device Configuration`,
-  `Noncompliance Finding`, `Detected Application` and `Managed Application`
-  entities
-- Ingestion of `UserHasDevice`, `DeviceUsesDeviceConfiguration`,
-  `DeviceConfigurationIdentifiesNoncomplianceFinding`,
-  `DeviceHasNoncompliancceFinding`, `DeviceHasDetectedApplication`, and
-  `DeviceAssignedManagedApplication` relationships
+- Support for ingesting the following **new** resources
+
+- New relationships
+
+  - Intune
+    - `azure_user` **HAS** `intune_managed_device`
+    - `intune_managed_device` **USES** `intune_device_configuration`
+    - `intune_device_configuration` **IDENTIFIED**
+      `intune_noncompliance_finding`
+    - `intune_managed_device` **HAS** `intune_noncompliance_finding`
+    - `intune_managed_device` **HAS** `intune_detected_application`
+    - `intune_managed_device` **ASSIGNED** `intune_managed_application`
+
+- New properties added to resources:
+  - Intune
+    - `intune_managed_device`
+    - `intune_device_configuration`
+    - `intune_noncompliance_finding`
+    - `intune_managed_application`
+    - `intune_detected_application`
 
 ### Updated
 
 - Updated jupiterone.md documentation.
 - Microsoft Graph client to handle individual api calls as well as iterative
   calls.
+- The severity of an `unknown` finding from 1 to 4
 
 ### Changed
 
-- Changed Azure Active Directory entities and relationships to have a type of
-  `azure_` to match
-  [the Azure graph project](https://github.com/JupiterOne/graph-azure)
+- Azure Active Directory entities and relationships to have a type of `azure_`
+  to match [the Azure graph project](https://github.com/JupiterOne/graph-azure)
 
 ### Fixed
 
