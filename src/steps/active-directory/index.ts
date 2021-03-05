@@ -66,7 +66,7 @@ export async function fetchGroups(
 
   const accountEntity = await jobState.getData<Entity>(DATA_ACCOUT_TYPE);
   if (!accountEntity) {
-    logger.warn('Error fetching users: accountEntity does not exist');
+    logger.warn('Error fetching groups: accountEntity does not exist');
     return;
   }
   await graphClient.iterateGroups(async (group) => {

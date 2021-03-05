@@ -8,7 +8,13 @@ and this project adheres to
 
 ## [Unreleased]
 
-## 2.1.0 - 2020-03-01
+## 2.1.1 - 2020-03-05
+
+### Added
+
+- `compliance` key to `intune_managed_device` entities
+
+## 2.1.0 - 2020-03-05
 
 ### Changed
 
