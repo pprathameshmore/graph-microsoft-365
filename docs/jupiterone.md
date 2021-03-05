@@ -114,17 +114,17 @@ https://github.com/JupiterOne/sdk/blob/master/docs/integrations/development.md
 
 The following entities are created:
 
-| Resources             | Entity `_type`                 | Entity `_class` |
-| --------------------- | ------------------------------ | --------------- |
-| Detected Application  | `intune_detected_application`  | `Application`   |
-| Device Configuration  | `intune_device_configuration`  | `Configuration` |
-| Managed Application   | `intune_managed_application`   | `Application`   |
-| Managed Device        | `intune_managed_device`        | `Device`        |
-| Noncompliance Finding | `intune_noncompliance_finding` | `Finding`       |
-| [AD] Account          | `microsoft_365_account`        | `Account`       |
-| [AD] Group            | `azure_user_group`             | `UserGroup`     |
-| [AD] Group Member     | `azure_group_member`           | `User`          |
-| [AD] User             | `azure_user`                   | `User`          |
+| Resources             | Entity `_type`                 | Entity `_class`  |
+| --------------------- | ------------------------------ | ---------------- |
+| Detected Application  | `intune_detected_application`  | `Application`    |
+| Device Configuration  | `intune_device_configuration`  | `Configuration`  |
+| Managed Application   | `intune_managed_application`   | `Application`    |
+| Managed Device        | `intune_managed_device`        | `Device`, `Host` |
+| Noncompliance Finding | `intune_noncompliance_finding` | `Finding`        |
+| [AD] Account          | `microsoft_365_account`        | `Account`        |
+| [AD] Group            | `azure_user_group`             | `UserGroup`      |
+| [AD] Group Member     | `azure_group_member`           | `User`           |
+| [AD] User             | `azure_user`                   | `User`           |
 
 ### Relationships
 

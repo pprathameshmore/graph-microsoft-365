@@ -8,6 +8,13 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 2.1.0 - 2020-03-01
+
+### Changed
+
+- The class of `intune_managed_device` entities from `Device` to
+  `[Device, Host]`
+
 ## 2.0.0 - 2020-03-01
 
 ### Added

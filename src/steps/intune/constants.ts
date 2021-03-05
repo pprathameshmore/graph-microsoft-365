@@ -17,7 +17,7 @@ export const entities: { [k: string]: StepEntityMetadata } = {
   DEVICE: {
     resourceName: 'Managed Device',
     _type: 'intune_managed_device',
-    _class: 'Device',
+    _class: ['Device', 'Host'],
   },
   DEVICE_CONFIGURATION: {
     resourceName: 'Device Configuration',
