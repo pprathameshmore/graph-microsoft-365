@@ -19,6 +19,7 @@ Array [
     "BYOD": true,
     "_class": Array [
       "Device",
+      "Host",
     ],
     "_key": "683dbff1-c8ff-4996-91ae-85484de46cfc",
     "_rawData": Array [
@@ -189,6 +190,7 @@ Array [
     "BYOD": false,
     "_class": Array [
       "Device",
+      "Host",
     ],
     "_key": "1f75329e-51fc-451c-bd40-c457337641a4",
     "_rawData": Array [
@@ -389,6 +391,7 @@ Array [
     "BYOD": true,
     "_class": Array [
       "Device",
+      "Host",
     ],
     "_key": "683dbff1-c8ff-4996-91ae-85484de46cfc",
     "_rawData": Array [
@@ -559,6 +562,7 @@ Array [
     "BYOD": false,
     "_class": Array [
       "Device",
+      "Host",
     ],
     "_key": "1f75329e-51fc-451c-bd40-c457337641a4",
     "_rawData": Array [

@@ -36,7 +36,7 @@ export async function fetchManagedApplications(
         if (!deviceEntity) {
           logger.warn(
             { deviceId, deviceStatus },
-            'Error creating Device -> DeviceConfiguration relationship: deviceEntity does note exist',
+            'Error creating Device -> DeviceConfiguration relationship: deviceEntity does not exist',
           );
           return;
         }

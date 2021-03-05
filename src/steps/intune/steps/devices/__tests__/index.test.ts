@@ -42,7 +42,7 @@ describe('fetchDevices', () => {
     expect(
       managedDevices.map((d) => omit(d, 'userEmails')), // REDACTING the emails messes with the schema validation. Removing for this step.
     ).toMatchGraphObjectSchema({
-      _class: ['Device'],
+      _class: entities.DEVICE._class,
     });
     expect(managedDevices).toMatchSnapshot('managedDevices'); // intentionally the same snapshot as in the 'With Active Directory' test below
 
@@ -83,7 +83,7 @@ describe('fetchDevices', () => {
     expect(
       managedDevices.map((d) => omit(d, 'userEmails')), // REDACTING the emails messes with the schema validation. Removing for this step.
     ).toMatchGraphObjectSchema({
-      _class: ['Device'],
+      _class: entities.DEVICE._class,
     });
     expect(managedDevices).toMatchSnapshot('managedDevices'); // intentionally the same snapshot as in the 'Without Active Directory' test above
 
