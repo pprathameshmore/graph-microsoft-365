@@ -45,6 +45,10 @@ export async function fetchUsers(
   const graphClient = new DirectoryGraphClient(logger, instance.config);
 
   const accountEntity = await jobState.getData<Entity>(DATA_ACCOUT_TYPE);
+  if (!accountEntity) {
+    logger.warn('Error fetching users: accountEntity does not exist');
+    return;
+  }
   await graphClient.iterateUsers(async (user) => {
     const userEntity = createUserEntity(user);
     await jobState.addEntity(userEntity);
@@ -61,6 +65,10 @@ export async function fetchGroups(
   const graphClient = new DirectoryGraphClient(logger, instance.config);
 
   const accountEntity = await jobState.getData<Entity>(DATA_ACCOUT_TYPE);
+  if (!accountEntity) {
+    logger.warn('Error fetching users: accountEntity does not exist');
+    return;
+  }
   await graphClient.iterateGroups(async (group) => {
     const groupEntity = createGroupEntity(group);
     await jobState.addEntity(groupEntity);

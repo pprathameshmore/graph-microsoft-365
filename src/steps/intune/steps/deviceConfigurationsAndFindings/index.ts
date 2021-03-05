@@ -35,7 +35,7 @@ export async function fetchDeviceConfigurationsAndFindings(
           if (!deviceEntity) {
             logger.warn(
               { deviceId, deviceStatus },
-              'Error creating Device -> DeviceConfiguration relationship: deviceEntity does note exist',
+              'Error creating Device -> DeviceConfiguration relationship: deviceEntity does not exist',
             );
           } else if (deviceIsRelatedToConfig(deviceStatus.status)) {
             // Only once we know the configuration is attached to a device do we add it to the jobstate
