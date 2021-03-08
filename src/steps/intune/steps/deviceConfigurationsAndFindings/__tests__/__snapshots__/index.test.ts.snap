@@ -29,6 +29,7 @@ Array [
     "createdOn": 1613586681322,
     "description": "Test configuration policy",
     "displayName": "Test configuration policy",
+    "function": "endpoint-configuration",
     "id": "6aa605f0-744e-4ae1-8031-c6564624c89b",
     "name": "Test configuration policy",
     "version": 1,

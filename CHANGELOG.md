@@ -8,6 +8,23 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- `function` key to `intune_device_configuration` entities
+
+- Support for ingesting the following **new** resources
+
+- New relationships
+
+  - Intune
+    - `intune_managed_device` **ASSIGNED** `intune_compliance_policy`
+    - `intune_compliance_policy` **IDENTIFIED** `intune_noncompliance_finding`
+
+- New entities
+
+  - Intune
+    - `intune_compliance_policy`
+
 ## 2.1.1 - 2020-03-05
 
 ### Added
@@ -38,7 +55,8 @@ and this project adheres to
     - `intune_managed_device` **HAS** `intune_detected_application`
     - `intune_managed_device` **ASSIGNED** `intune_managed_application`
 
-- New properties added to resources:
+- New entities
+
   - Intune
     - `intune_managed_device`
     - `intune_device_configuration`

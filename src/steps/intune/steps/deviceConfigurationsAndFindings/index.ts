@@ -13,7 +13,7 @@ import {
   createDeviceConfigurationEntity,
 } from './converters';
 import { last } from 'lodash';
-import { deviceIsRelatedToConfig, findingIsOpen } from './utils';
+import { deviceIsRelatedToConfig, findingIsOpen } from '../../utils';
 import { DeviceConfiguration } from '@microsoft/microsoft-graph-types-beta';
 
 export async function fetchDeviceConfigurationsAndFindings(
