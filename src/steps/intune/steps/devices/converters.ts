@@ -63,6 +63,11 @@ export function createManagedDeviceEntity(
         managementAgent: managedDevice.managementAgent, //Management channel of the device. Intune, EAS, etc. Possible values are: eas, mdm, easMdm, intuneClient, easIntuneClient, configurationManagerClient, configurationManagerClientMdm, configurationManagerClientMdmEas, unknown, jamf, googleCloudDevicePolicyController
         state: managedDevice.managementState,
         complianceState: managedDevice.complianceState,
+        compliant:
+          managedDevice.complianceState &&
+          ['compliant', 'inGracePeriod'].includes(
+            managedDevice.complianceState,
+          ),
         userId: managedDevice.userId,
         userDisplayName: managedDevice.userDisplayName,
         phoneNumber: managedDevice.phoneNumber,
