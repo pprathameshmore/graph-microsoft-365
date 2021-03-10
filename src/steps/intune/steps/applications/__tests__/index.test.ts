@@ -34,10 +34,9 @@ describe('fetchManagedApplications', () => {
     );
     const deviceApplicationRelationships = context.jobState.collectedRelationships.filter(
       (r) =>
-        isEqual(
-          r._type,
-          relationships.DEVICE_ASSIGNED_MANAGED_APPLICATION._type,
-        ),
+        relationships.MULTI_DEVICE_ASSIGNED_MANAGED_APPLICATION.map(
+          (c) => c._type,
+        ).includes(r._type),
     );
 
     // Check that we have Managed Applications
@@ -74,7 +73,9 @@ describe('fetchDetectedApplications', () => {
     );
     const deviceApplicationRelationships = context.jobState.collectedRelationships.filter(
       (r) =>
-        isEqual(r._type, relationships.DEVICE_HAS_DETECTED_APPLICATION._type),
+        relationships.MULTI_DEVICE_HAS_DETECTED_APPLICATION.map(
+          (c) => c._type,
+        ).includes(r._type),
     );
 
     // Check that we have Detected Applications

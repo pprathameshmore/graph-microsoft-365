@@ -38,7 +38,9 @@ describe('fetchDeviceConfigurationsAndFindings', () => {
     );
     const deviceDeviceConfigRelationships = context.jobState.collectedRelationships.filter(
       (r) =>
-        isEqual(r._type, relationships.DEVICE_USES_DEVICE_CONFIGURATION._type),
+        relationships.MULTI_DEVICE_USES_DEVICE_CONFIGURATION.map(
+          (c) => c._type,
+        ).includes(r._type),
     );
     const deviceConfigFindingRelationships = context.jobState.collectedRelationships.filter(
       (r) =>
@@ -50,7 +52,9 @@ describe('fetchDeviceConfigurationsAndFindings', () => {
     );
     const deviceFindingRelationships = context.jobState.collectedRelationships.filter(
       (r) =>
-        isEqual(r._type, relationships.DEVICE_HAS_NONCOMPLIANCE_FINDING._type),
+        relationships.MULTI_DEVICE_HAS_NONCOMPLIANCE_FINDING.map(
+          (c) => c._type,
+        ).includes(r._type),
     );
 
     // Check that we have Device Configurations

@@ -44,7 +44,7 @@ Array [
     "_fromEntityKey": "683dbff1-c8ff-4996-91ae-85484de46cfc",
     "_key": "683dbff1-c8ff-4996-91ae-85484de46cfc|has|7b521133-f056-40a9-b639-b76afd67e4bb_6aa605f0-744e-4ae1-8031-c6564624c89b_683dbff1-c8ff-4996-91ae-85484de46cfc",
     "_toEntityKey": "7b521133-f056-40a9-b639-b76afd67e4bb_6aa605f0-744e-4ae1-8031-c6564624c89b_683dbff1-c8ff-4996-91ae-85484de46cfc",
-    "_type": "intune_managed_device_has_noncompliance_finding",
+    "_type": "smartphone_has_intune_noncompliance_finding",
     "displayName": "HAS",
   },
 ]
@@ -70,7 +70,7 @@ Array [
     "_fromEntityKey": "683dbff1-c8ff-4996-91ae-85484de46cfc",
     "_key": "683dbff1-c8ff-4996-91ae-85484de46cfc|uses|6aa605f0-744e-4ae1-8031-c6564624c89b",
     "_toEntityKey": "6aa605f0-744e-4ae1-8031-c6564624c89b",
-    "_type": "intune_managed_device_uses_device_configuration",
+    "_type": "smartphone_uses_intune_device_configuration",
     "displayName": "USES",
   },
 ]

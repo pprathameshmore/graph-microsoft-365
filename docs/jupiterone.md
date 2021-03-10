@@ -120,7 +120,13 @@ The following entities are created:
 | Detected Application  | `intune_detected_application`  | `Application`    |
 | Device Configuration  | `intune_device_configuration`  | `Configuration`  |
 | Managed Application   | `intune_managed_application`   | `Application`    |
-| Managed Device        | `intune_managed_device`        | `Device`, `Host` |
+| Managed Device        | `user_endpoint`                | `Device`, `Host` |
+| Managed Device        | `workstation`                  | `Device`, `Host` |
+| Managed Device        | `laptop`                       | `Device`, `Host` |
+| Managed Device        | `desktop`                      | `Device`, `Host` |
+| Managed Device        | `computer`                     | `Device`, `Host` |
+| Managed Device        | `server`                       | `Device`, `Host` |
+| Managed Device        | `smartphone`                   | `Device`, `Host` |
 | Noncompliance Finding | `intune_noncompliance_finding` | `Finding`        |
 | [AD] Account          | `microsoft_365_account`        | `Account`        |
 | [AD] Group            | `azure_user_group`             | `UserGroup`      |
@@ -136,16 +142,52 @@ The following relationships are created/mapped:
 | `azure_user_group`            | **HAS**               | `azure_user_group`             |
 | `azure_user_group`            | **HAS**               | `azure_group_member`           |
 | `azure_user_group`            | **HAS**               | `azure_user`                   |
-| `azure_user`                  | **HAS**               | `intune_managed_device`        |
+| `azure_user`                  | **HAS**               | `computer`                     |
+| `azure_user`                  | **HAS**               | `desktop`                      |
+| `azure_user`                  | **HAS**               | `laptop`                       |
+| `azure_user`                  | **HAS**               | `server`                       |
+| `azure_user`                  | **HAS**               | `smartphone`                   |
+| `azure_user`                  | **HAS**               | `user_endpoint`                |
+| `azure_user`                  | **HAS**               | `workstation`                  |
+| `computer`                    | **ASSIGNED**          | `intune_compliance_policy`     |
+| `computer`                    | **ASSIGNED**          | `intune_managed_application`   |
+| `computer`                    | **HAS**               | `intune_detected_application`  |
+| `computer`                    | **HAS**               | `intune_noncompliance_finding` |
+| `computer`                    | **USES**              | `intune_device_configuration`  |
+| `desktop`                     | **ASSIGNED**          | `intune_compliance_policy`     |
+| `desktop`                     | **ASSIGNED**          | `intune_managed_application`   |
+| `desktop`                     | **HAS**               | `intune_detected_application`  |
+| `desktop`                     | **HAS**               | `intune_noncompliance_finding` |
+| `desktop`                     | **USES**              | `intune_device_configuration`  |
 | `intune_compliance_policy`    | **IDENTIFIED**        | `intune_noncompliance_finding` |
 | `intune_device_configuration` | **IDENTIFIED**        | `intune_noncompliance_finding` |
-| `intune_managed_device`       | **ASSIGNED**          | `intune_managed_application`   |
-| `intune_managed_device`       | **ASSIGNED**          | `intune_compliance_policy`     |
-| `intune_managed_device`       | **HAS**               | `intune_detected_application`  |
-| `intune_managed_device`       | **HAS**               | `intune_noncompliance_finding` |
-| `intune_managed_device`       | **USES**              | `intune_device_configuration`  |
+| `laptop`                      | **ASSIGNED**          | `intune_compliance_policy`     |
+| `laptop`                      | **ASSIGNED**          | `intune_managed_application`   |
+| `laptop`                      | **HAS**               | `intune_detected_application`  |
+| `laptop`                      | **HAS**               | `intune_noncompliance_finding` |
+| `laptop`                      | **USES**              | `intune_device_configuration`  |
 | `microsoft_365_account`       | **HAS**               | `azure_user_group`             |
 | `microsoft_365_account`       | **HAS**               | `azure_user`                   |
+| `server`                      | **ASSIGNED**          | `intune_compliance_policy`     |
+| `server`                      | **ASSIGNED**          | `intune_managed_application`   |
+| `server`                      | **HAS**               | `intune_detected_application`  |
+| `server`                      | **HAS**               | `intune_noncompliance_finding` |
+| `server`                      | **USES**              | `intune_device_configuration`  |
+| `smartphone`                  | **ASSIGNED**          | `intune_compliance_policy`     |
+| `smartphone`                  | **ASSIGNED**          | `intune_managed_application`   |
+| `smartphone`                  | **HAS**               | `intune_detected_application`  |
+| `smartphone`                  | **HAS**               | `intune_noncompliance_finding` |
+| `smartphone`                  | **USES**              | `intune_device_configuration`  |
+| `user_endpoint`               | **ASSIGNED**          | `intune_compliance_policy`     |
+| `user_endpoint`               | **ASSIGNED**          | `intune_managed_application`   |
+| `user_endpoint`               | **HAS**               | `intune_detected_application`  |
+| `user_endpoint`               | **HAS**               | `intune_noncompliance_finding` |
+| `user_endpoint`               | **USES**              | `intune_device_configuration`  |
+| `workstation`                 | **ASSIGNED**          | `intune_compliance_policy`     |
+| `workstation`                 | **ASSIGNED**          | `intune_managed_application`   |
+| `workstation`                 | **HAS**               | `intune_detected_application`  |
+| `workstation`                 | **HAS**               | `intune_noncompliance_finding` |
+| `workstation`                 | **USES**              | `intune_device_configuration`  |
 
 <!--
 ********************************************************************************

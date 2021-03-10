@@ -38,7 +38,9 @@ describe('fetchCompliancePolicyAndFindings', () => {
     );
     const deviceCompliancePolicyRelationships = context.jobState.collectedRelationships.filter(
       (r) =>
-        isEqual(r._type, relationships.DEVICE_ASSIGNED_COMPLIANCE_POLICY._type),
+        relationships.MULTI_DEVICE_ASSIGNED_COMPLIANCE_POLICY.map(
+          (c) => c._type,
+        ).includes(r._type),
     );
     const compliancePolicyFindingRelationships = context.jobState.collectedRelationships.filter(
       (r) =>
@@ -50,7 +52,9 @@ describe('fetchCompliancePolicyAndFindings', () => {
     );
     const deviceFindingRelationships = context.jobState.collectedRelationships.filter(
       (r) =>
-        isEqual(r._type, relationships.DEVICE_HAS_NONCOMPLIANCE_FINDING._type),
+        relationships.MULTI_DEVICE_HAS_NONCOMPLIANCE_FINDING.map(
+          (c) => c._type,
+        ).includes(r._type),
     );
 
     // Check that we have Compliance Policies
