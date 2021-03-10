@@ -126,7 +126,7 @@ export class DeviceManagementIntuneClient extends GraphClient {
   public async iterateCompliancePolicyDeviceStatuses(
     deviceCompliancePolicyId: string,
     callback: (
-      deviceConfigurationDeviceStatus: DeviceComplianceDeviceStatus,
+      compliancePolicyDeviceStatus: DeviceComplianceDeviceStatus,
     ) => void | Promise<void>,
   ): Promise<void> {
     return this.iterateResources({
