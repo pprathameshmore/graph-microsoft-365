@@ -27,7 +27,7 @@ export async function fetchDevices(
     const userEntity = await jobState.findEntity(device.userId as string);
     const userDeviceRelationship = userEntity
       ? createDirectRelationship({
-          _class: relationships.USER_HAS_DEVICE._class,
+          _class: relationships.MULTI_USER_HAS_DEVICE[0]._class,
           from: userEntity,
           to: deviceEntity,
         })
@@ -48,8 +48,8 @@ export const deviceSteps: Step<
   {
     id: steps.FETCH_DEVICES,
     name: 'Managed Devices',
-    entities: [entities.DEVICE],
-    relationships: [relationships.USER_HAS_DEVICE],
+    entities: [...entities.MULTI_DEVICE],
+    relationships: [...relationships.MULTI_USER_HAS_DEVICE],
     dependsOn: [activeDirectorySteps.FETCH_USERS],
     executionHandler: fetchDevices,
   },
