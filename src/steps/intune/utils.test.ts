@@ -5,7 +5,7 @@ import {
   CLOSED_DEVICE_STATUSES,
   findingIsOpen,
   OPEN_DEVICE_STATUSES,
-} from '../utils';
+} from './utils';
 
 const logger = createMockIntegrationLogger();
 

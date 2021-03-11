@@ -1,7 +1,8 @@
 import { GraphClient } from '../../../ms-graph/client';
 import {
+  DeviceComplianceDeviceStatus,
+  DeviceCompliancePolicy,
   DeviceConfiguration,
-  DeviceConfigurationDeviceOverview,
   DeviceConfigurationDeviceStatus,
   ManagedApp,
   ManagedDevice,
@@ -47,9 +48,7 @@ export class DeviceManagementIntuneClient extends GraphClient {
   // https://docs.microsoft.com/en-us/graph/api/intune-shared-deviceconfiguration-list?view=graph-rest-beta
   public async iterateDeviceConfigurations(
     callback: (
-      deviceConfiguration: DeviceConfiguration & {
-        deviceStatusOverview: DeviceConfigurationDeviceOverview;
-      },
+      deviceConfiguration: DeviceConfiguration,
     ) => void | Promise<void>,
   ): Promise<void> {
     return this.iterateResources({
@@ -106,6 +105,36 @@ export class DeviceManagementIntuneClient extends GraphClient {
     });
   }
 
+  //********** DEVICE COMPLIANCE POLICIES **********/
+  // https://docs.microsoft.com/en-us/graph/api/resources/intune-shared-devicecompliancepolicy?view=graph-rest-beta
+  // DeviceManagementConfiguration.Read.All
+
+  // https://docs.microsoft.com/en-us/graph/api/intune-shared-devicecompliancepolicy-list?view=graph-rest-beta
+  public async iterateCompliancePolicies(
+    callback: (
+      compliancePolicy: DeviceCompliancePolicy,
+    ) => void | Promise<void>,
+  ): Promise<void> {
+    return this.iterateResources({
+      resourceUrl: `/deviceManagement/deviceCompliancePolicies`,
+      callback,
+    });
+  }
+
+  // NOTE: This turns into a relationship with MANAGED DEVICE
+  // https://docs.microsoft.com/en-us/graph/api/intune-deviceconfig-devicecompliancedevicestatus-list?view=graph-rest-beta
+  public async iterateCompliancePolicyDeviceStatuses(
+    deviceCompliancePolicyId: string,
+    callback: (
+      compliancePolicyDeviceStatus: DeviceComplianceDeviceStatus,
+    ) => void | Promise<void>,
+  ): Promise<void> {
+    return this.iterateResources({
+      resourceUrl: `https://graph.microsoft.com/beta/deviceManagement/deviceCompliancePolicies/${deviceCompliancePolicyId}/deviceStatuses`, // Filters are not supported in this enpoint
+      callback,
+    });
+  }
+
   //********** AZURE DEVICES **********/
   // https://docs.microsoft.com/en-us/graph/api/resources/device?view=graph-rest-1.0
   // Another way to get devices that contains some different information. Currently not using.
@@ -126,10 +155,6 @@ export class DeviceManagementIntuneClient extends GraphClient {
   //********** WINDOWS MALWARE STATE **********/
   // https://docs.microsoft.com/en-us/graph/api/resources/intune-devices-windowsmalwareinformation?view=graph-rest-beta
   // Can be used to get findings of malware on windows devices. Currently not used
-
-  //********** DEVICE COMPLIANCE POLICIES **********/
-  // https://docs.microsoft.com/en-us/graph/api/resources/intune-shared-devicecompliancepolicy?view=graph-rest-beta
-  // DeviceManagementConfiguration.Read.All
 
   //********** DEVICE MANAGEMENT INTENTS **********/
   // https://docs.microsoft.com/en-us/graph/api/resources/intune-deviceintent-devicemanagementintent?view=graph-rest-beta

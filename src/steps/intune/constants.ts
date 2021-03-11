@@ -7,6 +7,7 @@ import { entities as activeDirectoryEntities } from '../active-directory';
 
 export const steps: { [k: string]: string } = {
   FETCH_DEVICES: 'managed-devices',
+  FETCH_COMPLIANCE_POLICIES_AND_FINDINGS: 'compliance-policies-and-findings',
   FETCH_DEVICE_CONFIGURATIONS_AND_FINDINGS:
     'device-configurations-and-findings',
   FETCH_MANAGED_APPLICATIONS: 'managed-applications',
@@ -22,6 +23,11 @@ export const entities: { [k: string]: StepEntityMetadata } = {
   DEVICE_CONFIGURATION: {
     resourceName: 'Device Configuration',
     _type: 'intune_device_configuration',
+    _class: 'Configuration',
+  },
+  COMPLIANCE_POLICY: {
+    resourceName: 'Compliance Policy',
+    _type: 'intune_compliance_policy',
     _class: 'Configuration',
   },
   NONCOMPLIANCE_FINDING: {
@@ -54,9 +60,21 @@ export const relationships: { [k: string]: StepRelationshipMetadata } = {
     _class: RelationshipClass.USES,
     targetType: entities.DEVICE_CONFIGURATION._type,
   },
+  DEVICE_ASSIGNED_COMPLIANCE_POLICY: {
+    _type: 'intune_managed_device_assigned_compliance_policy',
+    sourceType: entities.DEVICE._type,
+    _class: RelationshipClass.ASSIGNED,
+    targetType: entities.COMPLIANCE_POLICY._type,
+  },
   DEVICE_CONFIGURATION_IDENTIFIED_NONCOMPLIANCE_FINDING: {
     _type: 'intune_device_configuration_identified_noncompliance_finding',
     sourceType: entities.DEVICE_CONFIGURATION._type,
+    _class: RelationshipClass.IDENTIFIED,
+    targetType: entities.NONCOMPLIANCE_FINDING._type,
+  },
+  COMPLIANCE_POLICY_IDENTIFIED_NONCOMPLIANCE_FINDING: {
+    _type: 'intune_compliance_policy_identified_noncompliance_finding',
+    sourceType: entities.COMPLIANCE_POLICY._type,
     _class: RelationshipClass.IDENTIFIED,
     targetType: entities.NONCOMPLIANCE_FINDING._type,
   },
