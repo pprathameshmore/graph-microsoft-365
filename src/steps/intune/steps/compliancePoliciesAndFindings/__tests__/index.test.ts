@@ -36,11 +36,12 @@ describe('fetchCompliancePolicyAndFindings', () => {
     const noncomplianceFindingEntities = context.jobState.collectedEntities.filter(
       (e) => isEqual(e._class, toArray(entities.NONCOMPLIANCE_FINDING._class)),
     );
-    const deviceCompliancePolicyRelationships = context.jobState.collectedRelationships.filter(
+    const hostAgentCompliancePolicyRelationships = context.jobState.collectedRelationships.filter(
       (r) =>
-        relationships.MULTI_DEVICE_ASSIGNED_COMPLIANCE_POLICY.map(
-          (c) => c._type,
-        ).includes(r._type),
+        isEqual(
+          r._type,
+          relationships.HOST_AGENT_ASSIGNED_COMPLIANCE_POLICY._type,
+        ),
     );
     const compliancePolicyFindingRelationships = context.jobState.collectedRelationships.filter(
       (r) =>
@@ -68,7 +69,7 @@ describe('fetchCompliancePolicyAndFindings', () => {
     // Check that there are no orphaned Compliance Policies
     compliancePolicyEntities.forEach((configEntity) => {
       expect(
-        deviceCompliancePolicyRelationships.find((r) =>
+        hostAgentCompliancePolicyRelationships.find((r) =>
           r._key.includes(configEntity._key),
         ),
       ).toBeTruthy();
@@ -88,11 +89,11 @@ describe('fetchCompliancePolicyAndFindings', () => {
     });
 
     // Check that we have DEVICE_ASSIGNED_COMPLIANCE_POLICY relationships
-    expect(deviceCompliancePolicyRelationships.length).toBeGreaterThan(0);
-    expect(deviceCompliancePolicyRelationships).toMatchDirectRelationshipSchema(
-      {},
-    );
-    expect(deviceCompliancePolicyRelationships).toMatchSnapshot(
+    expect(hostAgentCompliancePolicyRelationships.length).toBeGreaterThan(0);
+    expect(
+      hostAgentCompliancePolicyRelationships,
+    ).toMatchDirectRelationshipSchema({});
+    expect(hostAgentCompliancePolicyRelationships).toMatchSnapshot(
       'deviceCompliancePolicyRelationships',
     );
 

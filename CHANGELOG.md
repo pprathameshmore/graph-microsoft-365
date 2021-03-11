@@ -8,6 +8,52 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- Support for ingesting the following **new** resources
+
+- New relationships
+
+  - Intune
+    - `intune_host_agent` **ASSIGNED** `intune_compliance_policy`
+    - `intune_host_agent` **ASSIGNED** `intune_device_configuration`
+    - `intune_host_agent` **MANAGES** `computer`
+    - `intune_host_agent` **MANAGES** `desktop`
+    - `intune_host_agent` **MANAGES** `laptop`
+    - `intune_host_agent` **MANAGES** `server`
+    - `intune_host_agent` **MANAGES** `smartphone`
+    - `intune_host_agent` **MANAGES** `user_endpoint`
+    - `intune_host_agent` **MANAGES** `workstation`
+
+- New entities
+
+  - Intune
+    - `intune_host_agent`
+
+### Removed
+
+- Removed relationships
+
+  - Intune
+    - `computer` **ASSIGNED** `intune_compliance_policy`
+    - `computer` **USES** `intune_device_configuration`
+    - `desktop` **ASSIGNED** `intune_compliance_policy`
+    - `desktop` **USES** `intune_device_configuration`
+    - `laptop` **ASSIGNED** `intune_compliance_policy`
+    - `laptop` **USES** `intune_device_configuration`
+    - `server` **ASSIGNED** `intune_compliance_policy`
+    - `server` **USES** `intune_device_configuration`
+    - `smartphone` **ASSIGNED** `intune_compliance_policy`
+    - `smartphone` **USES** `intune_device_configuration`
+    - `user_endpoint` **ASSIGNED** `intune_compliance_policy`
+    - `user_endpoint` **USES** `intune_device_configuration`
+    - `workstation` **ASSIGNED** `intune_compliance_policy`
+    - `workstation` **USES** `intune_device_configuration`
+
+### Updated
+
+- README.md to include CI build badges
+
 ### Changed
 
 - The type of `intune_managed_device` was changed to more accurately describe

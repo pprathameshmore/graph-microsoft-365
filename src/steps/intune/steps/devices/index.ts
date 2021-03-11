@@ -9,9 +9,16 @@ import { DeviceManagementIntuneClient } from '../../clients/deviceManagementIntu
 import { relationships, entities, steps } from '../../constants';
 import {
   createManagedDeviceEntity,
+  createIntuneHostAgentEntity,
   createUserDeviceMappedRelationship,
 } from './converters';
 
+/**
+ * Intune ManagedDevices are componsed of a physical or virtual device plus the Intune host agent.
+ * This agent allows users to apply configurations and policies to their managed devices. These
+ * need to be modeled as seperate entities as devices may be shared between multiple integrations
+ * where the Intune host agent is unique to this integration.
+ */
 export async function fetchDevices(
   executionContext: IntegrationStepContext,
 ): Promise<void> {
@@ -39,6 +46,16 @@ export async function fetchDevices(
     if (userDeviceRelationship) {
       await jobState.addRelationship(userDeviceRelationship);
     }
+
+    // Create and relate Intune Host Agent based on Managed Device
+    const hostAgentEntity = createIntuneHostAgentEntity(device);
+    await jobState.addEntity(hostAgentEntity);
+    const deviceHostAgentRelationship = createDirectRelationship({
+      _class: relationships.MULTI_HOST_AGENT_MANAGES_DEVICE[0]._class,
+      from: hostAgentEntity,
+      to: deviceEntity,
+    });
+    await jobState.addRelationship(deviceHostAgentRelationship);
   });
 }
 
@@ -48,8 +65,11 @@ export const deviceSteps: Step<
   {
     id: steps.FETCH_DEVICES,
     name: 'Managed Devices',
-    entities: [...entities.MULTI_DEVICE],
-    relationships: [...relationships.MULTI_USER_HAS_DEVICE],
+    entities: [...entities.MULTI_DEVICE, entities.HOST_AGENT],
+    relationships: [
+      ...relationships.MULTI_USER_HAS_DEVICE,
+      ...relationships.MULTI_HOST_AGENT_MANAGES_DEVICE,
+    ],
     dependsOn: [activeDirectorySteps.FETCH_USERS],
     executionHandler: fetchDevices,
   },

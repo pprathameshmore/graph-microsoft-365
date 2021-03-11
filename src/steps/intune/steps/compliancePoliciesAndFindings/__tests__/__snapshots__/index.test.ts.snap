@@ -52,10 +52,12 @@ exports[`fetchCompliancePolicyAndFindings should make entities and relationships
 Array [
   Object {
     "_class": "ASSIGNED",
-    "_fromEntityKey": "683dbff1-c8ff-4996-91ae-85484de46cfc",
-    "_key": "683dbff1-c8ff-4996-91ae-85484de46cfc|assigned|1aa3f0f3-d780-4349-885b-c86d273aa14e",
+    "_fromEntityKey": "intune-host-agent:683dbff1-c8ff-4996-91ae-85484de46cfc",
+    "_key": "intune-host-agent:683dbff1-c8ff-4996-91ae-85484de46cfc|assigned|1aa3f0f3-d780-4349-885b-c86d273aa14e",
     "_toEntityKey": "1aa3f0f3-d780-4349-885b-c86d273aa14e",
-    "_type": "smartphone_assigned_intune_compliance_policy",
+    "_type": "intune_host_agent_assigned_compliance_policy",
+    "complianceStatus": "nonCompliant",
+    "compliant": false,
     "displayName": "ASSIGNED",
   },
 ]

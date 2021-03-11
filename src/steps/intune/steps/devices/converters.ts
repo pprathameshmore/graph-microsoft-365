@@ -11,6 +11,7 @@ import {
   ManagedDevice,
 } from '@microsoft/microsoft-graph-types-beta';
 import { entities as activeDirectoryEntities } from '../../../active-directory';
+import { entities, INTUNE_HOST_AGENT_KEY_PREFIX } from '../../constants';
 import { ManagedDeviceType, relationships } from '../../constants';
 
 // https://docs.microsoft.com/en-us/graph/api/resources/intune-devices-manageddevice?view=graph-rest-1.0&viewFallbackFrom=graph-rest-beta
@@ -26,7 +27,6 @@ export function createManagedDeviceEntity(
       source: managedDevice,
       assign: {
         _class,
-        function: ['endpoint-compliance', 'endpoint-protection'], // https://github.com/JupiterOne/data-model/blob/master/src/schemas/HostAgent.json
         _type: selectDeviceType(managedDevice.deviceType),
         category: 'endpoint',
         id: managedDevice.id,
@@ -70,14 +70,6 @@ export function createManagedDeviceEntity(
         BYOD: managedDevice.managedDeviceOwnerType === 'personal',
         ownerType: managedDevice.managedDeviceOwnerType, // 'personal', 'company' or 'unknown'
         encrypted: managedDevice.isEncrypted,
-        managementAgent: managedDevice.managementAgent, // Management channel of the device. Intune, EAS, etc. Possible values are: eas, mdm, easMdm, intuneClient, easIntuneClient, configurationManagerClient, configurationManagerClientMdm, configurationManagerClientMdmEas, unknown, jamf, googleCloudDevicePolicyController
-        state: managedDevice.managementState, // "managed", "retirePending", "retireFailed", "wipePending", "wipeFailed", "unhealthy", "deletePending", "retireIssued", "wipeIssued", "wipeCanceled", "retireCanceled", "discovered";
-        complianceState: managedDevice.complianceState, // "unknown", "compliant", "noncompliant", "conflict", "error", "inGracePeriod", "configManager";
-        compliant:
-          managedDevice.complianceState &&
-          ['compliant', 'inGracePeriod'].includes(
-            managedDevice.complianceState,
-          ),
         userId: managedDevice.userId,
         userDisplayName: managedDevice.userDisplayName,
         phoneNumber: managedDevice.phoneNumber,
@@ -87,9 +79,35 @@ export function createManagedDeviceEntity(
         supervised: managedDevice.isSupervised,
         jailBroken: managedDevice.jailBroken !== 'False',
         username: managedDevice.userPrincipalName,
-        registrationState: managedDevice.deviceRegistrationState, // Possible values are: notRegistered, registered, revoked, keyConflict, approvalPending, certificateReset, notRegisteredPendingEnrollment, unknown.
         physical: isPhysical(managedDevice),
         // POTENTIAL: managedDevice.usersLoggedOn - link out to other users perhaps?
+      },
+    },
+  });
+}
+
+export function createIntuneHostAgentEntity(
+  managedDevice: ManagedDevice,
+): Entity {
+  return createIntegrationEntity({
+    entityData: {
+      source: managedDevice,
+      assign: {
+        _class: entities.HOST_AGENT._class,
+        function: ['endpoint-compliance', 'endpoint-protection'], // https://github.com/JupiterOne/data-model/blob/master/src/schemas/HostAgent.json
+        _type: entities.HOST_AGENT._type,
+        _key: INTUNE_HOST_AGENT_KEY_PREFIX + managedDevice.id,
+        name: 'intune-host-agent',
+        displayName: 'Intune Host Agent',
+        managementAgent: managedDevice.managementAgent, // Management channel of the device. Possible values are: eas, mdm, easMdm, intuneClient, easIntuneClient, configurationManagerClient, configurationManagerClientMdm, configurationManagerClientMdmEas, unknown, jamf, googleCloudDevicePolicyController
+        state: managedDevice.managementState, // "managed", "retirePending", "retireFailed", "wipePending", "wipeFailed", "unhealthy", "deletePending", "retireIssued", "wipeIssued", "wipeCanceled", "retireCanceled", "discovered";
+        registrationState: managedDevice.deviceRegistrationState, // Possible values are: notRegistered, registered, revoked, keyConflict, approvalPending, certificateReset, notRegisteredPendingEnrollment, unknown.
+        complianceState: managedDevice.complianceState, // "unknown", "compliant", "noncompliant", "conflict", "error", "inGracePeriod", "configManager";
+        compliant: ['unknown', 'configManager', undefined].includes(
+          managedDevice.complianceState,
+        )
+          ? undefined
+          : managedDevice.complianceState === 'compliant',
       },
     },
   });
