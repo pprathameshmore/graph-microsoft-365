@@ -7,6 +7,7 @@ import {
   RelationshipDirection,
 } from '@jupiterone/integration-sdk-core';
 import {
+  ComplianceState,
   DeviceType,
   ManagedDevice,
 } from '@microsoft/microsoft-graph-types-beta';
@@ -34,7 +35,7 @@ export function createManagedDeviceEntity(
         name: managedDevice.deviceName,
         deviceName: managedDevice.deviceName,
         displayName: managedDevice.deviceName as string,
-        deviceType: managedDevice.deviceType, // desktop, windowsRT, winMO6, nokia, windowsPhone, mac, winCE, winEmbedded, iPhone, iPad, iPod, android, iSocConsumer, unix, macMDM, holoLens, surfaceHub, androidForWork, androidEnterprise, windows10x, androidnGMS, linux, blackberry, palm, unknown, cloudPC.
+        deviceType: managedDevice.deviceType,
         model: managedDevice.model,
         make: managedDevice.manufacturer,
         version: managedDevice.model,
@@ -100,20 +101,30 @@ export function createIntuneHostAgentEntity(
         _key: INTUNE_HOST_AGENT_KEY_PREFIX + managedDevice.id,
         name: 'intune-host-agent',
         displayName: 'Intune Host Agent',
-        managementAgent: managedDevice.managementAgent, // Management channel of the device. Possible values are: eas, mdm, easMdm, intuneClient, easIntuneClient, configurationManagerClient, configurationManagerClientMdm, configurationManagerClientMdmEas, unknown, jamf, googleCloudDevicePolicyController
-        state: managedDevice.managementState, // "managed", "retirePending", "retireFailed", "wipePending", "wipeFailed", "unhealthy", "deletePending", "retireIssued", "wipeIssued", "wipeCanceled", "retireCanceled", "discovered";
-        registrationState: managedDevice.deviceRegistrationState, // Possible values are: notRegistered, registered, revoked, keyConflict, approvalPending, certificateReset, notRegisteredPendingEnrollment, unknown.
-        complianceState: managedDevice.complianceState, // "unknown", "compliant", "noncompliant", "conflict", "error", "inGracePeriod", "configManager";
-        compliant: ['unknown', 'configManager', undefined].includes(
-          managedDevice.complianceState,
-        )
-          ? undefined
-          : managedDevice.complianceState === 'compliant',
+        managementAgent: managedDevice.managementAgent, // Management channel of the device. Possible values include: eas, mdm, easMdm, intuneClient, easIntuneClient, jamf, googleCloudDevicePolicyController, ...
+        state: managedDevice.managementState,
+        registrationState: managedDevice.deviceRegistrationState,
+        complianceState: managedDevice.complianceState,
+        compliant: isCompliant(managedDevice.complianceState),
       },
     },
   });
 }
 
+/**
+ * Converts Microsoft's compliance state to JupiterOne's `compliant` boolean.
+ * There are some complianceStates where we can not determine if the device is compliant or not.
+ * In those cases this key should remain `undefined`.
+ */
+function isCompliant(complianceState?: ComplianceState) {
+  return ['unknown', 'configManager', undefined].includes(complianceState)
+    ? undefined
+    : complianceState === 'compliant';
+}
+
+/**
+ * Is the device a physical device or a virtual server
+ */
 function isPhysical(managedDevice: ManagedDevice) {
   return managedDevice.model
     ? managedDevice.model !== 'Virtual Machine'

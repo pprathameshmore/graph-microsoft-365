@@ -68,7 +68,7 @@ export async function fetchDeviceConfigurationsAndFindings(
                 from: hostAgentEntity,
                 to: deviceConfigurationEntity,
                 properties: {
-                  complianceStatus: deviceStatus.status, // Possible values are: unknown, notApplicable, compliant, remediated, nonCompliant, error, conflict, notAssigned.
+                  complianceStatus: deviceStatus.status,
                   compliant: [
                     ...UNRELATED_DEVICE_STATUSES,
                     'unknown',
