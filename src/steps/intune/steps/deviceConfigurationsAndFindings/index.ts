@@ -7,13 +7,22 @@ import {
 } from '@jupiterone/integration-sdk-core';
 import { IntegrationConfig, IntegrationStepContext } from '../../../../types';
 import { DeviceManagementIntuneClient } from '../../clients/deviceManagementIntuneClient';
-import { entities, relationships, steps } from '../../constants';
+import {
+  entities,
+  INTUNE_HOST_AGENT_KEY_PREFIX,
+  relationships,
+  steps,
+} from '../../constants';
 import {
   createNoncomplianceFindingEntity,
   createDeviceConfigurationEntity,
 } from './converters';
 import { last } from 'lodash';
-import { deviceIsRelatedToConfig, findingIsOpen } from '../../utils';
+import {
+  deviceIsRelatedToConfig,
+  findingIsOpen,
+  UNRELATED_DEVICE_STATUSES,
+} from '../../utils';
 import { DeviceConfiguration } from '@microsoft/microsoft-graph-types-beta';
 
 export async function fetchDeviceConfigurationsAndFindings(
@@ -31,11 +40,19 @@ export async function fetchDeviceConfigurationsAndFindings(
         async (deviceStatus) => {
           const deviceId = last(deviceStatus.id?.split('_')); // Microsoft hid the device id in this way
           const deviceEntity = await jobState.findEntity(deviceId);
+          const hostAgentEntity = await jobState.findEntity(
+            INTUNE_HOST_AGENT_KEY_PREFIX + deviceId,
+          );
 
-          if (!deviceEntity) {
+          if (!hostAgentEntity) {
             logger.warn(
               { deviceId, deviceStatus },
-              'Error creating Device -> DeviceConfiguration relationship: deviceEntity does not exist',
+              'Error creating HostAgent -> DeviceConfiguration relationship: hostAgentEntity does not exist',
+            );
+          } else if (!deviceEntity) {
+            logger.warn(
+              { deviceId, deviceStatus },
+              'Error creating HostAgent -> DeviceConfiguration relationship: deviceEntity does not exist',
             );
           } else if (deviceIsRelatedToConfig(deviceStatus.status)) {
             // Only once we know the configuration is attached to a device do we add it to the jobstate
@@ -47,10 +64,19 @@ export async function fetchDeviceConfigurationsAndFindings(
             await jobState.addRelationship(
               createDirectRelationship({
                 _class:
-                  relationships.MULTI_DEVICE_USES_DEVICE_CONFIGURATION[0]
-                    ._class,
-                from: deviceEntity,
+                  relationships.HOST_AGENT_ASSIGNED_DEVICE_CONFIGURATION._class,
+                from: hostAgentEntity,
                 to: deviceConfigurationEntity,
+                properties: {
+                  complianceStatus: deviceStatus.status,
+                  compliant: [
+                    ...UNRELATED_DEVICE_STATUSES,
+                    'unknown',
+                    undefined,
+                  ].includes(deviceStatus.status)
+                    ? undefined
+                    : deviceStatus.status === 'compliant',
+                },
               }),
             );
 
@@ -114,7 +140,7 @@ export const deviceConfigurationAndFindingsSteps: Step<
     name: 'Device Configurations and Related Findings',
     entities: [entities.DEVICE_CONFIGURATION, entities.NONCOMPLIANCE_FINDING],
     relationships: [
-      ...relationships.MULTI_DEVICE_USES_DEVICE_CONFIGURATION,
+      relationships.HOST_AGENT_ASSIGNED_DEVICE_CONFIGURATION,
       relationships.DEVICE_CONFIGURATION_IDENTIFIED_NONCOMPLIANCE_FINDING,
       ...relationships.MULTI_DEVICE_HAS_NONCOMPLIANCE_FINDING,
     ],

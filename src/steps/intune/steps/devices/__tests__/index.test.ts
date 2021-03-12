@@ -5,8 +5,9 @@ import {
 import { setupAzureRecording } from '../../../../../../test/recording';
 import { config } from '../../../../../../test/config';
 import { fetchDevices } from '..';
-import { managedDeviceTypes } from '../../../constants';
+import { entities, managedDeviceTypes } from '../../../constants';
 import { fetchAccount, fetchUsers } from '../../../../active-directory';
+import { entities as activeDirectoryEntities } from '../../../../active-directory';
 
 let recording: Recording;
 
@@ -29,8 +30,17 @@ describe('fetchDevices', () => {
     const managedDevices = context.jobState.collectedEntities.filter((e) =>
       e._class.includes('Host'),
     );
+    const hostAgents = context.jobState.collectedEntities.filter((e) =>
+      e._class.includes('HostAgent'),
+    );
     const managedDeviceRelationships = context.jobState.collectedRelationships.filter(
       (r) => managedDeviceTypes.some((type) => r._type.includes(type)),
+    );
+    const userRelationships = managedDeviceRelationships.filter((r) =>
+      r._type.includes(activeDirectoryEntities.USER._type),
+    );
+    const nonUserRelationships = managedDeviceRelationships.filter(
+      (r) => !r._type.includes(activeDirectoryEntities.USER._type),
     );
 
     // Check that we have devices
@@ -43,13 +53,28 @@ describe('fetchDevices', () => {
     });
     expect(managedDevices).toMatchSnapshot('managedDevices'); // intentionally the same snapshot as in the 'With Active Directory' test below
 
-    // Check that relationship is mapped
-    expect(managedDeviceRelationships.length).toBeGreaterThan(0);
-    managedDeviceRelationships.forEach((r) =>
+    // Check that we have as many host agents as we have managed devices
+    expect(hostAgents.length).toBe(managedDevices.length);
+    expect(hostAgents).toMatchGraphObjectSchema({
+      _class: entities.HOST_AGENT._class,
+    });
+    expect(hostAgents).toMatchSnapshot('hostAgents'); // intentionally the same snapshot as in the 'With Active Directory' test below
+
+    // Check that user relationships are mapped
+    expect(userRelationships.length).toBeGreaterThan(0);
+    userRelationships.forEach((r) =>
       expect(r).toMatchObject({
         _mapping: expect.any(Object),
       }),
     );
+    // Check that the remaining relationships are with host agents
+    expect(nonUserRelationships.length).toBeGreaterThan(0);
+    nonUserRelationships.forEach((r) =>
+      expect(r).toMatchObject({
+        _type: expect.stringMatching(new RegExp(entities.HOST_AGENT._type)),
+      }),
+    );
+
     expect(managedDeviceRelationships).toMatchSnapshot(
       'managedDeviceRelationshipsNoAD',
     );
@@ -69,8 +94,17 @@ describe('fetchDevices', () => {
     const managedDevices = context.jobState.collectedEntities.filter((e) =>
       e._class.includes('Host'),
     );
+    const hostAgents = context.jobState.collectedEntities.filter((e) =>
+      e._class.includes('HostAgent'),
+    );
     const managedDeviceRelationships = context.jobState.collectedRelationships.filter(
       (r) => managedDeviceTypes.some((type) => r._type.includes(type)),
+    );
+    const userRelationships = managedDeviceRelationships.filter((r) =>
+      r._type.includes(activeDirectoryEntities.USER._type),
+    );
+    const nonUserRelationships = managedDeviceRelationships.filter(
+      (r) => !r._type.includes(activeDirectoryEntities.USER._type),
     );
 
     // Check that we have devices
@@ -83,9 +117,24 @@ describe('fetchDevices', () => {
     });
     expect(managedDevices).toMatchSnapshot('managedDevices'); // intentionally the same snapshot as in the 'Without Active Directory' test above
 
-    // Check that relationship is direct
-    expect(managedDeviceRelationships.length).toBeGreaterThan(0);
-    expect(managedDeviceRelationships).toMatchDirectRelationshipSchema({});
+    // Check that we have as many host agents as we have managed devices
+    expect(hostAgents.length).toBe(managedDevices.length);
+    expect(hostAgents).toMatchGraphObjectSchema({
+      _class: entities.HOST_AGENT._class,
+    });
+    expect(hostAgents).toMatchSnapshot('hostAgents'); // intentionally the same snapshot as in the 'Without Active Directory' test above
+
+    // Check that user relationships are direct
+    expect(userRelationships.length).toBeGreaterThan(0);
+    expect(userRelationships).toMatchDirectRelationshipSchema({});
+    // Check that the remaining relationships are with host agents
+    expect(nonUserRelationships.length).toBeGreaterThan(0);
+    nonUserRelationships.forEach((r) =>
+      expect(r).toMatchObject({
+        _type: expect.stringMatching(new RegExp(entities.HOST_AGENT._type)),
+      }),
+    );
+
     expect(managedDeviceRelationships).toMatchSnapshot(
       'managedDeviceRelationshipsWithAD',
     );

@@ -1,4 +1,7 @@
-# JupiterOne Integration
+# Graph-Microsoft-365
+
+[![Build Status](https://github.com/JupiterOne/graph-microsoft-365/workflows/Build/badge.svg)](https://github.com/JupiterOne/graph-microsoft-365/actions?query=workflow%3ABuild)
+[![Gitleaks Status](https://github.com/JupiterOne/graph-microsoft-365/workflows/gitleaks/badge.svg)](https://github.com/JupiterOne/graph-microsoft-365actions?query=workflow%3Agitleaks)
 
 ## Development Environment
 

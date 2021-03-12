@@ -36,11 +36,12 @@ describe('fetchDeviceConfigurationsAndFindings', () => {
     const noncomplianceFindingEntities = context.jobState.collectedEntities.filter(
       (e) => isEqual(e._class, toArray(entities.NONCOMPLIANCE_FINDING._class)),
     );
-    const deviceDeviceConfigRelationships = context.jobState.collectedRelationships.filter(
+    const hostAgentDeviceConfigRelationships = context.jobState.collectedRelationships.filter(
       (r) =>
-        relationships.MULTI_DEVICE_USES_DEVICE_CONFIGURATION.map(
-          (c) => c._type,
-        ).includes(r._type),
+        isEqual(
+          r._type,
+          relationships.HOST_AGENT_ASSIGNED_DEVICE_CONFIGURATION._type,
+        ),
     );
     const deviceConfigFindingRelationships = context.jobState.collectedRelationships.filter(
       (r) =>
@@ -66,7 +67,7 @@ describe('fetchDeviceConfigurationsAndFindings', () => {
     // Check that there are no orphaned Device Configuraitons
     deviceConfigEntities.forEach((configEntity) => {
       expect(
-        deviceDeviceConfigRelationships.find((r) =>
+        hostAgentDeviceConfigRelationships.find((r) =>
           r._key.includes(configEntity._key),
         ),
       ).toBeTruthy();
@@ -86,9 +87,16 @@ describe('fetchDeviceConfigurationsAndFindings', () => {
     });
 
     // Check that we have DEVICE_USES_DEVICE_CONFIGURATION relationships
-    expect(deviceDeviceConfigRelationships.length).toBeGreaterThan(0);
-    expect(deviceDeviceConfigRelationships).toMatchDirectRelationshipSchema({});
-    expect(deviceDeviceConfigRelationships).toMatchSnapshot(
+    expect(hostAgentDeviceConfigRelationships.length).toBeGreaterThan(0);
+    expect(hostAgentDeviceConfigRelationships).toMatchDirectRelationshipSchema({
+      schema: {
+        properties: {
+          complianceStatus: { type: 'string' },
+          compliant: { type: 'boolean' },
+        },
+      },
+    });
+    expect(hostAgentDeviceConfigRelationships).toMatchSnapshot(
       'noncomplianceFindingDeviceRelationships',
     );
 

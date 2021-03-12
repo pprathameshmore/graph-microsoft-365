@@ -31,6 +31,7 @@ export const managedDeviceTypes: ManagedDeviceType[] = [
   'server',
   'smartphone',
 ];
+export const INTUNE_HOST_AGENT_KEY_PREFIX = 'intune-host-agent:';
 
 export const entities = {
   MULTI_DEVICE: managedDeviceTypes.map((type) => {
@@ -40,6 +41,11 @@ export const entities = {
       _class: ['Device', 'Host'], // Devices will not have a class of 'Device' if the device is not physical
     };
   }),
+  HOST_AGENT: {
+    resourceName: 'Intune Host Agent',
+    _type: 'intune_host_agent',
+    _class: 'HostAgent',
+  },
   DEVICE_CONFIGURATION: {
     resourceName: 'Device Configuration',
     _type: 'intune_device_configuration',
@@ -98,14 +104,22 @@ export const relationships = {
     sourceType: activeDirectoryEntities.USER._type,
     _class: RelationshipClass.HAS,
   }),
-  MULTI_DEVICE_USES_DEVICE_CONFIGURATION: createRelationshipForAllDeviceTypes({
-    targetType: entities.DEVICE_CONFIGURATION._type,
-    _class: RelationshipClass.USES,
+  MULTI_HOST_AGENT_MANAGES_DEVICE: createRelationshipForAllDeviceTypes({
+    sourceType: entities.HOST_AGENT._type,
+    _class: RelationshipClass.MANAGES,
   }),
-  MULTI_DEVICE_ASSIGNED_COMPLIANCE_POLICY: createRelationshipForAllDeviceTypes({
-    targetType: entities.COMPLIANCE_POLICY._type,
+  HOST_AGENT_ASSIGNED_DEVICE_CONFIGURATION: {
+    _type: 'intune_host_agent_assigned_device_configuration',
+    sourceType: entities.HOST_AGENT._type,
     _class: RelationshipClass.ASSIGNED,
-  }),
+    targetType: entities.DEVICE_CONFIGURATION._type,
+  },
+  HOST_AGENT_ASSIGNED_COMPLIANCE_POLICY: {
+    _type: 'intune_host_agent_assigned_compliance_policy',
+    sourceType: entities.HOST_AGENT._type,
+    _class: RelationshipClass.ASSIGNED,
+    targetType: entities.COMPLIANCE_POLICY._type,
+  },
   DEVICE_CONFIGURATION_IDENTIFIED_NONCOMPLIANCE_FINDING: {
     _type: 'intune_device_configuration_identified_noncompliance_finding',
     sourceType: entities.DEVICE_CONFIGURATION._type,

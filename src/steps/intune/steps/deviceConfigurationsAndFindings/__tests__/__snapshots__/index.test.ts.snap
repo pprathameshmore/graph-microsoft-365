@@ -66,12 +66,14 @@ Array [
 exports[`fetchDeviceConfigurationsAndFindings should make entities and relationships correctly: noncomplianceFindingDeviceRelationships 1`] = `
 Array [
   Object {
-    "_class": "USES",
-    "_fromEntityKey": "683dbff1-c8ff-4996-91ae-85484de46cfc",
-    "_key": "683dbff1-c8ff-4996-91ae-85484de46cfc|uses|6aa605f0-744e-4ae1-8031-c6564624c89b",
+    "_class": "ASSIGNED",
+    "_fromEntityKey": "intune-host-agent:683dbff1-c8ff-4996-91ae-85484de46cfc",
+    "_key": "intune-host-agent:683dbff1-c8ff-4996-91ae-85484de46cfc|assigned|6aa605f0-744e-4ae1-8031-c6564624c89b",
     "_toEntityKey": "6aa605f0-744e-4ae1-8031-c6564624c89b",
-    "_type": "smartphone_uses_intune_device_configuration",
-    "displayName": "USES",
+    "_type": "intune_host_agent_assigned_device_configuration",
+    "complianceStatus": "error",
+    "compliant": false,
+    "displayName": "ASSIGNED",
   },
 ]
 `;
