@@ -45,7 +45,8 @@ export async function fetchCompliancePolicyAndFindings(
 
           await jobState.addRelationship(
             createDirectRelationship({
-              _class: relationships.DEVICE_ASSIGNED_COMPLIANCE_POLICY._class,
+              _class:
+                relationships.MULTI_DEVICE_ASSIGNED_COMPLIANCE_POLICY[0]._class,
               from: deviceEntity,
               to: compliancePolicyEntity,
             }),
@@ -70,7 +71,9 @@ export async function fetchCompliancePolicyAndFindings(
             );
             await jobState.addRelationship(
               createDirectRelationship({
-                _class: relationships.DEVICE_HAS_NONCOMPLIANCE_FINDING._class,
+                _class:
+                  relationships.MULTI_DEVICE_HAS_NONCOMPLIANCE_FINDING[0]
+                    ._class,
                 from: deviceEntity,
                 to: noncomplianceFindingEntity,
               }),
@@ -104,9 +107,9 @@ export const compliancePolicyAndFindingsSteps: Step<
     name: 'Compliance Policies and Related Findings',
     entities: [entities.COMPLIANCE_POLICY, entities.NONCOMPLIANCE_FINDING],
     relationships: [
-      relationships.DEVICE_ASSIGNED_COMPLIANCE_POLICY,
+      ...relationships.MULTI_DEVICE_ASSIGNED_COMPLIANCE_POLICY,
       relationships.COMPLIANCE_POLICY_IDENTIFIED_NONCOMPLIANCE_FINDING,
-      relationships.DEVICE_HAS_NONCOMPLIANCE_FINDING,
+      ...relationships.MULTI_DEVICE_HAS_NONCOMPLIANCE_FINDING,
     ],
     dependsOn: [steps.FETCH_DEVICES],
     executionHandler: fetchCompliancePolicyAndFindings,

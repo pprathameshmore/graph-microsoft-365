@@ -5,10 +5,8 @@ import {
 import { setupAzureRecording } from '../../../../../../test/recording';
 import { config } from '../../../../../../test/config';
 import { fetchDevices } from '..';
-import { entities } from '../../../constants';
+import { managedDeviceTypes } from '../../../constants';
 import { fetchAccount, fetchUsers } from '../../../../active-directory';
-import { toArray } from '../../../../../utils/toArray';
-import { isEqual, omit } from 'lodash';
 
 let recording: Recording;
 
@@ -29,20 +27,19 @@ describe('fetchDevices', () => {
     await fetchDevices(context);
 
     const managedDevices = context.jobState.collectedEntities.filter((e) =>
-      isEqual(e._class, toArray(entities.DEVICE._class)),
+      e._class.includes('Host'),
     );
     const managedDeviceRelationships = context.jobState.collectedRelationships.filter(
-      (r) => {
-        return r._type.includes(entities.DEVICE._type);
-      },
+      (r) => managedDeviceTypes.some((type) => r._type.includes(type)),
     );
 
     // Check that we have devices
     expect(managedDevices.length).toBeGreaterThan(0);
-    expect(
-      managedDevices.map((d) => omit(d, 'userEmails')), // REDACTING the emails messes with the schema validation. Removing for this step.
-    ).toMatchGraphObjectSchema({
-      _class: entities.DEVICE._class,
+    expect(managedDevices.filter((d) => d.physical)).toMatchGraphObjectSchema({
+      _class: ['Host', 'Device'],
+    });
+    expect(managedDevices.filter((d) => !d.physical)).toMatchGraphObjectSchema({
+      _class: ['Host'],
     });
     expect(managedDevices).toMatchSnapshot('managedDevices'); // intentionally the same snapshot as in the 'With Active Directory' test below
 
@@ -70,20 +67,19 @@ describe('fetchDevices', () => {
     await fetchDevices(context);
 
     const managedDevices = context.jobState.collectedEntities.filter((e) =>
-      isEqual(e._class, toArray(entities.DEVICE._class)),
+      e._class.includes('Host'),
     );
     const managedDeviceRelationships = context.jobState.collectedRelationships.filter(
-      (r) => {
-        return r._type.includes(entities.DEVICE._type);
-      },
+      (r) => managedDeviceTypes.some((type) => r._type.includes(type)),
     );
 
     // Check that we have devices
     expect(managedDevices.length).toBeGreaterThan(0);
-    expect(
-      managedDevices.map((d) => omit(d, 'userEmails')), // REDACTING the emails messes with the schema validation. Removing for this step.
-    ).toMatchGraphObjectSchema({
-      _class: entities.DEVICE._class,
+    expect(managedDevices.filter((d) => d.physical)).toMatchGraphObjectSchema({
+      _class: ['Host', 'Device'],
+    });
+    expect(managedDevices.filter((d) => !d.physical)).toMatchGraphObjectSchema({
+      _class: ['Host'],
     });
     expect(managedDevices).toMatchSnapshot('managedDevices'); // intentionally the same snapshot as in the 'Without Active Directory' test above
 

@@ -8,8 +8,17 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Changed
+
+- The type of `intune_managed_device` was changed to more accurately describe
+  the hardware of the device. The new device types are `user_endpoint`,
+  `workstation`, `laptop`, `desktop`, `computer`, `smartphone`, `tablet`
+- The class of `intune_managed_device` only includes `Device` if the device is
+  not a virtual machine
+
 ### Added
 
+- `deviceType` and `function` keys to `intune_managed_device` entities
 - `function` key to `intune_device_configuration` entities
 
 - Support for ingesting the following **new** resources

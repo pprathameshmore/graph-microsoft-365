@@ -6,7 +6,12 @@ import {
   Entity,
 } from '@jupiterone/integration-sdk-core';
 import { IntegrationConfig, IntegrationStepContext } from '../../../../types';
-import { entities, relationships, steps } from '../../constants';
+import {
+  entities,
+  managedDeviceTypes,
+  relationships,
+  steps,
+} from '../../constants';
 import {
   createDetectedApplicationEntity,
   createManagedApplicationEntity,
@@ -43,7 +48,8 @@ export async function fetchManagedApplications(
 
         await jobState.addRelationship(
           createDirectRelationship({
-            _class: relationships.DEVICE_ASSIGNED_MANAGED_APPLICATION._class,
+            _class:
+              relationships.MULTI_DEVICE_ASSIGNED_MANAGED_APPLICATION[0]._class,
             from: deviceEntity,
             to: managedAppEntity,
             properties: {
@@ -66,30 +72,37 @@ export async function fetchDetectedApplications(
     logger,
     instance.config,
   );
-  await jobState.iterateEntities(
-    { _type: entities.DEVICE._type },
-    async (deviceEntity) => {
-      await intuneClient.iterateDetectedApps(
-        deviceEntity.id as string,
-        async ({ detectedApps }) => {
-          for (const detectedApp of detectedApps ?? []) {
-            // Ingest all assigned or line of business apps reguardless if a device has installed it or not yet
-            const detectedAppEntity = await findOrCreateDetectedApplicationEntity(
-              detectedApp,
-              jobState,
-            );
+  // Promise.all is likely ok in this case due to there only being a few device types
+  await Promise.all(
+    managedDeviceTypes.map(async (type) => {
+      return await jobState.iterateEntities(
+        { _type: type },
+        async (deviceEntity) => {
+          await intuneClient.iterateDetectedApps(
+            deviceEntity.id as string,
+            async ({ detectedApps }) => {
+              for (const detectedApp of detectedApps ?? []) {
+                // Ingest all assigned or line of business apps reguardless if a device has installed it or not yet
+                const detectedAppEntity = await findOrCreateDetectedApplicationEntity(
+                  detectedApp,
+                  jobState,
+                );
 
-            await jobState.addRelationship(
-              createDirectRelationship({
-                _class: relationships.DEVICE_HAS_DETECTED_APPLICATION._class,
-                from: deviceEntity,
-                to: detectedAppEntity,
-              }),
-            );
-          }
+                await jobState.addRelationship(
+                  createDirectRelationship({
+                    _class:
+                      relationships.MULTI_DEVICE_HAS_DETECTED_APPLICATION[0]
+                        ._class,
+                    from: deviceEntity,
+                    to: detectedAppEntity,
+                  }),
+                );
+              }
+            },
+          );
         },
       );
-    },
+    }),
   );
 }
 
@@ -114,7 +127,7 @@ export const applicationSteps: Step<
     id: steps.FETCH_MANAGED_APPLICATIONS,
     name: 'Managed Applications',
     entities: [entities.MANAGED_APPLICATION],
-    relationships: [relationships.DEVICE_ASSIGNED_MANAGED_APPLICATION],
+    relationships: [...relationships.MULTI_DEVICE_ASSIGNED_MANAGED_APPLICATION],
     dependsOn: [steps.FETCH_DEVICES],
     executionHandler: fetchManagedApplications,
   },
@@ -122,7 +135,7 @@ export const applicationSteps: Step<
     id: steps.FETCH_DETECTED_APPLICATIONS,
     name: 'Detected Applications',
     entities: [entities.DETECTED_APPLICATION],
-    relationships: [relationships.DEVICE_HAS_DETECTED_APPLICATION],
+    relationships: [...relationships.MULTI_DEVICE_HAS_DETECTED_APPLICATION],
     dependsOn: [steps.FETCH_DEVICES],
     executionHandler: fetchDetectedApplications,
   },

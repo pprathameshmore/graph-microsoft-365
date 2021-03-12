@@ -1,7 +1,7 @@
 import {
+  generateRelationshipType,
+  IntegrationError,
   RelationshipClass,
-  StepEntityMetadata,
-  StepRelationshipMetadata,
 } from '@jupiterone/integration-sdk-core';
 import { entities as activeDirectoryEntities } from '../active-directory';
 
@@ -14,12 +14,32 @@ export const steps: { [k: string]: string } = {
   FETCH_DETECTED_APPLICATIONS: 'detected-applications',
 };
 
-export const entities: { [k: string]: StepEntityMetadata } = {
-  DEVICE: {
-    resourceName: 'Managed Device',
-    _type: 'intune_managed_device',
-    _class: ['Device', 'Host'],
-  },
+export type ManagedDeviceType =
+  | 'user_endpoint'
+  | 'workstation'
+  | 'laptop'
+  | 'desktop'
+  | 'computer'
+  | 'server'
+  | 'smartphone';
+export const managedDeviceTypes: ManagedDeviceType[] = [
+  'user_endpoint',
+  'workstation',
+  'laptop',
+  'desktop',
+  'computer',
+  'server',
+  'smartphone',
+];
+
+export const entities = {
+  MULTI_DEVICE: managedDeviceTypes.map((type) => {
+    return {
+      resourceName: 'Managed Device',
+      _type: type,
+      _class: ['Device', 'Host'], // Devices will not have a class of 'Device' if the device is not physical
+    };
+  }),
   DEVICE_CONFIGURATION: {
     resourceName: 'Device Configuration',
     _type: 'intune_device_configuration',
@@ -45,27 +65,47 @@ export const entities: { [k: string]: StepEntityMetadata } = {
     _type: 'intune_detected_application',
     _class: 'Application',
   },
-};
+} as const;
 
-export const relationships: { [k: string]: StepRelationshipMetadata } = {
-  USER_HAS_DEVICE: {
-    _type: 'azure_user_has_intune_managed_device',
+function createRelationshipForAllDeviceTypes(relationshipMetadata: {
+  sourceType?: string;
+  targetType?: string;
+  _class: RelationshipClass;
+}) {
+  const { sourceType, targetType, _class } = relationshipMetadata;
+  if ((sourceType && targetType) || (!sourceType && !targetType)) {
+    throw new IntegrationError({
+      message: `'Invalid use of createRelationshipForAllDeviceTypes, you may have either a sourceType or a targetType'`,
+      code: 'RELATIONSHIP_IMPLEMENTATION_ERROR',
+    });
+  }
+  return managedDeviceTypes.map((type) => {
+    return {
+      _type: generateRelationshipType(
+        _class,
+        sourceType ?? type,
+        targetType ?? type,
+      ),
+      _class,
+      sourceType: sourceType ?? type,
+      targetType: targetType ?? type,
+    };
+  });
+}
+
+export const relationships = {
+  MULTI_USER_HAS_DEVICE: createRelationshipForAllDeviceTypes({
     sourceType: activeDirectoryEntities.USER._type,
     _class: RelationshipClass.HAS,
-    targetType: entities.DEVICE._type,
-  },
-  DEVICE_USES_DEVICE_CONFIGURATION: {
-    _type: 'intune_managed_device_uses_device_configuration',
-    sourceType: entities.DEVICE._type,
-    _class: RelationshipClass.USES,
+  }),
+  MULTI_DEVICE_USES_DEVICE_CONFIGURATION: createRelationshipForAllDeviceTypes({
     targetType: entities.DEVICE_CONFIGURATION._type,
-  },
-  DEVICE_ASSIGNED_COMPLIANCE_POLICY: {
-    _type: 'intune_managed_device_assigned_compliance_policy',
-    sourceType: entities.DEVICE._type,
-    _class: RelationshipClass.ASSIGNED,
+    _class: RelationshipClass.USES,
+  }),
+  MULTI_DEVICE_ASSIGNED_COMPLIANCE_POLICY: createRelationshipForAllDeviceTypes({
     targetType: entities.COMPLIANCE_POLICY._type,
-  },
+    _class: RelationshipClass.ASSIGNED,
+  }),
   DEVICE_CONFIGURATION_IDENTIFIED_NONCOMPLIANCE_FINDING: {
     _type: 'intune_device_configuration_identified_noncompliance_finding',
     sourceType: entities.DEVICE_CONFIGURATION._type,
@@ -78,22 +118,18 @@ export const relationships: { [k: string]: StepRelationshipMetadata } = {
     _class: RelationshipClass.IDENTIFIED,
     targetType: entities.NONCOMPLIANCE_FINDING._type,
   },
-  DEVICE_HAS_NONCOMPLIANCE_FINDING: {
-    _type: 'intune_managed_device_has_noncompliance_finding',
-    sourceType: entities.DEVICE._type,
-    _class: RelationshipClass.HAS,
+  MULTI_DEVICE_HAS_NONCOMPLIANCE_FINDING: createRelationshipForAllDeviceTypes({
     targetType: entities.NONCOMPLIANCE_FINDING._type,
-  },
-  DEVICE_ASSIGNED_MANAGED_APPLICATION: {
-    _type: 'intune_managed_device_assigned_application',
-    sourceType: entities.DEVICE._type,
-    _class: RelationshipClass.ASSIGNED,
-    targetType: entities.MANAGED_APPLICATION._type,
-  },
-  DEVICE_HAS_DETECTED_APPLICATION: {
-    _type: 'intune_managed_device_has_detected_application',
-    sourceType: entities.DEVICE._type,
     _class: RelationshipClass.HAS,
+  }),
+  MULTI_DEVICE_ASSIGNED_MANAGED_APPLICATION: createRelationshipForAllDeviceTypes(
+    {
+      targetType: entities.MANAGED_APPLICATION._type,
+      _class: RelationshipClass.ASSIGNED,
+    },
+  ),
+  MULTI_DEVICE_HAS_DETECTED_APPLICATION: createRelationshipForAllDeviceTypes({
     targetType: entities.DETECTED_APPLICATION._type,
-  },
-};
+    _class: RelationshipClass.HAS,
+  }),
+} as const;

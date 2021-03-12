@@ -46,7 +46,9 @@ export async function fetchDeviceConfigurationsAndFindings(
 
             await jobState.addRelationship(
               createDirectRelationship({
-                _class: relationships.DEVICE_USES_DEVICE_CONFIGURATION._class,
+                _class:
+                  relationships.MULTI_DEVICE_USES_DEVICE_CONFIGURATION[0]
+                    ._class,
                 from: deviceEntity,
                 to: deviceConfigurationEntity,
               }),
@@ -72,7 +74,9 @@ export async function fetchDeviceConfigurationsAndFindings(
               );
               await jobState.addRelationship(
                 createDirectRelationship({
-                  _class: relationships.DEVICE_HAS_NONCOMPLIANCE_FINDING._class,
+                  _class:
+                    relationships.MULTI_DEVICE_HAS_NONCOMPLIANCE_FINDING[0]
+                      ._class,
                   from: deviceEntity,
                   to: noncomplianceFindingEntity,
                 }),
@@ -110,9 +114,9 @@ export const deviceConfigurationAndFindingsSteps: Step<
     name: 'Device Configurations and Related Findings',
     entities: [entities.DEVICE_CONFIGURATION, entities.NONCOMPLIANCE_FINDING],
     relationships: [
-      relationships.DEVICE_USES_DEVICE_CONFIGURATION,
+      ...relationships.MULTI_DEVICE_USES_DEVICE_CONFIGURATION,
       relationships.DEVICE_CONFIGURATION_IDENTIFIED_NONCOMPLIANCE_FINDING,
-      relationships.DEVICE_HAS_NONCOMPLIANCE_FINDING,
+      ...relationships.MULTI_DEVICE_HAS_NONCOMPLIANCE_FINDING,
     ],
     dependsOn: [steps.FETCH_DEVICES],
     executionHandler: fetchDeviceConfigurationsAndFindings,
