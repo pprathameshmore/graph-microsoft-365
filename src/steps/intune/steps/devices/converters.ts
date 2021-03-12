@@ -17,8 +17,9 @@ import { ManagedDeviceType, relationships } from '../../constants';
 export function createManagedDeviceEntity(
   managedDevice: ManagedDevice,
 ): Entity {
+  const isPhysicalDevice = isPhysical(managedDevice);
   const _class = ['Host'];
-  if (isPhysical(managedDevice)) {
+  if (isPhysicalDevice) {
     _class.push('Device');
   }
   return createIntegrationEntity({
@@ -27,7 +28,7 @@ export function createManagedDeviceEntity(
       assign: {
         _class,
         function: ['endpoint-compliance', 'endpoint-protection'], // https://github.com/JupiterOne/data-model/blob/master/src/schemas/HostAgent.json
-        _type: selectDeviceType(managedDevice.deviceType),
+        _type: selectDeviceType(managedDevice.deviceType, isPhysicalDevice),
         category: 'endpoint',
         id: managedDevice.id,
         name: managedDevice.deviceName,
@@ -88,7 +89,7 @@ export function createManagedDeviceEntity(
         jailBroken: managedDevice.jailBroken !== 'False',
         username: managedDevice.userPrincipalName,
         registrationState: managedDevice.deviceRegistrationState, // Possible values are: notRegistered, registered, revoked, keyConflict, approvalPending, certificateReset, notRegisteredPendingEnrollment, unknown.
-        physical: isPhysical(managedDevice),
+        physical: isPhysicalDevice,
         // POTENTIAL: managedDevice.usersLoggedOn - link out to other users perhaps?
       },
     },
@@ -96,19 +97,27 @@ export function createManagedDeviceEntity(
 }
 
 function isPhysical(managedDevice: ManagedDevice) {
-  return managedDevice.model && managedDevice.model !== 'Virtual Machine'; // https://docs.microsoft.com/en-us/mem/intune/fundamentals/windows-10-virtual-machines#reporting
+  return managedDevice.model
+    ? managedDevice.model !== 'Virtual Machine'
+    : undefined; // https://docs.microsoft.com/en-us/mem/intune/fundamentals/windows-10-virtual-machines#reporting
 }
 
 /**
  * Select the correct device _type based on the Microsoft DeviceType
  * types determined from managed-questions-endpoint.yaml
  */
-function selectDeviceType(
-  deviceType: DeviceType | undefined,
+export function selectDeviceType(
+  deviceType?: DeviceType,
+  isPhysical?: Boolean,
 ): ManagedDeviceType {
+  if (!isPhysical) {
+    return 'server';
+  }
   switch (deviceType) {
     case 'desktop':
     case 'mac':
+    case 'unix':
+    case 'linux':
       return 'desktop';
     case 'windowsRT': // retired mobile OS
     case 'winMO6': // retired mobile OS
@@ -128,9 +137,6 @@ function selectDeviceType(
     case 'macMDM':
     case 'windows10x':
       return 'laptop';
-    case 'unix': // don't know where to put this but seems like a good guess
-    case 'linux': // don't know where to put this but seems like a good guess
-      return 'computer';
     case 'cloudPC':
       return 'server';
     case 'iSocConsumer': // some open source thing
