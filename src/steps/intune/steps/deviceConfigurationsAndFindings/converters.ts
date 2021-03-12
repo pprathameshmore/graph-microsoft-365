@@ -34,6 +34,7 @@ export function createDeviceConfigurationEntity(
         _class: entities.DEVICE_CONFIGURATION._class,
         _type: entities.DEVICE_CONFIGURATION._type,
         function: 'endpoint-configuration', // needed to match up with existing integrations data structures.
+        category: 'config',
         id: deviceConfiguration.id,
         name: deviceConfiguration.displayName,
         description:

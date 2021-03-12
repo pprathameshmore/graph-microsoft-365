@@ -114,25 +114,25 @@ https://github.com/JupiterOne/sdk/blob/master/docs/integrations/development.md
 
 The following entities are created:
 
-| Resources             | Entity `_type`                 | Entity `_class`  |
-| --------------------- | ------------------------------ | ---------------- |
-| Compliance Policy     | `intune_compliance_policy`     | `Configuration`  |
-| Detected Application  | `intune_detected_application`  | `Application`    |
-| Device Configuration  | `intune_device_configuration`  | `Configuration`  |
-| Intune Host Agent     | `intune_host_agent`            | `HostAgent`      |
-| Managed Application   | `intune_managed_application`   | `Application`    |
-| Managed Device        | `user_endpoint`                | `Device`, `Host` |
-| Managed Device        | `workstation`                  | `Device`, `Host` |
-| Managed Device        | `laptop`                       | `Device`, `Host` |
-| Managed Device        | `desktop`                      | `Device`, `Host` |
-| Managed Device        | `computer`                     | `Device`, `Host` |
-| Managed Device        | `server`                       | `Device`, `Host` |
-| Managed Device        | `smartphone`                   | `Device`, `Host` |
-| Noncompliance Finding | `intune_noncompliance_finding` | `Finding`        |
-| [AD] Account          | `microsoft_365_account`        | `Account`        |
-| [AD] Group            | `azure_user_group`             | `UserGroup`      |
-| [AD] Group Member     | `azure_group_member`           | `User`           |
-| [AD] User             | `azure_user`                   | `User`           |
+| Resources             | Entity `_type`                 | Entity `_class`                  |
+| --------------------- | ------------------------------ | -------------------------------- |
+| Compliance Policy     | `intune_compliance_policy`     | `Configuration`, `ControlPolicy` |
+| Detected Application  | `intune_detected_application`  | `Application`                    |
+| Device Configuration  | `intune_device_configuration`  | `Configuration`, `ControlPolicy` |
+| Intune Host Agent     | `intune_host_agent`            | `HostAgent`                      |
+| Managed Application   | `intune_managed_application`   | `Application`                    |
+| Managed Device        | `user_endpoint`                | `Device`, `Host`                 |
+| Managed Device        | `workstation`                  | `Device`, `Host`                 |
+| Managed Device        | `laptop`                       | `Device`, `Host`                 |
+| Managed Device        | `desktop`                      | `Device`, `Host`                 |
+| Managed Device        | `computer`                     | `Device`, `Host`                 |
+| Managed Device        | `server`                       | `Device`, `Host`                 |
+| Managed Device        | `smartphone`                   | `Device`, `Host`                 |
+| Noncompliance Finding | `intune_noncompliance_finding` | `Finding`                        |
+| [AD] Account          | `microsoft_365_account`        | `Account`                        |
+| [AD] Group            | `azure_user_group`             | `UserGroup`                      |
+| [AD] Group Member     | `azure_group_member`           | `User`                           |
+| [AD] User             | `azure_user`                   | `User`                           |
 
 ### Relationships
 

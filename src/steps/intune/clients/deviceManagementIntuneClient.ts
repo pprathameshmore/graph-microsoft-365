@@ -135,6 +135,11 @@ export class DeviceManagementIntuneClient extends GraphClient {
     });
   }
 
+  //***** CONDITIONAL ACCESS POLICIES *********/
+  // https://docs.microsoft.com/en-us/graph/api/resources/conditionalaccesspolicy?view=graph-rest-beta
+  // Major part of Intune that should eventually be ingested. Doles out conditional access to resources based on authentication
+  // Should be an "AccessPolicy" class
+
   //********** AZURE DEVICES **********/
   // https://docs.microsoft.com/en-us/graph/api/resources/device?view=graph-rest-1.0
   // Another way to get devices that contains some different information. Currently not using.

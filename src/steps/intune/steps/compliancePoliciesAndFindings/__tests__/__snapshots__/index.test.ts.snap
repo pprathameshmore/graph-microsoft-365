@@ -5,6 +5,7 @@ Array [
   Object {
     "_class": Array [
       "Configuration",
+      "ControlPolicy",
     ],
     "_key": "1aa3f0f3-d780-4349-885b-c86d273aa14e",
     "_rawData": Array [
@@ -36,6 +37,7 @@ Array [
       },
     ],
     "_type": "intune_compliance_policy",
+    "category": "compliance",
     "createdOn": 1613586600379,
     "description": "Test iOS policy",
     "displayName": "Test iOS policy",
