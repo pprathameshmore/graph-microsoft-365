@@ -10,6 +10,11 @@ and this project adheres to
 
 ### Added
 
+- A class of `CompliancePolicy` to `intune_compliance_policy` and
+  `intune_device_configuration` entities
+- `categpory` property to `intune_compliance_policy` and
+  `intune_device_configuration` entities.
+
 - Support for ingesting the following **new** resources
 
 - New relationships
@@ -64,8 +69,8 @@ and this project adheres to
 
 ### Added
 
-- `deviceType` and `function` keys to `intune_managed_device` entities
-- `function` key to `intune_device_configuration` entities
+- `deviceType` and `function` properties to `intune_managed_device` entities
+- `function` property to `intune_device_configuration` entities
 
 - Support for ingesting the following **new** resources
 

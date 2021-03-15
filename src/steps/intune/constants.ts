@@ -49,12 +49,12 @@ export const entities = {
   DEVICE_CONFIGURATION: {
     resourceName: 'Device Configuration',
     _type: 'intune_device_configuration',
-    _class: 'Configuration',
+    _class: ['Configuration', 'ControlPolicy'] as string[],
   },
   COMPLIANCE_POLICY: {
     resourceName: 'Compliance Policy',
     _type: 'intune_compliance_policy',
-    _class: 'Configuration',
+    _class: ['Configuration', 'ControlPolicy'] as string[],
   },
   NONCOMPLIANCE_FINDING: {
     resourceName: 'Noncompliance Finding',

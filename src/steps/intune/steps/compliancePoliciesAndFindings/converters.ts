@@ -34,6 +34,7 @@ export function createCompliancePolicyEntity(
         _class: entities.COMPLIANCE_POLICY._class,
         _type: entities.COMPLIANCE_POLICY._type,
         function: 'endpoint-compliance', // needed to match up with existing integrations data structures.
+        category: 'compliance', // needed for "ControlPolicy"
         id: compliancePolicy.id,
         name: compliancePolicy.displayName,
         description:

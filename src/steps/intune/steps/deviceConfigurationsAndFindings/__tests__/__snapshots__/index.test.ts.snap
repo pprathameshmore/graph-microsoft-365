@@ -5,6 +5,7 @@ Array [
   Object {
     "_class": Array [
       "Configuration",
+      "ControlPolicy",
     ],
     "_key": "6aa605f0-744e-4ae1-8031-c6564624c89b",
     "_rawData": Array [
@@ -25,6 +26,7 @@ Array [
       },
     ],
     "_type": "intune_device_configuration",
+    "category": "config",
     "configurationType": "iosCustomConfiguration",
     "createdOn": 1613586681322,
     "description": "Test configuration policy",
