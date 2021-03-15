@@ -1,32 +1,26 @@
 import {
   IntegrationExecutionContext,
-  IntegrationProviderAuthenticationError,
   IntegrationValidationError,
 } from '@jupiterone/integration-sdk-core';
 
 import { IntegrationConfig } from './types';
 import { GraphClient } from './ms-graph/client';
 
-export default async function validateInvocation(
-  context: IntegrationExecutionContext<IntegrationConfig>,
-) {
-  const { config } = context.instance;
-
-  if (!config.clientId || !config.clientSecret) {
+export function validateExecutionConfig(
+  executionContext: IntegrationExecutionContext<IntegrationConfig>,
+): void {
+  const { clientId, clientSecret, tenant } = executionContext.instance.config;
+  if (!clientId || !clientSecret || !tenant) {
     throw new IntegrationValidationError(
-      'Config requires all of {clientId, clientSecret}',
+      'Config requires all of {clientId, clientSecret, tenant}',
     );
   }
+}
 
-  const apiClient = new GraphClient(context.logger, config);
-  try {
-    await apiClient.verifyAuthentication();
-  } catch (err) {
-    throw new IntegrationProviderAuthenticationError({
-      cause: err,
-      endpoint: 'https://provider.com/api/v1/some/endpoint?limit=1',
-      status: err.status,
-      statusText: err.statusText,
-    });
-  }
+export async function validateInvocation(
+  context: IntegrationExecutionContext<IntegrationConfig>,
+) {
+  validateExecutionConfig(context);
+  const apiClient = new GraphClient(context.logger, context.instance.config);
+  await apiClient.verifyAuthentication();
 }

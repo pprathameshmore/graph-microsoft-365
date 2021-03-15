@@ -28,9 +28,25 @@ export async function fetchAccount(
   let accountEntity: Entity;
   try {
     const organization = await graphClient.fetchOrganization();
-    accountEntity = createAccountEntityWithOrganization(instance, organization);
+    const intuneAccountID = (await graphClient.getIntuneAccountId())
+      ?.intuneAccountId;
+    const subscriptionState = (await graphClient.getIntuneSubscriptionState())
+      ?.value;
+    const mobileDeviceManagementAuthority = (
+      await graphClient.getMobileDeviceManagementAuthority(
+        organization.id as string,
+      )
+    )?.mobileDeviceManagementAuthority;
+    accountEntity = createAccountEntityWithOrganization(
+      instance,
+      organization,
+      { intuneAccountID, subscriptionState, mobileDeviceManagementAuthority },
+    );
   } catch (err) {
-    // TODO logger.authError()
+    logger.error(
+      'Failed fetching account information. Creating a dummy account instead.',
+      err,
+    );
     accountEntity = createAccountEntity(instance);
   }
 
