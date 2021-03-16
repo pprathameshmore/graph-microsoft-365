@@ -67,7 +67,7 @@ function mutateRecordingEntry(entry: RecordingEntry): void {
   keysToRedactMap.set('deviceDisplayName', DEFAULT_REDACT);
   keysToRedactMap.set('hardwareSerial', DEFAULT_REDACT);
 
-  if (responseJson?.value) {
+  if (responseJson?.value?.forEach) {
     responseJson.value.forEach((responseValue, index) => {
       keysToRedactMap.forEach((redactionValue, keyToRedact) => {
         if (responseValue[keyToRedact]) {
