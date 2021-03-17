@@ -32,6 +32,11 @@ export function createAccountEntity(instance: IntegrationInstance): Entity {
 export function createAccountEntityWithOrganization(
   instance: IntegrationInstance,
   organization: Organization,
+  intuneConfig: {
+    mobileDeviceManagementAuthority?: string;
+    subscriptionState?: string;
+    intuneAccountID?: string;
+  },
 ): Entity {
   let defaultDomain: string | undefined;
   const verifiedDomains = organization.verifiedDomains?.map((e) => {
@@ -43,16 +48,24 @@ export function createAccountEntityWithOrganization(
 
   return createIntegrationEntity({
     entityData: {
-      source: organization,
+      source: {
+        organization,
+        intuneConfig,
+      },
       assign: {
         _class: entities.ACCOUNT._class,
         _key: `${entities.ACCOUNT._type}-${instance.id}`,
         _type: entities.ACCOUNT._type,
+        id: organization.id,
         name: organization.displayName,
         displayName: instance.name,
         organizationName: organization.displayName,
         defaultDomain,
         verifiedDomains,
+        intuneAccountId: intuneConfig?.intuneAccountID,
+        mobileDeviceManagementAuthority:
+          intuneConfig?.mobileDeviceManagementAuthority,
+        intuneSubscriptionState: intuneConfig?.subscriptionState,
       },
     },
   });

@@ -33,3 +33,17 @@ export const insufficientPermissionsDirectoryConfig: IntegrationConfig = {
    */
   tenant: '6fec25dd-44d2-4f61-a797-603edc73fb50',
 };
+
+/**
+ * An integration config pointing at a directory that does not have Moblie
+ * Device Management set up in any way.
+ */
+export const noMdmConfig: IntegrationConfig = {
+  ...config,
+
+  /**
+   * The "Org Outside J1" directory/tenant of
+   * adamjupiteronehotmailcom Azure account.
+   */
+  tenant: '75f092de-c730-4a62-a1dd-4324cb0b83af',
+};

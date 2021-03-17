@@ -6,9 +6,13 @@ import {
 
 import { IntegrationConfig, IntegrationStepContext } from '../../types';
 import { DirectoryGraphClient } from './clients/directoryClient';
-import { DATA_ACCOUT_TYPE, entities, relationships, steps } from './constants';
 import {
-  createAccountEntity,
+  DATA_ACCOUNT_ENTITY,
+  entities,
+  relationships,
+  steps,
+} from './constants';
+import {
   createAccountEntityWithOrganization,
   createAccountGroupRelationship,
   createAccountUserRelationship,
@@ -25,17 +29,24 @@ export async function fetchAccount(
   const { logger, instance, jobState } = executionContext;
   const graphClient = new DirectoryGraphClient(logger, instance.config);
 
-  let accountEntity: Entity;
-  try {
-    const organization = await graphClient.fetchOrganization();
-    accountEntity = createAccountEntityWithOrganization(instance, organization);
-  } catch (err) {
-    // TODO logger.authError()
-    accountEntity = createAccountEntity(instance);
-  }
+  const organization = await graphClient.fetchOrganization();
+  const intuneAccountID = (await graphClient.getIntuneAccountId())
+    ?.intuneAccountId;
+  const subscriptionState = (await graphClient.getIntuneSubscriptionState())
+    ?.value;
+  const mobileDeviceManagementAuthority = (
+    await graphClient.getMobileDeviceManagementAuthority(
+      organization.id as string,
+    )
+  )?.mobileDeviceManagementAuthority;
 
+  const accountEntity = createAccountEntityWithOrganization(
+    instance,
+    organization,
+    { intuneAccountID, subscriptionState, mobileDeviceManagementAuthority },
+  );
   await jobState.addEntity(accountEntity);
-  await jobState.setData(DATA_ACCOUT_TYPE, accountEntity);
+  await jobState.setData(DATA_ACCOUNT_ENTITY, accountEntity);
 }
 
 export async function fetchUsers(
@@ -44,7 +55,7 @@ export async function fetchUsers(
   const { logger, instance, jobState } = executionContext;
   const graphClient = new DirectoryGraphClient(logger, instance.config);
 
-  const accountEntity = await jobState.getData<Entity>(DATA_ACCOUT_TYPE);
+  const accountEntity = await jobState.getData<Entity>(DATA_ACCOUNT_ENTITY);
   if (!accountEntity) {
     logger.warn('Error fetching users: accountEntity does not exist');
     return;
@@ -64,7 +75,7 @@ export async function fetchGroups(
   const { logger, instance, jobState } = executionContext;
   const graphClient = new DirectoryGraphClient(logger, instance.config);
 
-  const accountEntity = await jobState.getData<Entity>(DATA_ACCOUT_TYPE);
+  const accountEntity = await jobState.getData<Entity>(DATA_ACCOUNT_ENTITY);
   if (!accountEntity) {
     logger.warn('Error fetching groups: accountEntity does not exist');
     return;

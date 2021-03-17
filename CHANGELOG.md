@@ -10,9 +10,20 @@ and this project adheres to
 
 ### Added
 
+- `mobileDeviceManagementAuthority`, `intuneSubscriptionState`, and
+  `intuneAccountId` properties to `intune_managed_device` entities
+
+### Changed
+
+- Only ingest Intune data if the Microsoft 365 account has Intune configured
+- A dummy `Account` entity will no longer be created when there is an error
+  fetching organization data.
+
+### Added
+
 - A class of `CompliancePolicy` to `intune_compliance_policy` and
   `intune_device_configuration` entities
-- `categpory` property to `intune_compliance_policy` and
+- `category` property to `intune_compliance_policy` and
   `intune_device_configuration` entities.
 
 - Support for ingesting the following **new** resources
