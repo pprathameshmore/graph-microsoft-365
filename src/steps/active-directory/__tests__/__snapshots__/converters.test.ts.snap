@@ -1,0 +1,93 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`createAccountEntityWithOrganization properties transferred: createAccountEntityWithOrganization 1`] = `
+Object {
+  "_class": Array [
+    "Account",
+  ],
+  "_key": "microsoft_365_account-the-instance-id",
+  "_rawData": Array [
+    Object {
+      "name": "default",
+      "rawData": Object {
+        "intuneConfig": Object {
+          "intuneAccountID": "intuneAccountID",
+          "mobileDeviceManagementAuthority": "mobileDeviceManagementAuthority",
+          "subscriptionState": "subscriptionState",
+        },
+        "organization": Object {
+          "assignedPlans": Array [
+            Object {
+              "assignedDateTime": "2021-01-13T21:06:18Z",
+              "capabilityStatus": "Deleted",
+              "service": "SCO",
+              "servicePlanId": "1111111-1111-1111-1111-111111111111",
+            },
+            Object {
+              "assignedDateTime": "2021-01-13T21:06:12Z",
+              "capabilityStatus": "Enabled",
+              "service": "MicrosoftKaizala",
+              "servicePlanId": "1111111-1111-1111-1111-111111111111",
+            },
+          ],
+          "businessPhones": Array [],
+          "city": undefined,
+          "country": undefined,
+          "countryLetterCode": "US",
+          "createdDateTime": "2019-09-04T16:59:36Z",
+          "deletedDateTime": undefined,
+          "displayName": "Default Directory",
+          "id": "1111111-1111-1111-1111-111111111111",
+          "marketingNotificationEmails": Array [],
+          "onPremisesLastSyncDateTime": undefined,
+          "onPremisesSyncEnabled": undefined,
+          "postalCode": undefined,
+          "preferredLanguage": "en",
+          "privacyProfile": undefined,
+          "provisionedPlans": Array [
+            Object {
+              "capabilityStatus": "Enabled",
+              "provisioningStatus": "Success",
+              "service": "MicrosoftCommunicationsOnline",
+            },
+            Object {
+              "capabilityStatus": "Enabled",
+              "provisioningStatus": "Success",
+              "service": "SharePoint",
+            },
+          ],
+          "securityComplianceNotificationMails": Array [],
+          "securityComplianceNotificationPhones": Array [],
+          "state": undefined,
+          "street": undefined,
+          "technicalNotificationMails": Array [
+            "technicalNotificationMail.jupiterone@hotmail.com",
+          ],
+          "verifiedDomains": Array [
+            Object {
+              "capabilities": "Email, OfficeCommunicationsOnline",
+              "isDefault": true,
+              "isInitial": true,
+              "name": "verifiedDomain.onmicrosoft.com",
+              "type": "Managed",
+            },
+          ],
+        },
+      },
+    },
+  ],
+  "_type": "microsoft_365_account",
+  "createdOn": undefined,
+  "defaultDomain": "verifiedDomain.onmicrosoft.com",
+  "displayName": "instance.config.name configured by customer",
+  "id": "1111111-1111-1111-1111-111111111111",
+  "intuneAccountId": "intuneAccountID",
+  "intuneSubscriptionState": "subscriptionState",
+  "mobileDeviceManagementAuthority": "mobileDeviceManagementAuthority",
+  "name": "Default Directory",
+  "organizationName": "Default Directory",
+  "verifiedDomains": Array [
+    "verifiedDomain.onmicrosoft.com",
+  ],
+}
+`;

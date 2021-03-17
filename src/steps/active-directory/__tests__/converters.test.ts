@@ -20,7 +20,7 @@ import exampleOrganization from './fixtures/exampleOrganization';
 
 describe('createAccountEntityWithOrganization', () => {
   test('properties transferred', () => {
-    const exampleExtraData = {
+    const exampleIntuneConfig = {
       mobileDeviceManagementAuthority: 'mobileDeviceManagementAuthority',
       subscriptionState: 'subscriptionState',
       intuneAccountID: 'intuneAccountID',
@@ -28,28 +28,11 @@ describe('createAccountEntityWithOrganization', () => {
     const accountEntity = createAccountEntityWithOrganization(
       exampleIntegrationInstance,
       exampleOrganization,
-      exampleExtraData,
+      exampleIntuneConfig,
     );
-    expect(accountEntity).toEqual({
-      _class: ['Account'],
-      _key: 'microsoft_365_account-the-instance-id',
-      _type: 'microsoft_365_account',
-      _rawData: [
-        {
-          name: 'default',
-          rawData: { ...exampleOrganization, ...exampleExtraData },
-        },
-      ],
-      name: 'Default Directory',
-      id: '1111111-1111-1111-1111-111111111111',
-      displayName: 'instance.config.name configured by customer',
-      defaultDomain: 'verifiedDomain.onmicrosoft.com',
-      organizationName: 'Default Directory',
-      verifiedDomains: ['verifiedDomain.onmicrosoft.com'],
-      mobileDeviceManagementAuthority: 'mobileDeviceManagementAuthority',
-      intuneSubscriptionState: 'subscriptionState',
-      intuneAccountId: 'intuneAccountID',
-    });
+    expect(accountEntity).toMatchSnapshot(
+      'createAccountEntityWithOrganization',
+    );
   });
 });
 

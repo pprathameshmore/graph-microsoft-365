@@ -16,6 +16,8 @@ and this project adheres to
 ### Changed
 
 - Only ingest Intune data if the Microsoft 365 account has Intune configured
+- A dummy `Account` entity will no longer be created when there is an error
+  fetching organization data.
 
 ### Added
 

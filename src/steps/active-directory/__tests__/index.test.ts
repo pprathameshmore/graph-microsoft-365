@@ -36,7 +36,7 @@ describe('fetchAccount', () => {
     });
     expect(accountEntities).toMatchSnapshot('accountEntitiesSuccessful');
   });
-  it('Should create a dummy account entity when there are errors attempting to get organization data', async () => {
+  it('Should error when there are errors attempting to get organization data', () => {
     recording = setupAzureRecording({
       directory: __dirname,
       name: 'fetchAccountFail',
@@ -47,16 +47,7 @@ describe('fetchAccount', () => {
     const context = createMockStepExecutionContext({
       instanceConfig: insufficientPermissionsDirectoryConfig,
     });
-
-    await fetchAccount(context);
-
-    const accountEntities = context.jobState.collectedEntities;
-
-    expect(accountEntities.length).toBe(1);
-    expect(accountEntities).toMatchGraphObjectSchema({
-      _class: entities.ACCOUNT._class,
-    });
-    expect(accountEntities).toMatchSnapshot('accountEntitiesFail');
+    expect(fetchAccount(context)).rejects;
   });
 
   it('Should not error and create a real account when there is no mdm authority', async () => {

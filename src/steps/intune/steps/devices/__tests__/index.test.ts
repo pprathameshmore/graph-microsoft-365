@@ -6,7 +6,7 @@ import { setupAzureRecording } from '../../../../../../test/recording';
 import { config } from '../../../../../../test/config';
 import { fetchDevices } from '..';
 import { entities, managedDeviceTypes } from '../../../constants';
-import { DATA_ACCOUT_TYPE, fetchUsers } from '../../../../active-directory';
+import { DATA_ACCOUNT_ENTITY, fetchUsers } from '../../../../active-directory';
 import { entities as activeDirectoryEntities } from '../../../../active-directory';
 import { createAccountEntity } from '../../../../active-directory/converters';
 
@@ -89,7 +89,7 @@ describe('fetchDevices', () => {
     const context = createMockStepExecutionContext({ instanceConfig: config });
 
     await context.jobState.setData(
-      DATA_ACCOUT_TYPE,
+      DATA_ACCOUNT_ENTITY,
       createAccountEntity(context.instance),
     );
     await fetchUsers(context);
