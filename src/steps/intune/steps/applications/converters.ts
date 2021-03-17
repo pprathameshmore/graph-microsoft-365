@@ -15,6 +15,9 @@ import {
 } from '@microsoft/microsoft-graph-types-beta';
 import { entities } from '../../constants';
 
+export const MANAGED_APP_KEY_PREFIX = 'IntuneManaged:';
+export const DETECTED_APP_KEY_PREFIX = 'IntuneDetected:';
+
 // https://docs.microsoft.com/en-us/graph/api/resources/intune-shared-mobileapp?view=graph-rest-beta
 export function createManagedApplicationEntity(
   managedApp: ManagedApp & { '@odata.type': string },
@@ -25,8 +28,9 @@ export function createManagedApplicationEntity(
       assign: {
         _class: entities.MANAGED_APPLICATION._class,
         _type: entities.MANAGED_APPLICATION._type,
+        _key: MANAGED_APP_KEY_PREFIX + managedApp.displayName?.toLowerCase(), // Prefix is necessary to ensure key is at least 10 characters
         id: managedApp.id,
-        name: managedApp.displayName,
+        name: managedApp.displayName?.toLowerCase(),
         displayName: managedApp.displayName as string,
         description: managedApp.description,
         notes: managedApp.notes ? [managedApp.notes] : [],
@@ -47,11 +51,7 @@ export function createManagedApplicationEntity(
         developer: managedApp.developer, // Almost always the same as the owner
 
         // Line of Business Apps
-        version:
-          (managedApp as WindowsPhoneXAP).identityVersion ??
-          (managedApp as AndroidLobApp).versionName ??
-          (managedApp as AndroidLobApp).versionCode ??
-          (managedApp as IosLobApp).versionNumber,
+        version: findNewestVersion(managedApp),
         committedContentVersion: (managedApp as MobileLobApp)
           .committedContentVersion,
         packageId: (managedApp as AndroidLobApp).packageId,
@@ -70,11 +70,10 @@ export function createDetectedApplicationEntity(
       assign: {
         _class: entities.DETECTED_APPLICATION._class,
         _type: entities.DETECTED_APPLICATION._type,
+        _key: DETECTED_APP_KEY_PREFIX + detectedApp.displayName?.toLowerCase(), // Prefix is necessary to ensure key is at least 10 characters
         id: detectedApp.id,
-        name: detectedApp.displayName,
+        name: detectedApp.displayName?.toLowerCase(),
         displayName: detectedApp.displayName as string,
-        version: detectedApp.version,
-        sizeInByte: detectedApp.sizeInByte,
       },
     },
   });
@@ -103,4 +102,17 @@ function isMobile(dataModel: string) {
     'mobile', // matches Windows phone app types
     'webApp', // webApps are availble for both mobile and desktop
   ].some((el) => dataModel.toLowerCase().indexOf(el) > -1);
+}
+
+export function findNewestVersion(
+  managedApp: ManagedApp & WindowsPhoneXAP & AndroidLobApp & IosLobApp,
+) {
+  return (
+    managedApp.identityVersion ??
+    managedApp.versionName ??
+    managedApp.versionCode ??
+    managedApp.versionNumber ??
+    managedApp.version ??
+    'unversioned'
+  );
 }

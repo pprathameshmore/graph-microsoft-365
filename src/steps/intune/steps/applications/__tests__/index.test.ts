@@ -9,6 +9,7 @@ import { entities, relationships } from '../../../constants';
 import { isEqual } from 'lodash';
 import { toArray } from '../../../../../utils/toArray';
 import { fetchDetectedApplications, fetchManagedApplications } from '..';
+import { groupBy, sortBy, last, uniq } from 'lodash';
 
 let recording: Recording;
 
@@ -57,25 +58,41 @@ describe('fetchManagedApplications', () => {
   });
 });
 
+const exampleManagedApplicationEntity = {
+  _class: ['Application'],
+  _type: 'intune_managed_application',
+  _key: 'IntuneManaged:microsoft word',
+  name: 'microsoft word',
+  id: '00000000-0000-0000-0000-000000000000',
+};
+
 describe('fetchDetectedApplications', () => {
   test('should make entities and relationships correctly', async () => {
     recording = setupAzureRecording({
       directory: __dirname,
       name: 'fetchDetectedApplications',
     });
-    const context = createMockStepExecutionContext({ instanceConfig: config });
+    const context = createMockStepExecutionContext({
+      instanceConfig: config,
+      entities: [exampleManagedApplicationEntity],
+    });
 
     await fetchDevices(context);
     await fetchDetectedApplications(context);
 
     const detectedApplicationEntities = context.jobState.collectedEntities.filter(
-      (e) => isEqual(e._class, toArray(entities.DETECTED_APPLICATION._class)),
+      (e) => e._type === entities.DETECTED_APPLICATION._type,
     );
-    const deviceApplicationRelationships = context.jobState.collectedRelationships.filter(
+    const deviceDetectedApplicationRelationships = context.jobState.collectedRelationships.filter(
       (r) =>
-        relationships.MULTI_DEVICE_HAS_DETECTED_APPLICATION.map(
+        relationships.MULTI_DEVICE_INSTALLED_DETECTED_APPLICATION.map(
           (c) => c._type,
         ).includes(r._type),
+    );
+    const managedAppDetectedAppRelationships = context.jobState.collectedRelationships.filter(
+      (r) =>
+        relationships.MANAGED_APPLICATION_MANAGES_DETECTED_APPLICATION._type ===
+        r._type,
     );
 
     // Check that we have Detected Applications
@@ -87,11 +104,37 @@ describe('fetchDetectedApplications', () => {
       'detectedApplicationEntities',
     );
 
-    // Check that we have DEVICE_ASSIGNED_DETECTED_APPLICATION relationships
-    expect(deviceApplicationRelationships.length).toBeGreaterThan(0);
-    expect(deviceApplicationRelationships).toMatchDirectRelationshipSchema({});
-    expect(deviceApplicationRelationships).toMatchSnapshot(
-      'deviceDetecctedApplicationRelationships',
+    // Check that we have MANAGED_APPLICATION_MANAGES_DETECTED_APPLICATION relationships
+    expect(managedAppDetectedAppRelationships.length).toBeGreaterThan(0);
+    expect(managedAppDetectedAppRelationships).toMatchDirectRelationshipSchema(
+      {},
     );
+    expect(managedAppDetectedAppRelationships).toMatchSnapshot(
+      'managedAppDetectedAppRelationships',
+    );
+
+    // Check that we have DEVICE_ASSIGNED_DETECTED_APPLICATION relationships
+    expect(deviceDetectedApplicationRelationships.length).toBeGreaterThan(0);
+    expect(
+      deviceDetectedApplicationRelationships,
+    ).toMatchDirectRelationshipSchema({});
+    expect(deviceDetectedApplicationRelationships).toMatchSnapshot(
+      'deviceDetectedApplicationRelationships',
+    );
+
+    // Check that you can have multiple relationships with the same application based on version
+    const groupedRelationships = groupBy(
+      deviceDetectedApplicationRelationships,
+      (r) => r._key.split('|')[2],
+    );
+    const appWithMultipleVersions = last(
+      sortBy(groupedRelationships),
+      (c) => c.length,
+    );
+    expect(appWithMultipleVersions.length).toBeGreaterThan(1);
+    // Check that all versions are unique
+    const versions = appWithMultipleVersions.map((app) => app.version);
+    expect(versions.length).toBeGreaterThan(0);
+    expect(versions.length).toEqual(uniq(versions).length);
   });
 });

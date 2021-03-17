@@ -15,6 +15,9 @@ import {
 import {
   createDetectedApplicationEntity,
   createManagedApplicationEntity,
+  DETECTED_APP_KEY_PREFIX,
+  findNewestVersion,
+  MANAGED_APP_KEY_PREFIX,
 } from './converters';
 import { DeviceManagementIntuneClient } from '../../clients/deviceManagementIntuneClient';
 import { DetectedApp } from '@microsoft/microsoft-graph-types-beta';
@@ -56,6 +59,10 @@ export async function fetchManagedApplications(
               installState: deviceStatus.installState, // Possible values are: installed, failed, notInstalled, uninstallFailed, pendingInstall, & unknown
               installStateDetail: deviceStatus.installStateDetail, // extra details on the install state. Ex: iosAppStoreUpdateFailedToInstall
               errorCode: deviceStatus.errorCode,
+              installedVersion:
+                managedApp.version ??
+                findNewestVersion(managedApp) ??
+                'unversioned',
             },
           }),
         );
@@ -87,16 +94,45 @@ export async function fetchDetectedApplications(
                   detectedApp,
                   jobState,
                 );
-
-                await jobState.addRelationship(
-                  createDirectRelationship({
+                try {
+                  const version = detectedApp.version ?? 'unversioned';
+                  const directRelationship = createDirectRelationship({
                     _class:
-                      relationships.MULTI_DEVICE_HAS_DETECTED_APPLICATION[0]
-                        ._class,
+                      relationships
+                        .MULTI_DEVICE_INSTALLED_DETECTED_APPLICATION[0]._class,
                     from: deviceEntity,
                     to: detectedAppEntity,
-                  }),
+                    properties: {
+                      version,
+                    },
+                  });
+                  // Need to append the version to the end of the key so there can be multiple relationships to the same Application entityds
+                  directRelationship._key += `|${version}`;
+                  await jobState.addRelationship(directRelationship);
+                } catch (err) {
+                  // This happens when there are two instances of the same version of an app installed on a single device (it surprisingly does happen)
+                  if (err.code !== 'DUPLICATE_KEY_DETECTED') {
+                    throw err;
+                  }
+                }
+                // If there is a managed application related to this, create a MANAGES relationship
+                const managedAppEntity = await jobState.findEntity(
+                  MANAGED_APP_KEY_PREFIX +
+                    detectedApp.displayName?.toLowerCase(),
                 );
+
+                if (managedAppEntity) {
+                  await jobState.addRelationship(
+                    createDirectRelationship({
+                      _class:
+                        relationships
+                          .MANAGED_APPLICATION_MANAGES_DETECTED_APPLICATION
+                          ._class,
+                      from: managedAppEntity,
+                      to: detectedAppEntity,
+                    }),
+                  );
+                }
               }
             },
           );
@@ -111,7 +147,10 @@ async function findOrCreateDetectedApplicationEntity(
   jobState: JobState,
 ): Promise<Entity> {
   let detectedAppEntity =
-    detectedApp.id && (await jobState.findEntity(detectedApp.id));
+    detectedApp.id &&
+    (await jobState.findEntity(
+      DETECTED_APP_KEY_PREFIX + detectedApp.displayName?.toLowerCase(),
+    ));
 
   if (!detectedAppEntity) {
     detectedAppEntity = createDetectedApplicationEntity(detectedApp);
@@ -135,8 +174,11 @@ export const applicationSteps: Step<
     id: steps.FETCH_DETECTED_APPLICATIONS,
     name: 'Detected Applications',
     entities: [entities.DETECTED_APPLICATION],
-    relationships: [...relationships.MULTI_DEVICE_HAS_DETECTED_APPLICATION],
-    dependsOn: [steps.FETCH_DEVICES],
+    relationships: [
+      ...relationships.MULTI_DEVICE_INSTALLED_DETECTED_APPLICATION,
+      relationships.MANAGED_APPLICATION_MANAGES_DETECTED_APPLICATION,
+    ],
+    dependsOn: [steps.FETCH_DEVICES, steps.FETCH_MANAGED_APPLICATIONS],
     executionHandler: fetchDetectedApplications,
   },
 ];

@@ -151,11 +151,11 @@ The following relationships are created/mapped:
 | `azure_user`                  | **HAS**               | `user_endpoint`                |
 | `azure_user`                  | **HAS**               | `workstation`                  |
 | `computer`                    | **ASSIGNED**          | `intune_managed_application`   |
-| `computer`                    | **HAS**               | `intune_detected_application`  |
 | `computer`                    | **HAS**               | `intune_noncompliance_finding` |
+| `computer`                    | **INSTALLED**         | `intune_detected_application`  |
 | `desktop`                     | **ASSIGNED**          | `intune_managed_application`   |
-| `desktop`                     | **HAS**               | `intune_detected_application`  |
 | `desktop`                     | **HAS**               | `intune_noncompliance_finding` |
+| `desktop`                     | **INSTALLED**         | `intune_detected_application`  |
 | `intune_compliance_policy`    | **IDENTIFIED**        | `intune_noncompliance_finding` |
 | `intune_device_configuration` | **IDENTIFIED**        | `intune_noncompliance_finding` |
 | `intune_host_agent`           | **ASSIGNED**          | `intune_compliance_policy`     |
@@ -167,23 +167,24 @@ The following relationships are created/mapped:
 | `intune_host_agent`           | **MANAGES**           | `smartphone`                   |
 | `intune_host_agent`           | **MANAGES**           | `user_endpoint`                |
 | `intune_host_agent`           | **MANAGES**           | `workstation`                  |
+| `intune_managed_application`  | **MANAGES**           | `intune_detected_application`  |
 | `laptop`                      | **ASSIGNED**          | `intune_managed_application`   |
-| `laptop`                      | **HAS**               | `intune_detected_application`  |
 | `laptop`                      | **HAS**               | `intune_noncompliance_finding` |
+| `laptop`                      | **INSTALLED**         | `intune_detected_application`  |
 | `microsoft_365_account`       | **HAS**               | `azure_user_group`             |
 | `microsoft_365_account`       | **HAS**               | `azure_user`                   |
 | `server`                      | **ASSIGNED**          | `intune_managed_application`   |
-| `server`                      | **HAS**               | `intune_detected_application`  |
 | `server`                      | **HAS**               | `intune_noncompliance_finding` |
+| `server`                      | **INSTALLED**         | `intune_detected_application`  |
 | `smartphone`                  | **ASSIGNED**          | `intune_managed_application`   |
-| `smartphone`                  | **HAS**               | `intune_detected_application`  |
 | `smartphone`                  | **HAS**               | `intune_noncompliance_finding` |
+| `smartphone`                  | **INSTALLED**         | `intune_detected_application`  |
 | `user_endpoint`               | **ASSIGNED**          | `intune_managed_application`   |
-| `user_endpoint`               | **HAS**               | `intune_detected_application`  |
 | `user_endpoint`               | **HAS**               | `intune_noncompliance_finding` |
+| `user_endpoint`               | **INSTALLED**         | `intune_detected_application`  |
 | `workstation`                 | **ASSIGNED**          | `intune_managed_application`   |
-| `workstation`                 | **HAS**               | `intune_detected_application`  |
 | `workstation`                 | **HAS**               | `intune_noncompliance_finding` |
+| `workstation`                 | **INSTALLED**         | `intune_detected_application`  |
 
 <!--
 ********************************************************************************
