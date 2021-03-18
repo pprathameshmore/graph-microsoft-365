@@ -15,6 +15,10 @@ import {
 import {
   createDetectedApplicationEntity,
   createManagedApplicationEntity,
+  DETECTED_APP_KEY_PREFIX,
+  findNewestVersion,
+  MANAGED_APP_KEY_PREFIX,
+  UNVERSIONED,
 } from './converters';
 import { DeviceManagementIntuneClient } from '../../clients/deviceManagementIntuneClient';
 import { DetectedApp } from '@microsoft/microsoft-graph-types-beta';
@@ -56,6 +60,8 @@ export async function fetchManagedApplications(
               installState: deviceStatus.installState, // Possible values are: installed, failed, notInstalled, uninstallFailed, pendingInstall, & unknown
               installStateDetail: deviceStatus.installStateDetail, // extra details on the install state. Ex: iosAppStoreUpdateFailedToInstall
               errorCode: deviceStatus.errorCode,
+              installedVersion:
+                managedApp.version ?? findNewestVersion(managedApp),
             },
           }),
         );
@@ -88,15 +94,40 @@ export async function fetchDetectedApplications(
                   jobState,
                 );
 
-                await jobState.addRelationship(
-                  createDirectRelationship({
-                    _class:
-                      relationships.MULTI_DEVICE_HAS_DETECTED_APPLICATION[0]
-                        ._class,
-                    from: deviceEntity,
-                    to: detectedAppEntity,
-                  }),
+                const version = detectedApp.version ?? UNVERSIONED;
+                const directRelationship = createDirectRelationship({
+                  _class:
+                    relationships.MULTI_DEVICE_INSTALLED_DETECTED_APPLICATION[0]
+                      ._class,
+                  from: deviceEntity,
+                  to: detectedAppEntity,
+                  properties: {
+                    version,
+                    detectionId: detectedApp.id, // unique id for the specific detection
+                  },
+                });
+                // Need to append the detectionId to the end of the key so there can be multiple relationships to the same Application entities
+                directRelationship._key += `|${detectedApp.id}`;
+                await jobState.addRelationship(directRelationship);
+
+                // If there is a managed application related to this, create a MANAGES relationship
+                const managedAppEntity = await jobState.findEntity(
+                  MANAGED_APP_KEY_PREFIX +
+                    detectedApp.displayName?.toLowerCase(),
                 );
+
+                if (managedAppEntity) {
+                  await jobState.addRelationship(
+                    createDirectRelationship({
+                      _class:
+                        relationships
+                          .MANAGED_APPLICATION_MANAGES_DETECTED_APPLICATION
+                          ._class,
+                      from: managedAppEntity,
+                      to: detectedAppEntity,
+                    }),
+                  );
+                }
               }
             },
           );
@@ -111,7 +142,10 @@ async function findOrCreateDetectedApplicationEntity(
   jobState: JobState,
 ): Promise<Entity> {
   let detectedAppEntity =
-    detectedApp.id && (await jobState.findEntity(detectedApp.id));
+    detectedApp.id &&
+    (await jobState.findEntity(
+      DETECTED_APP_KEY_PREFIX + detectedApp.displayName?.toLowerCase(),
+    ));
 
   if (!detectedAppEntity) {
     detectedAppEntity = createDetectedApplicationEntity(detectedApp);
@@ -135,8 +169,11 @@ export const applicationSteps: Step<
     id: steps.FETCH_DETECTED_APPLICATIONS,
     name: 'Detected Applications',
     entities: [entities.DETECTED_APPLICATION],
-    relationships: [...relationships.MULTI_DEVICE_HAS_DETECTED_APPLICATION],
-    dependsOn: [steps.FETCH_DEVICES],
+    relationships: [
+      ...relationships.MULTI_DEVICE_INSTALLED_DETECTED_APPLICATION,
+      relationships.MANAGED_APPLICATION_MANAGES_DETECTED_APPLICATION,
+    ],
+    dependsOn: [steps.FETCH_DEVICES, steps.FETCH_MANAGED_APPLICATIONS],
     executionHandler: fetchDetectedApplications,
   },
 ];

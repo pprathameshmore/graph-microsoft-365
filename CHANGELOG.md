@@ -8,7 +8,24 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Changed
+
+- the `intune_managed_device` to `intune_detected_application` relationship
+  class from **HAS** to **INSTALLED**
+- `intune_managed_device` to `intune_detected_application` relationships to
+  include `installedVersion`, and `detectionId` properties and allow multiple
+  relationships to the same application based on the `detectionId`
+- the `_key` property on `intune_detected_application` from the device id to
+  `IntuneDetected:` plus the application name
+- the `_key` property on `intune_managed_application` from the device id to
+  `IntuneManaged:` plus the application name
+
 ### Added
+
+- New relationships
+
+  - Intune
+    - `intune_managed_application` **MANAGES** `intune_detected_application`
 
 - `mobileDeviceManagementAuthority`, `intuneSubscriptionState`, and
   `intuneAccountId` properties to `intune_managed_device` entities
@@ -17,7 +34,8 @@ and this project adheres to
 
 - Only ingest Intune data if the Microsoft 365 account has Intune configured
 - A dummy `Account` entity will no longer be created when there is an error
-  fetching organization data.
+  fetching organization data. Instead, the integration will fail and a message
+  will be sent to the user in the job log.
 
 ### Added
 
