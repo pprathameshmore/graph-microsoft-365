@@ -70,6 +70,12 @@ export async function fetchManagedApplications(
   });
 }
 
+/**
+ * Creates a single `Application { _type: 'intune_detected_application' }` entity generated
+ * for each `Application.displayName`. All `Device` entities which have an app installed with
+ * that name will create relationships with `version` properties to this single `Application`
+ * entity.
+ */
 export async function fetchDetectedApplications(
   executionContext: IntegrationStepContext,
 ): Promise<void> {
@@ -111,11 +117,13 @@ export async function fetchDetectedApplications(
                 await jobState.addRelationship(directRelationship);
 
                 // If there is a managed application related to this, create a MANAGES relationship
-                const managedAppEntity = await jobState.findEntity(
-                  MANAGED_APP_KEY_PREFIX +
-                    detectedApp.displayName?.toLowerCase(),
-                );
-
+                let managedAppEntity;
+                if (detectedApp.displayName?.toLowerCase) {
+                  managedAppEntity = await jobState.findEntity(
+                    MANAGED_APP_KEY_PREFIX +
+                      detectedApp.displayName?.toLowerCase(),
+                  );
+                }
                 if (managedAppEntity) {
                   await jobState.addRelationship(
                     createDirectRelationship({

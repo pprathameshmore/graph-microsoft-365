@@ -52,31 +52,55 @@ If you need help with this integration, please contact
    the integration instance.
 6. Select a **Polling Interval** that you feel is sufficient for your monitoring
    needs. You may leave this as `DISABLED` and manually execute the integration.
-7. Select which **Scopes** you would like JupiterOne to be able to pull data
-   for.
-8. Click **Create Configuration** once all values are provided.
+7. Click **Create Configuration** once all values are provided.
 
    <img src="./images/CompleteConfiguration.png" alt="drawing" width="200"/>
    <img src="./images/IntegrationCreatedDialog.png" alt="drawing" width="200"/>
 
-9. When prompted, click "Complete Offsite" in the dialog.
+8. When prompted, click "Complete Offsite" in the dialog.
 
    <img src="./images/OffsiteDialog.png" alt="drawing" width="200"/>
 
-10. You will be directed to Microsoft's identity platform, where you must login
-    in as an administrator in the Microsoft organization you intend to integrate
-    with.
-
-       <img src="./images/PickAnAccount.png" alt="drawing" width="200"/>
-
-    NOTE: You must select a business account which are indicated by badge icons.
-    If you select a personal account, you will recieve the below error messaage.
-
-       <img src="./images/PersonalAccountError.png" alt="drawing" width="200"/>
-
-11. Review requested permissions and grant consent.
+9. You will be directed to Microsoft's identity platform, where you must login
+   in as an administrator in the Microsoft organization you intend to integrate
+   with.
 
       <img src="./images/PickAnAccount.png" alt="drawing" width="200"/>
+
+   NOTE: You must select a business account which are indicated by badge icons.
+   If you select a personal account, you will recieve the below error messaage.
+
+      <img src="./images/PersonalAccountError.png" alt="drawing" width="200"/>
+
+10. Review requested permissions (which are described below) and grant consent.
+
+      <img src="./images/PickAnAccount.png" alt="drawing" width="200"/>
+
+## Permissions
+
+1.  `DeviceManagementApps.Read.All`
+    1. Read Microsoft Intune apps
+    1. Needed for creating `Application` entities
+1.  `DeviceManagementConfiguration.Read.All`
+    1. Read Microsoft Intune device configuration and policies
+    1. Needed for creating `Configuration` and `ControlPolicy` entities
+1.  `DeviceManagementManagedDevices.Read.All`
+    1. Read Microsoft Intune devices
+    1. Needed for creating `Device` and `HostAgent` entities
+1.  `Organization.Read.All`
+    1. Read organization information
+    1. Needed for creating the `Account` entity
+1.  `APIConnectors.Read.All`
+    1. Read API connectors for authentication flows
+    1. Needed for enriching the `Account` entity with Intune subscription
+       infomation
+1.  `DeviceManagementServiceConfig.Read.All`
+    1. Read Microsoft Intune configuration
+    1. Also needed for enriching the `Account` entity with Intune subscription
+       infomation
+1.  `Directory.Read.All`
+    1. Read directory data
+    1. Needed for creating `User`, `Group`, and `GroupUser` entities
 
 # How to Uninstall
 

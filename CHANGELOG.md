@@ -8,6 +8,13 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 3.0.0 - 2020-03-18
+
+### Updated
+
+- `jupiterone.md` and `development.md` documentation to include descriptions for
+  scopes.
+
 ### Changed
 
 - the `intune_managed_device` to `intune_detected_application` relationship

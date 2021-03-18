@@ -35,9 +35,32 @@ AD directory), to avoid any confusion about the purpose of the account.
 
 In the Azure portal:
 
-1. Create an App Registration, multi-tenant, with `Directory.Read.All` API
-   Permissions configured
-1. Add a 1-year secret (store securely in 1Password)
+1. Create an App Registration, multi-tenant, with the following API Permissions
+   configured:
+   1. `DeviceManagementApps.Read.All`
+      1. Read Microsoft Intune apps
+      1. Needed for creating `Application` entities
+   1. `DeviceManagementConfiguration.Read.All`
+      1. Read Microsoft Intune device configuration and policies
+      1. Needed for creating `Configuration` and `ControlPolicy` entities
+   1. `DeviceManagementManagedDevices.Read.All`
+      1. Read Microsoft Intune devices
+      1. Needed for creating `Device` and `HostAgent` entities
+   1. `Organization.Read.All`
+      1. Read organization information
+      1. Needed for creating the `Account` entity
+   1. `APIConnectors.Read.All`
+      1. Read API connectors for authentication flows
+      1. Needed for enriching the `Account` entity with Intune subscription
+         infomation
+   1. `DeviceManagementServiceConfig.Read.All`
+      1. Read Microsoft Intune configuration
+      1. Also needed for enriching the `Account` entity with Intune subscription
+         infomation
+   1. `Directory.Read.All`
+      1. Read directory data
+      1. Needed for creating `User`, `Group`, and `GroupUser` entities
+1. Add a 1-year secret (store securely in LastPass)
 1. Add a couple of optional Redirect URIs:
    1. https://apps.dev.jupiterone.io/oauth-microsoft-365/v1/authorize
    1. https://localhost/microsoft-365/oauth-microsoft-365/v1/authorize
@@ -81,12 +104,15 @@ To exercise the grant flow:
 1. Log in as a Global Administrator to the Active Directory Tenant you intend to
    target/ingest
 1. Follow the url returned from the J1
-   `integration-microsoft-365/v1/generate-auth-url` endpoint.
+   `/integration-microsoft-365/v1/generate-auth-url` endpoint.
 1. After being redirected to something like
    `https://localhost/microsoft-365/oauth-microsoft-365/v1/authorize?admin_consent=True&tenant=tenant-id&state=12345`,
-   capture the `tenant` query param. (Note, you may need to check your network
-   history for this query param as you will likelybe redirected back to your
-   instance configuration page faster than you can pull the the tenant param.)
+   capture the `tenant` query param.
+   1. You may need to check your network history for this query param as you
+      will likelybe redirected back to your instance configuration page faster
+      than you can pull the the tenant param.
+   1. This will be the same tenant id that you are logged into when you granted
+      concent.
 
 Use this `tenant` ID and information from the App Registration to create an
 `.env` file for local execution of the daemon/server application (this
