@@ -73,7 +73,7 @@ export function createManagedApplicationEntity(
 
 /**
  * Creates an application entity that represents a global application.
- * This entity is linked to applications in other integrations and should not contain Intune-specific information.
+ * This entity could be linked to applications in other integrations and therefore should not contain Intune-specific information.
  * https://docs.microsoft.com/en-us/graph/api/resources/intune-devices-detectedapp?view=graph-rest-beta
  */
 export function createDetectedApplicationEntity(
