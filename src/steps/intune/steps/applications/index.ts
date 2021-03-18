@@ -18,6 +18,7 @@ import {
   DETECTED_APP_KEY_PREFIX,
   findNewestVersion,
   MANAGED_APP_KEY_PREFIX,
+  UNVERSIONED,
 } from './converters';
 import { DeviceManagementIntuneClient } from '../../clients/deviceManagementIntuneClient';
 import { DetectedApp } from '@microsoft/microsoft-graph-types-beta';
@@ -60,9 +61,7 @@ export async function fetchManagedApplications(
               installStateDetail: deviceStatus.installStateDetail, // extra details on the install state. Ex: iosAppStoreUpdateFailedToInstall
               errorCode: deviceStatus.errorCode,
               installedVersion:
-                managedApp.version ??
-                findNewestVersion(managedApp) ??
-                'unversioned',
+                managedApp.version ?? findNewestVersion(managedApp),
             },
           }),
         );
@@ -94,27 +93,23 @@ export async function fetchDetectedApplications(
                   detectedApp,
                   jobState,
                 );
-                try {
-                  const version = detectedApp.version ?? 'unversioned';
-                  const directRelationship = createDirectRelationship({
-                    _class:
-                      relationships
-                        .MULTI_DEVICE_INSTALLED_DETECTED_APPLICATION[0]._class,
-                    from: deviceEntity,
-                    to: detectedAppEntity,
-                    properties: {
-                      version,
-                    },
-                  });
-                  // Need to append the version to the end of the key so there can be multiple relationships to the same Application entityds
-                  directRelationship._key += `|${version}`;
-                  await jobState.addRelationship(directRelationship);
-                } catch (err) {
-                  // This happens when there are two instances of the same version of an app installed on a single device (it surprisingly does happen)
-                  if (err.code !== 'DUPLICATE_KEY_DETECTED') {
-                    throw err;
-                  }
-                }
+
+                const version = detectedApp.version ?? UNVERSIONED;
+                const directRelationship = createDirectRelationship({
+                  _class:
+                    relationships.MULTI_DEVICE_INSTALLED_DETECTED_APPLICATION[0]
+                      ._class,
+                  from: deviceEntity,
+                  to: detectedAppEntity,
+                  properties: {
+                    version,
+                    detectionId: detectedApp.id, // unique id for the specific detection
+                  },
+                });
+                // Need to append the detectionId to the end of the key so there can be multiple relationships to the same Application entities
+                directRelationship._key += `|${detectedApp.id}`;
+                await jobState.addRelationship(directRelationship);
+
                 // If there is a managed application related to this, create a MANAGES relationship
                 const managedAppEntity = await jobState.findEntity(
                   MANAGED_APP_KEY_PREFIX +

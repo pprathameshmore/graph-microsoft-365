@@ -13,8 +13,8 @@ and this project adheres to
 - the `intune_managed_device` to `intune_detected_application` relationship
   class from **HAS** to **INSTALLED**
 - `intune_managed_device` to `intune_detected_application` relationships to
-  include an `installedVersion` property and allow multiple relationships to the
-  same application based on the `installedVersion`
+  include `installedVersion`, and `detectionId` properties and allow multiple
+  relationships to the same application based on the `detectionId`
 - the `_key` property on `intune_detected_application` from the device id to
   `IntuneDetected:` plus the application name
 - the `_key` property on `intune_managed_application` from the device id to

@@ -122,19 +122,23 @@ describe('fetchDetectedApplications', () => {
       'deviceDetectedApplicationRelationships',
     );
 
-    // Check that you can have multiple relationships with the same application based on version
+    // Check that you can have multiple relationships with the same application
     const groupedRelationships = groupBy(
       deviceDetectedApplicationRelationships,
       (r) => r._key.split('|')[2],
     );
     const appWithMultipleVersions = last(
-      sortBy(groupedRelationships),
-      (c) => c.length,
+      sortBy(groupedRelationships, (c) => c.length),
     );
     expect(appWithMultipleVersions.length).toBeGreaterThan(1);
-    // Check that all versions are unique
-    const versions = appWithMultipleVersions.map((app) => app.version);
-    expect(versions.length).toBeGreaterThan(0);
-    expect(versions.length).toEqual(uniq(versions).length);
+
+    // Check that versions do not have to be unique
+    const appWithNonUniqueVersions = last(
+      sortBy(
+        groupedRelationships,
+        (c) => c.length - uniq(c.map((d) => d.version)).length,
+      ),
+    );
+    expect(appWithNonUniqueVersions.length).toBeGreaterThan(1);
   });
 });

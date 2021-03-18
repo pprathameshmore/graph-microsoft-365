@@ -17,8 +17,14 @@ import { entities } from '../../constants';
 
 export const MANAGED_APP_KEY_PREFIX = 'IntuneManaged:';
 export const DETECTED_APP_KEY_PREFIX = 'IntuneDetected:';
+export const UNVERSIONED = 'unversioned';
 
-// https://docs.microsoft.com/en-us/graph/api/resources/intune-shared-mobileapp?view=graph-rest-beta
+/**
+ * Creates an application entity that represents an application that is being managed by Intune.
+ * This should not contain information unique to specific device installations.
+ * Intune uses this to apply policies and configurations to applications either off the shelf or uploaded to Intune.
+ * https://docs.microsoft.com/en-us/graph/api/resources/intune-apps-managedapp?view=graph-rest-beta
+ */
 export function createManagedApplicationEntity(
   managedApp: ManagedApp & { '@odata.type': string },
 ): Entity {
@@ -28,7 +34,10 @@ export function createManagedApplicationEntity(
       assign: {
         _class: entities.MANAGED_APPLICATION._class,
         _type: entities.MANAGED_APPLICATION._type,
-        _key: MANAGED_APP_KEY_PREFIX + managedApp.displayName?.toLowerCase(), // Prefix is necessary to ensure key is at least 10 characters
+        // The key needs to be the name of the application so it can be looked up when making managed -> detected app relationships.
+        // The managed app id is not available on the detected app so using it as the key here would make jobstate.findEntitiy not work.
+        // The prefix is necessary to ensure key is at least 10 characters
+        _key: MANAGED_APP_KEY_PREFIX + managedApp.displayName?.toLowerCase(), // Fallback to id if there is no name for the appds
         id: managedApp.id,
         name: managedApp.displayName?.toLowerCase(),
         displayName: managedApp.displayName as string,
@@ -60,7 +69,11 @@ export function createManagedApplicationEntity(
   });
 }
 
-// https://docs.microsoft.com/en-us/graph/api/resources/intune-devices-detectedapp?view=graph-rest-beta
+/**
+ * Creates an application entity that represents a global application.
+ * This entity is linked to applications in other integrations and should not contain Intune-specific information.
+ * https://docs.microsoft.com/en-us/graph/api/resources/intune-devices-detectedapp?view=graph-rest-beta
+ */
 export function createDetectedApplicationEntity(
   detectedApp: DetectedApp,
 ): Entity {
@@ -70,8 +83,12 @@ export function createDetectedApplicationEntity(
       assign: {
         _class: entities.DETECTED_APPLICATION._class,
         _type: entities.DETECTED_APPLICATION._type,
-        _key: DETECTED_APP_KEY_PREFIX + detectedApp.displayName?.toLowerCase(), // Prefix is necessary to ensure key is at least 10 characters
-        id: detectedApp.id,
+        // The key needs to be the name of the application so multiple relationships can be made to the same detected application entity.
+        // The id is unique per detection so using it as the key would make jobstate.findEntitiy not work.
+        // The prefix is necessary to ensure key is at least 10 characters
+        _key:
+          DETECTED_APP_KEY_PREFIX + detectedApp.displayName?.toLowerCase() ??
+          detectedApp.id, // Fallback to id if there is no name for the app
         name: detectedApp.displayName?.toLowerCase(),
         displayName: detectedApp.displayName as string,
       },
@@ -108,11 +125,11 @@ export function findNewestVersion(
   managedApp: ManagedApp & WindowsPhoneXAP & AndroidLobApp & IosLobApp,
 ) {
   return (
-    managedApp.identityVersion ??
-    managedApp.versionName ??
+    managedApp.versionName ?? // Version name is the most preferable version information as it is in the format X.X.X
     managedApp.versionCode ??
     managedApp.versionNumber ??
+    managedApp.identityVersion ??
     managedApp.version ??
-    'unversioned'
+    UNVERSIONED
   );
 }
