@@ -37,7 +37,9 @@ export function createManagedApplicationEntity(
         // The key needs to be the name of the application so it can be looked up when making managed -> detected app relationships.
         // The managed app id is not available on the detected app so using it as the key here would make jobstate.findEntitiy not work.
         // The prefix is necessary to ensure key is at least 10 characters
-        _key: MANAGED_APP_KEY_PREFIX + managedApp.displayName?.toLowerCase(), // Fallback to id if there is no name for the appds
+        _key:
+          MANAGED_APP_KEY_PREFIX + managedApp.displayName?.toLowerCase() ??
+          managedApp.id, // Fallback to id if there is no name for the appds
         id: managedApp.id,
         name: managedApp.displayName?.toLowerCase(),
         displayName: managedApp.displayName as string,
