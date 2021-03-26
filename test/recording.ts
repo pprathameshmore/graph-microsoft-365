@@ -52,6 +52,32 @@ function mutateRecordingEntry(entry: RecordingEntry): void {
 
   const responseJson = JSON.parse(responseText);
 
+  const DEFAULT_REDACT = '[REDACTED]';
+  const keysToRedactMap = new Map();
+  keysToRedactMap.set('serialNumber', DEFAULT_REDACT);
+  keysToRedactMap.set('deviceName', DEFAULT_REDACT);
+  keysToRedactMap.set('emailAddress', 'redacted@email.com');
+  keysToRedactMap.set('userPrincipalName', DEFAULT_REDACT);
+  keysToRedactMap.set('imei', DEFAULT_REDACT);
+  keysToRedactMap.set('phoneNumber', DEFAULT_REDACT);
+  keysToRedactMap.set('wiFiMacAddress', DEFAULT_REDACT);
+  keysToRedactMap.set('meid', DEFAULT_REDACT);
+  keysToRedactMap.set('managedDeviceName', DEFAULT_REDACT);
+  keysToRedactMap.set('userName', DEFAULT_REDACT);
+  keysToRedactMap.set('deviceDisplayName', DEFAULT_REDACT);
+  keysToRedactMap.set('hardwareSerial', DEFAULT_REDACT);
+
+  if (responseJson?.value?.forEach) {
+    responseJson.value.forEach((responseValue, index) => {
+      keysToRedactMap.forEach((redactionValue, keyToRedact) => {
+        if (responseValue[keyToRedact]) {
+          responseJson.value[index][keyToRedact] = redactionValue;
+        }
+      });
+    });
+    entry.response.content.text = JSON.stringify(responseJson);
+  }
+
   if (/login/.exec(entry.request.url) && entry.request.postData) {
     // Redact request body with secrets for authentication
     entry.request.postData.text = '[REDACTED]';

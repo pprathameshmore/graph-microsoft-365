@@ -18,7 +18,7 @@ afterEach(async () => {
 });
 
 describe('verifyAuthentication', () => {
-  test('invalid directoryId', async () => {
+  test('invalid tenant', async () => {
     recording = setupAzureRecording({
       directory: __dirname,
       name: 'verifyAuthenticationInvalidDirectory',
@@ -27,7 +27,7 @@ describe('verifyAuthentication', () => {
 
     const client = new GraphClient(logger, {
       ...config,
-      directoryId: 'abc123testing',
+      tenant: 'abc123testing',
     });
 
     await expect(client.verifyAuthentication()).rejects.toThrow(

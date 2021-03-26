@@ -1,0 +1,122 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`fetchDeviceConfigurationsAndFindings should make entities and relationships correctly: deviceConfigurationEntities 1`] = `
+Array [
+  Object {
+    "_class": Array [
+      "Configuration",
+      "ControlPolicy",
+    ],
+    "_key": "6aa605f0-744e-4ae1-8031-c6564624c89b",
+    "_rawData": Array [
+      Object {
+        "name": "default",
+        "rawData": Object {
+          "@odata.type": "#microsoft.graph.iosCustomConfiguration",
+          "createdDateTime": "2021-02-17T18:31:21.3225031Z",
+          "description": null,
+          "displayName": "Test configuration policy",
+          "id": "6aa605f0-744e-4ae1-8031-c6564624c89b",
+          "lastModifiedDateTime": "2021-02-17T18:31:21.3225031Z",
+          "payload": "MTk3",
+          "payloadFileName": "lastSuccessfulBuildId.txt",
+          "payloadName": "Test fake profile",
+          "version": 1,
+        },
+      },
+    ],
+    "_type": "intune_device_configuration",
+    "category": "config",
+    "configurationType": "iosCustomConfiguration",
+    "createdOn": 1613586681322,
+    "description": "Test configuration policy",
+    "displayName": "Test configuration policy",
+    "function": "endpoint-configuration",
+    "id": "6aa605f0-744e-4ae1-8031-c6564624c89b",
+    "name": "Test configuration policy",
+    "version": 1,
+  },
+]
+`;
+
+exports[`fetchDeviceConfigurationsAndFindings should make entities and relationships correctly: deviceDeviceConfigurationRelationships 1`] = `
+Array [
+  Object {
+    "_class": "HAS",
+    "_fromEntityKey": "683dbff1-c8ff-4996-91ae-85484de46cfc",
+    "_key": "683dbff1-c8ff-4996-91ae-85484de46cfc|has|7b521133-f056-40a9-b639-b76afd67e4bb_6aa605f0-744e-4ae1-8031-c6564624c89b_683dbff1-c8ff-4996-91ae-85484de46cfc",
+    "_toEntityKey": "7b521133-f056-40a9-b639-b76afd67e4bb_6aa605f0-744e-4ae1-8031-c6564624c89b_683dbff1-c8ff-4996-91ae-85484de46cfc",
+    "_type": "smartphone_has_intune_noncompliance_finding",
+    "displayName": "HAS",
+  },
+]
+`;
+
+exports[`fetchDeviceConfigurationsAndFindings should make entities and relationships correctly: noncomplianceFindingDeviceConfigurationRelationships 1`] = `
+Array [
+  Object {
+    "_class": "IDENTIFIED",
+    "_fromEntityKey": "6aa605f0-744e-4ae1-8031-c6564624c89b",
+    "_key": "6aa605f0-744e-4ae1-8031-c6564624c89b|identified|7b521133-f056-40a9-b639-b76afd67e4bb_6aa605f0-744e-4ae1-8031-c6564624c89b_683dbff1-c8ff-4996-91ae-85484de46cfc",
+    "_toEntityKey": "7b521133-f056-40a9-b639-b76afd67e4bb_6aa605f0-744e-4ae1-8031-c6564624c89b_683dbff1-c8ff-4996-91ae-85484de46cfc",
+    "_type": "intune_device_configuration_identified_noncompliance_finding",
+    "displayName": "IDENTIFIED",
+  },
+]
+`;
+
+exports[`fetchDeviceConfigurationsAndFindings should make entities and relationships correctly: noncomplianceFindingDeviceRelationships 1`] = `
+Array [
+  Object {
+    "_class": "ASSIGNED",
+    "_fromEntityKey": "intune-host-agent:683dbff1-c8ff-4996-91ae-85484de46cfc",
+    "_key": "intune-host-agent:683dbff1-c8ff-4996-91ae-85484de46cfc|assigned|6aa605f0-744e-4ae1-8031-c6564624c89b",
+    "_toEntityKey": "6aa605f0-744e-4ae1-8031-c6564624c89b",
+    "_type": "intune_host_agent_assigned_device_configuration",
+    "complianceStatus": "error",
+    "compliant": false,
+    "displayName": "ASSIGNED",
+  },
+]
+`;
+
+exports[`fetchDeviceConfigurationsAndFindings should make entities and relationships correctly: noncomplianceFindingEntities 1`] = `
+Array [
+  Object {
+    "_class": Array [
+      "Finding",
+    ],
+    "_key": "7b521133-f056-40a9-b639-b76afd67e4bb_6aa605f0-744e-4ae1-8031-c6564624c89b_683dbff1-c8ff-4996-91ae-85484de46cfc",
+    "_rawData": Array [
+      Object {
+        "name": "default",
+        "rawData": Object {
+          "complianceGracePeriodExpirationDateTime": "2021-02-17T19:13:41.8113Z",
+          "deviceDisplayName": "[REDACTED]",
+          "deviceModel": null,
+          "id": "7b521133-f056-40a9-b639-b76afd67e4bb_6aa605f0-744e-4ae1-8031-c6564624c89b_683dbff1-c8ff-4996-91ae-85484de46cfc",
+          "lastReportedDateTime": "2021-03-02T16:23:45.8206923Z",
+          "status": "error",
+          "userName": "[REDACTED]",
+          "userPrincipalName": "[REDACTED]",
+        },
+      },
+    ],
+    "_type": "intune_noncompliance_finding",
+    "active": undefined,
+    "assessment": "Test configuration policy",
+    "category": "endpoint",
+    "createdOn": undefined,
+    "displayName": "Latest finding from Test configuration policy",
+    "id": "7b521133-f056-40a9-b639-b76afd67e4bb_6aa605f0-744e-4ae1-8031-c6564624c89b_683dbff1-c8ff-4996-91ae-85484de46cfc",
+    "lastProcessedOn": 1614702225820,
+    "lastTestedOn": 1614702225820,
+    "lastUpdatedOn": 1614702225820,
+    "name": "Latest finding from Test configuration policy",
+    "numericSeverity": 6,
+    "open": true,
+    "severity": "high",
+    "status": "error",
+  },
+]
+`;

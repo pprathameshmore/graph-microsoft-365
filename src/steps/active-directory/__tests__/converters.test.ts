@@ -1,10 +1,5 @@
 import { RelationshipDirection } from '@jupiterone/integration-sdk-core';
-import {
-  GROUP_ENTITY_CLASS,
-  GROUP_ENTITY_TYPE,
-  USER_ENTITY_CLASS,
-  USER_ENTITY_TYPE,
-} from '../constants';
+import { entities } from '../constants';
 import {
   createAccountEntityWithOrganization,
   createAccountGroupRelationship,
@@ -25,22 +20,19 @@ import exampleOrganization from './fixtures/exampleOrganization';
 
 describe('createAccountEntityWithOrganization', () => {
   test('properties transferred', () => {
+    const exampleIntuneConfig = {
+      mobileDeviceManagementAuthority: 'mobileDeviceManagementAuthority',
+      subscriptionState: 'subscriptionState',
+      intuneAccountID: 'intuneAccountID',
+    };
     const accountEntity = createAccountEntityWithOrganization(
       exampleIntegrationInstance,
       exampleOrganization,
+      exampleIntuneConfig,
     );
-    expect(accountEntity).toEqual({
-      _class: ['Account'],
-      _key: 'microsoft_365_account-the-instance-id',
-      _type: 'microsoft_365_account',
-      _rawData: [{ name: 'default', rawData: exampleOrganization }],
-      name: 'Default Directory',
-      id: '1111111-1111-1111-1111-111111111111',
-      displayName: 'instance.config.name configured by customer',
-      defaultDomain: 'verifiedDomain.onmicrosoft.com',
-      organizationName: 'Default Directory',
-      verifiedDomains: ['verifiedDomain.onmicrosoft.com'],
-    });
+    expect(accountEntity).toMatchSnapshot(
+      'createAccountEntityWithOrganization',
+    );
   });
 });
 
@@ -49,7 +41,7 @@ describe('createGroupEntity', () => {
     expect(createGroupEntity(exampleGroup)).toEqual({
       _class: ['UserGroup'],
       _key: '89fac263-2430-48fd-9278-dacfdfc89792',
-      _type: 'microsoft_365_user_group',
+      _type: 'azure_user_group',
       _rawData: [
         {
           name: 'default',
@@ -90,7 +82,7 @@ describe('createUserEntity', () => {
     expect(createUserEntity(rawData)).toEqual({
       _class: ['User'],
       _key: 'abf00eda-02d6-4053-a077-eef036e1a4c8',
-      _type: 'microsoft_365_user',
+      _type: 'azure_user',
       _rawData: [
         {
           name: 'default',
@@ -127,7 +119,7 @@ describe('createOrganizationEntity', () => {
           rawData: exampleOrganization,
         },
       ],
-      _type: 'microsoft_365_organization',
+      _type: 'azure_organization',
       id: '1111111-1111-1111-1111-111111111111',
       displayName: 'Default Directory',
       website: 'verifiedDomain.onmicrosoft.com',
@@ -141,8 +133,8 @@ describe('createAccountGroupRelationship', () => {
     expect(
       createAccountGroupRelationship(exampleAccountEntity, {
         _key: '89fac263-2430-48fd-9278-dacfdfc89792',
-        _class: GROUP_ENTITY_CLASS,
-        _type: GROUP_ENTITY_TYPE,
+        _class: entities.GROUP._class,
+        _type: entities.GROUP._type,
         id: '89fac263-2430-48fd-9278-dacfdfc89792',
         deletedDateTime: undefined,
         classification: undefined,
@@ -167,7 +159,7 @@ describe('createAccountGroupRelationship', () => {
       _fromEntityKey: 'microsoft_365_account_id',
       _key: 'microsoft_365_account_id|has|89fac263-2430-48fd-9278-dacfdfc89792',
       _toEntityKey: '89fac263-2430-48fd-9278-dacfdfc89792',
-      _type: 'microsoft_365_account_has_group',
+      _type: 'microsoft_365_account_has_azure_group',
       displayName: 'HAS',
     });
   });
@@ -178,8 +170,8 @@ describe('createAccountUserRelationship', () => {
     expect(
       createAccountUserRelationship(exampleAccountEntity, {
         _key: 'abf00eda-02d6-4053-a077-eef036e1a4c8',
-        _class: USER_ENTITY_CLASS,
-        _type: USER_ENTITY_TYPE,
+        _class: entities.USER._class,
+        _type: entities.USER._type,
         businessPhones: ['+1 2223334444'],
         displayName: 'Andrew Kulakov',
         givenName: 'Andrew',
@@ -198,7 +190,7 @@ describe('createAccountUserRelationship', () => {
       _fromEntityKey: 'microsoft_365_account_id',
       _key: 'microsoft_365_account_id|has|abf00eda-02d6-4053-a077-eef036e1a4c8',
       _toEntityKey: 'abf00eda-02d6-4053-a077-eef036e1a4c8',
-      _type: 'microsoft_365_account_has_user',
+      _type: 'microsoft_365_account_has_azure_user',
       displayName: 'HAS',
     });
   });
@@ -212,14 +204,14 @@ describe('createGroupMemberRelationship', () => {
       _class: 'HAS',
       _key:
         '89fac263-2430-48fd-9278-dacfdfc89792|has|324e8daa-9c29-42a4-a74b-b9893e6d9750',
-      _type: 'microsoft_365_group_has_member',
+      _type: 'azure_group_has_member',
       _mapping: {
         relationshipDirection: RelationshipDirection.FORWARD,
         sourceEntityKey: '89fac263-2430-48fd-9278-dacfdfc89792',
         targetFilterKeys: [['_type', '_key']],
         targetEntity: {
           _key: '324e8daa-9c29-42a4-a74b-b9893e6d9750',
-          _type: 'microsoft_365_user',
+          _type: 'azure_user',
           _class: 'User',
           displayName: 'User Name',
           jobTitle: 'Job Title',
@@ -243,14 +235,14 @@ describe('createGroupMemberRelationship', () => {
       _class: 'HAS',
       _key:
         '89fac263-2430-48fd-9278-dacfdfc89792|has|324e8daa-9c29-42a4-a74b-b9893e6d9750',
-      _type: 'microsoft_365_group_has_member',
+      _type: 'azure_group_has_member',
       _mapping: {
         relationshipDirection: RelationshipDirection.FORWARD,
         sourceEntityKey: '89fac263-2430-48fd-9278-dacfdfc89792',
         targetFilterKeys: [['_type', '_key']],
         targetEntity: {
           _key: '324e8daa-9c29-42a4-a74b-b9893e6d9750',
-          _type: 'microsoft_365_user_group',
+          _type: 'azure_user_group',
           _class: 'UserGroup',
           displayName: 'Managers',
           jobTitle: null,
@@ -274,14 +266,14 @@ describe('createGroupMemberRelationship', () => {
       _class: 'HAS',
       _key:
         '89fac263-2430-48fd-9278-dacfdfc89792|has|324e8daa-9c29-42a4-a74b-b9893e6d9750',
-      _type: 'microsoft_365_group_has_member',
+      _type: 'azure_group_has_member',
       _mapping: {
         relationshipDirection: RelationshipDirection.FORWARD,
         sourceEntityKey: '89fac263-2430-48fd-9278-dacfdfc89792',
         targetFilterKeys: [['_type', '_key']],
         targetEntity: {
           _key: '324e8daa-9c29-42a4-a74b-b9893e6d9750',
-          _type: 'microsoft_365_group_member',
+          _type: 'azure_group_member',
           _class: 'User',
           displayName: "Don't really know",
           jobTitle: null,

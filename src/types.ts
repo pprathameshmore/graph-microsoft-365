@@ -24,13 +24,11 @@ export interface IntegrationConfig extends IntegrationInstanceConfig {
    * The target directory/tenant ID, identified during the admin consent OAuth
    * flow.
    */
-  directoryId: string;
+  tenant: string;
 }
 
 /**
  * An `IntegrationStepExecutionContext` typed for this integration's
  * `IntegrationInstanceConfig`.
  */
-export type IntegrationStepContext = IntegrationStepExecutionContext<
-  IntegrationConfig
->;
+export type IntegrationStepContext = IntegrationStepExecutionContext<IntegrationConfig>;

@@ -10,8 +10,13 @@ import {
   AuthenticationProviderOptions,
   Client,
 } from '@microsoft/microsoft-graph-client';
-import { Organization } from '@microsoft/microsoft-graph-types';
+import {
+  DeviceManagement,
+  Organization,
+} from '@microsoft/microsoft-graph-types';
+import { DeviceManagementSubscriptionState } from '@microsoft/microsoft-graph-types-beta';
 import 'isomorphic-unfetch';
+import { toArray } from '../utils/toArray';
 
 import { ClientConfig } from './types';
 
@@ -56,13 +61,15 @@ export class GraphClient {
    * accomplished.
    */
   public async fetchOrganization(): Promise<Organization> {
+    const url = '/organization';
     try {
-      const response = await this.client.api('/organization').get();
+      const response = await this.client.api(url).get();
       return response.value[0];
     } catch (err) {
+      this.handleApiError(err, url);
       const errorOptions = {
         cause: err,
-        endpoint: '/organization',
+        endpoint: url,
         status: err.statusCode,
         statusText: err.code,
       };
@@ -71,6 +78,59 @@ export class GraphClient {
       } else {
         throw new IntegrationProviderAPIError(errorOptions);
       }
+    }
+  }
+
+  // https://docs.microsoft.com/en-us/graph/api/resources/intune-shared-devicemanagement?view=graph-rest-1.0
+  // https://docs.microsoft.com/en-us/graph/api/intune-shared-devicemanagement-get?view=graph-rest-1.0
+  public async getIntuneAccountId(): Promise<
+    Pick<DeviceManagement, 'intuneAccountId'> | undefined
+  > {
+    const url = '/deviceManagement';
+    try {
+      return await this.client.api(url).select('intuneAccountId').get();
+    } catch (error) {
+      this.handleApiError(error, url);
+    }
+  }
+
+  /**
+   * Fetches the Intune subscriptions state for this account. Will error if Intune is not set up.
+   * Need to access the subscriptionState via this endpoint due to the subscriptionState property on
+   * deviceManagement being incorrect on Microsoft's end. This endpoint is how Intune's UI determines
+   * this value so it is also we are going to access it. This endpoint is not documented.
+   */
+  public async getIntuneSubscriptionState(): Promise<
+    { value: DeviceManagementSubscriptionState } | undefined
+  > {
+    const url =
+      'https://graph.microsoft.com/beta/deviceManagement/subscriptionState';
+    try {
+      return await this.client.api(url).get();
+    } catch (error) {
+      this.handleApiError(error, url);
+    }
+  }
+
+  /**
+   * Fetches the authority that is controlling the mobile device management for this account.
+   * This can be gotten in the initial organization call, but because the mdmAuthority is not
+   * a default api value, it is simpler to grab it on its own.
+   */
+  // https://docs.microsoft.com/en-us/graph/api/resources/intune-onboarding-organization?view=graph-rest-beta
+  public async getMobileDeviceManagementAuthority(
+    organizationId: string,
+  ): Promise<
+    Pick<Organization, 'mobileDeviceManagementAuthority'> | undefined
+  > {
+    const url = `/organization/${organizationId}`;
+    try {
+      return await this.client
+        .api(url)
+        .select('mobileDeviceManagementAuthority')
+        .get();
+    } catch (error) {
+      this.handleApiError(error, url);
     }
   }
 
@@ -89,37 +149,72 @@ export class GraphClient {
     query?: QueryParams;
     callback: (item: T) => void | Promise<void>;
   }): Promise<void> {
-    try {
-      let nextLink: string | undefined;
-      do {
-        let api = this.client.api(nextLink || resourceUrl);
-        if (query) {
-          api = api.query(query);
-        }
-
-        const response = await api.get();
-        if (response) {
-          nextLink = response['@odata.nextLink'];
-          for (const value of response.value) {
-            await callback(value);
-          }
+    let nextLink: string | undefined = resourceUrl;
+    let retries = 0;
+    do {
+      try {
+        nextLink = await this.callApi<T>({
+          link: nextLink,
+          query,
+          callback,
+        });
+      } catch (err) {
+        if (
+          err.message ===
+            'CompactToken parsing failed with error code: 80049217' &&
+          nextLink &&
+          retries < 5
+        ) {
+          // Retry a few times to handle sporatic timing issue with this sdk - https://github.com/OneDrive/onedrive-api-docs/issues/785
+          retries++;
+          continue;
         } else {
           nextLink = undefined;
+          this.handleApiError(err, resourceUrl);
         }
-      } while (nextLink);
-    } catch (err) {
-      if (err.statusCode === 401) {
-        this.logger.info({ resourceUrl }, 'Unauthorized');
-      } else if (err.statusCode === 403) {
-        this.logger.info({ resourceUrl }, 'Forbidden');
-      } else if (err.statusCode !== 404) {
-        throw new IntegrationProviderAPIError({
-          cause: err,
-          endpoint: resourceUrl,
-          status: err.statusCode,
-          statusText: err.statusText || err.code || err.message,
-        });
       }
+    } while (nextLink);
+  }
+
+  protected async callApi<T>({
+    link,
+    query,
+    callback,
+  }: {
+    link: string;
+    query?: QueryParams;
+    callback: (item: T) => void | Promise<void>;
+  }): Promise<string | undefined> {
+    let api = this.client.api(link);
+    if (query) {
+      api = api.query(query);
+    }
+
+    const response = await api.get();
+    if (response) {
+      for (const value of toArray(response.value ?? response)) {
+        await callback(value);
+      }
+      return response['@odata.nextLink'];
+    }
+  }
+
+  private handleApiError(err: any, resourceUrl: string) {
+    const errorOptions = {
+      cause: err,
+      endpoint: resourceUrl,
+      status: err.statusCode,
+      statusText: err.statusText || err.code || err.message,
+    };
+    // Skip errors caused by the account not being configured for the content being ingested
+    if (err.message.startsWith('Request not applicable to target tenant')) {
+      this.logger.info(err);
+    } else if (err.statusCode === 401) {
+      this.logger.info({ resourceUrl }, 'Unauthorized');
+    } else if (err.statusCode === 403) {
+      this.logger.info({ resourceUrl }, 'Forbidden');
+    } else if (err.statusCode !== 404) {
+      throw new IntegrationProviderAPIError(errorOptions);
     }
   }
 }
@@ -141,7 +236,7 @@ class GraphAuthenticationProvider implements AuthenticationProvider {
       this.accessToken.expiresOnTimestamp - Date.now() < 1000 * 60
     ) {
       const credentials = new ClientSecretCredential(
-        this.config.directoryId,
+        this.config.tenant,
         this.config.clientId,
         this.config.clientSecret,
       );

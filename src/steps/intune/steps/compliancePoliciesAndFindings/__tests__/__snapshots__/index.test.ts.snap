@@ -1,0 +1,134 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`fetchCompliancePolicyAndFindings should make entities and relationships correctly: compliancePolicyEntities 1`] = `
+Array [
+  Object {
+    "_class": Array [
+      "Configuration",
+      "ControlPolicy",
+    ],
+    "_key": "1aa3f0f3-d780-4349-885b-c86d273aa14e",
+    "_rawData": Array [
+      Object {
+        "name": "default",
+        "rawData": Object {
+          "@odata.type": "#microsoft.graph.iosCompliancePolicy",
+          "createdDateTime": "2021-02-17T18:30:00.3790438Z",
+          "description": null,
+          "deviceThreatProtectionEnabled": false,
+          "deviceThreatProtectionRequiredSecurityLevel": "unavailable",
+          "displayName": "Test iOS policy",
+          "id": "1aa3f0f3-d780-4349-885b-c86d273aa14e",
+          "lastModifiedDateTime": "2021-02-17T18:51:15.3715981Z",
+          "managedEmailProfileRequired": true,
+          "osMaximumVersion": null,
+          "osMinimumVersion": null,
+          "passcodeBlockSimple": false,
+          "passcodeExpirationDays": null,
+          "passcodeMinimumCharacterSetCount": null,
+          "passcodeMinimumLength": null,
+          "passcodeMinutesOfInactivityBeforeLock": null,
+          "passcodePreviousPasscodeBlockCount": null,
+          "passcodeRequired": false,
+          "passcodeRequiredType": "deviceDefault",
+          "securityBlockJailbrokenDevices": false,
+          "version": 2,
+        },
+      },
+    ],
+    "_type": "intune_compliance_policy",
+    "category": "compliance",
+    "createdOn": 1613586600379,
+    "description": "Test iOS policy",
+    "displayName": "Test iOS policy",
+    "function": "endpoint-compliance",
+    "id": "1aa3f0f3-d780-4349-885b-c86d273aa14e",
+    "name": "Test iOS policy",
+    "policyType": "iosCompliancePolicy",
+    "version": 2,
+  },
+]
+`;
+
+exports[`fetchCompliancePolicyAndFindings should make entities and relationships correctly: deviceCompliancePolicyRelationships 1`] = `
+Array [
+  Object {
+    "_class": "ASSIGNED",
+    "_fromEntityKey": "intune-host-agent:683dbff1-c8ff-4996-91ae-85484de46cfc",
+    "_key": "intune-host-agent:683dbff1-c8ff-4996-91ae-85484de46cfc|assigned|1aa3f0f3-d780-4349-885b-c86d273aa14e",
+    "_toEntityKey": "1aa3f0f3-d780-4349-885b-c86d273aa14e",
+    "_type": "intune_host_agent_assigned_compliance_policy",
+    "complianceStatus": "nonCompliant",
+    "compliant": false,
+    "displayName": "ASSIGNED",
+  },
+]
+`;
+
+exports[`fetchCompliancePolicyAndFindings should make entities and relationships correctly: deviceDeviceConfigurationRelationships 1`] = `
+Array [
+  Object {
+    "_class": "HAS",
+    "_fromEntityKey": "683dbff1-c8ff-4996-91ae-85484de46cfc",
+    "_key": "683dbff1-c8ff-4996-91ae-85484de46cfc|has|7b521133-f056-40a9-b639-b76afd67e4bb_1aa3f0f3-d780-4349-885b-c86d273aa14e_683dbff1-c8ff-4996-91ae-85484de46cfc",
+    "_toEntityKey": "7b521133-f056-40a9-b639-b76afd67e4bb_1aa3f0f3-d780-4349-885b-c86d273aa14e_683dbff1-c8ff-4996-91ae-85484de46cfc",
+    "_type": "smartphone_has_intune_noncompliance_finding",
+    "displayName": "HAS",
+  },
+]
+`;
+
+exports[`fetchCompliancePolicyAndFindings should make entities and relationships correctly: noncomplianceFindingDeviceConfigurationRelationships 1`] = `
+Array [
+  Object {
+    "_class": "IDENTIFIED",
+    "_fromEntityKey": "1aa3f0f3-d780-4349-885b-c86d273aa14e",
+    "_key": "1aa3f0f3-d780-4349-885b-c86d273aa14e|identified|7b521133-f056-40a9-b639-b76afd67e4bb_1aa3f0f3-d780-4349-885b-c86d273aa14e_683dbff1-c8ff-4996-91ae-85484de46cfc",
+    "_toEntityKey": "7b521133-f056-40a9-b639-b76afd67e4bb_1aa3f0f3-d780-4349-885b-c86d273aa14e_683dbff1-c8ff-4996-91ae-85484de46cfc",
+    "_type": "intune_compliance_policy_identified_noncompliance_finding",
+    "displayName": "IDENTIFIED",
+  },
+]
+`;
+
+exports[`fetchCompliancePolicyAndFindings should make entities and relationships correctly: noncomplianceFindingEntities 1`] = `
+Array [
+  Object {
+    "_class": Array [
+      "Finding",
+    ],
+    "_key": "7b521133-f056-40a9-b639-b76afd67e4bb_1aa3f0f3-d780-4349-885b-c86d273aa14e_683dbff1-c8ff-4996-91ae-85484de46cfc",
+    "_rawData": Array [
+      Object {
+        "name": "default",
+        "rawData": Object {
+          "complianceGracePeriodExpirationDateTime": "2021-02-17T19:13:41.8113Z",
+          "deviceDisplayName": "[REDACTED]",
+          "deviceModel": null,
+          "id": "7b521133-f056-40a9-b639-b76afd67e4bb_1aa3f0f3-d780-4349-885b-c86d273aa14e_683dbff1-c8ff-4996-91ae-85484de46cfc",
+          "lastReportedDateTime": "2021-03-08T16:23:55.3635457Z",
+          "platform": 0,
+          "status": "nonCompliant",
+          "userName": "[REDACTED]",
+          "userPrincipalName": "[REDACTED]",
+        },
+      },
+    ],
+    "_type": "intune_noncompliance_finding",
+    "active": undefined,
+    "assessment": "Test iOS policy",
+    "category": "endpoint",
+    "createdOn": undefined,
+    "displayName": "Latest finding from Test iOS policy",
+    "id": "7b521133-f056-40a9-b639-b76afd67e4bb_1aa3f0f3-d780-4349-885b-c86d273aa14e_683dbff1-c8ff-4996-91ae-85484de46cfc",
+    "lastProcessedOn": 1615220635363,
+    "lastTestedOn": 1615220635363,
+    "lastUpdatedOn": 1615220635363,
+    "name": "Latest finding from Test iOS policy",
+    "numericSeverity": 6,
+    "open": true,
+    "severity": "high",
+    "status": "nonCompliant",
+  },
+]
+`;

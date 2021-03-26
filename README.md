@@ -1,4 +1,7 @@
-# JupiterOne Integration
+# Graph-Microsoft-365
+
+[![Build Status](https://github.com/JupiterOne/graph-microsoft-365/workflows/Build/badge.svg)](https://github.com/JupiterOne/graph-microsoft-365/actions?query=workflow%3ABuild)
+[![Gitleaks Status](https://github.com/JupiterOne/graph-microsoft-365/workflows/gitleaks/badge.svg)](https://github.com/JupiterOne/graph-microsoft-365actions?query=workflow%3Agitleaks)
 
 ## Development Environment
 
@@ -33,6 +36,10 @@ Given this example configuration:
   "clientSecret": {
     "type": "string",
     "mask": true
+  },
+  "tenant": {
+    "type": "string",
+    "mask": true
   }
 }
 ```
@@ -42,6 +49,7 @@ You would provide a `.env` file like this:
 ```bash
 CLIENT_ID="client-id"
 CLIENT_SECRET="supersecret"
+TENANT="tenant-directory-id"
 ```
 
 The snake cased environment variables will automatically be converted and

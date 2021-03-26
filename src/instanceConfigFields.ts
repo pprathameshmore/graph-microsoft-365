@@ -8,7 +8,7 @@ const instanceConfigFields: IntegrationInstanceConfigFieldMap = {
     type: 'string',
     mask: true,
   },
-  directoryId: {
+  tenant: {
     type: 'string',
   },
 };
